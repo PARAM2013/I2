@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.secure.databinding.ActivityMainBinding
 import com.example.secure.file.FileManager
 import android.widget.Toast
@@ -51,15 +52,15 @@ class MainActivity : TrackedActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar) // Assuming you add a Toolbar with id 'toolbar' in activity_main.xml
+        
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.navigation_secure_dashboard) // Top-level destination
             // drawerLayout = binding.drawerLayout // If you add a DrawerLayout
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Initialize last interaction time for auto-lock is now handled by TrackedActivity
 
