@@ -5,11 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <!-- For Android 11 (API 30) and above, MANAGE_EXTERNAL_STORAGE might be needed if Scoped Storage is not sufficient.
-         Requesting it broadly can lead to Play Store rejection.
-         Consider if truly necessary or if alternative APIs (like Storage Access Framework) can be used.
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    -->
 
     <application
         android:allowBackup="true"

@@ -13,11 +13,18 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.secure.databinding.ActivityMainBinding
 import com.example.secure.file.FileManager
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 
 class MainActivity : TrackedActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private lateinit var manageStoragePermissionLauncher: ActivityResultLauncher<Intent>
 
     // Auto-lock timer related variables
     // companion object {
@@ -44,10 +51,17 @@ class MainActivity : TrackedActivity() {
 
         super.onCreate(savedInstanceState)
 
-        // Optional: Keep the splash screen on-screen for longer periods.
-        // splashScreen.setKeepOnScreenCondition { true }
-        // Optional: Customize the animation for dismissing the splash screen.
-        // splashScreen.setOnExitAnimationListener { splashScreenViewProvider -> /* ... */ }
+        manageStoragePermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
+                    loadVaultContent()
+                } else {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required to manage files.", Toast.LENGTH_LONG).show()
+                    loadVaultContent()
+                }
+            }
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -123,25 +137,7 @@ class MainActivity : TrackedActivity() {
         triggerSecureDashboardRefresh()
     }
 
-    // Called when returning from the settings screen for MANAGE_EXTERNAL_STORAGE
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
-                    loadVaultContent()
-                } else {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required to manage files.", Toast.LENGTH_LONG).show()
-                    // Handle denial: close app, show error, or disable features.
-                    // Forcing a re-check or re-request might lead to loops if user keeps denying.
-                    // Consider showing a persistent message or a dedicated screen explaining the need.
-                    // For now, we'll attempt to load content, which will likely fail or show empty for the vault.
-                    loadVaultContent() // Or show an explicit error state
-                }
-            }
-        }
-    }
+    
 
     private fun triggerSecureDashboardRefresh() {
         // Attempt to find the SecureDashboardFragment and call a public method to refresh/load data

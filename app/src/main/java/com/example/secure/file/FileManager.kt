@@ -74,7 +74,7 @@ object FileManager {
                 try {
                     val intent = android.content.Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.data = android.net.Uri.parse("package:${activity.packageName}")
-                    activity.startActivityForResult(intent, REQUEST_MANAGE_STORAGE_PERMISSION_CODE)
+                    activity.startActivity(intent)
                 } catch (e: Exception) {
                     // Fallback or error handling if the intent fails (e.g., on some custom ROMs or emulators)
                     android.util.Log.e("FileManager", "Failed to launch MANAGE_EXTERNAL_STORAGE settings", e)
