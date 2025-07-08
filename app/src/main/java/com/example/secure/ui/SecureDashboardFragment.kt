@@ -25,10 +25,44 @@ class SecureDashboardFragment : Fragment() {
         return binding.root
     }
 
+import com.example.secure.file.FileManager // Import FileManager
+import java.io.File // For potential use with File objects if needed directly
+
+class SecureDashboardFragment : Fragment() {
+
+    private var _binding: FragmentSecureDashboardBinding? = null
+    private val binding get() = _binding!!
+
+    // Define ActivityResultLauncher for file import and folder creation
+    private val importFileLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
+        uri?.let {
+            // Handle the selected file URI
+            context?.let { ctx ->
+                // TODO: Potentially ask user for target folder within vault, for now import to root
+                val importedFile = FileManager.importFile(it, ctx, null, true)
+                if (importedFile != null) {
+                    android.widget.Toast.makeText(ctx, "File imported: ${importedFile.name}", android.widget.Toast.LENGTH_SHORT).show()
+                    loadDashboardData() // Refresh dashboard
+                } else {
+                    android.widget.Toast.makeText(ctx, "Failed to import file", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    // No specific launcher for create folder as we'll use a dialog
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSecureDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFABs()
-        updateCategoryPlaceholders() // TODO: Replace with actual data loading
+        loadDashboardData() // Load actual data
     }
 
     private fun setupFABs() {
@@ -75,67 +109,118 @@ class SecureDashboardFragment : Fragment() {
         }
 
         fabImportFile.setOnClickListener {
-            // TODO: Implement file import logic
-            android.widget.Toast.makeText(context, "Import File clicked", android.widget.Toast.LENGTH_SHORT).show()
-            // Close FAB menu
-            if (isFabMenuOpen) fabMain.performClick()
+            importFileLauncher.launch("*/*") // Launch file picker
+            if (isFabMenuOpen) fabMain.performClick() // Close FAB menu
         }
 
         fabCreateFolder.setOnClickListener {
-            // TODO: Implement create folder logic
-            android.widget.Toast.makeText(context, "Create Folder clicked", android.widget.Toast.LENGTH_SHORT).show()
-            if (isFabMenuOpen) fabMain.performClick()
+            showCreateFolderDialog()
+            if (isFabMenuOpen) fabMain.performClick() // Close FAB menu
         }
     }
 
-    // TODO: This method will be updated in Step 5 to use FileManager
-    private fun updateCategoryPlaceholders() {
-        // Placeholder data
-        val allFolders = 5
-        val allFiles = 20
-        val allSizeMb = 225.5f
+    private fun loadDashboardData() {
+        // Ensure context is not null, though less likely here than in a callback
+        context ?: return
 
-        val photoFiles = 10
-        val photoSizeMb = 100.2f
+        val vaultStats = FileManager.listFilesInVault()
 
-        val videoFiles = 3
-        val videoSizeMb = 120.1f
-
-        val docFiles = 7
-        val docSizeMb = 5.2f
-
+        // Update "All Files" category
         binding.textCategoryAllDetails.text = String.format(Locale.getDefault(),
-            "%d Folders, %d Files, %.1f MB", allFolders, allFiles, allSizeMb)
+            "%d Folders, %d Files, %s",
+            vaultStats.grandTotalFolders,
+            vaultStats.grandTotalFiles,
+            formatSize(vaultStats.grandTotalSize)
+        )
 
-        binding.textCategoryPhotosTitle.text = getString(R.string.category_photos, photoFiles, formatSize(photoSizeMb))
+        // Update "Photos" category
+        binding.textCategoryPhotosTitle.text = getString(R.string.category_photos_title_dynamic, vaultStats.totalPhotoFiles)
         binding.textCategoryPhotosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %.1f MB", photoFiles, photoSizeMb)
+            "%d Files, %s",
+            vaultStats.totalPhotoFiles,
+            formatSize(vaultStats.totalPhotoSize)
+        )
 
+        // Update "Videos" category
+        binding.textCategoryVideosTitle.text = getString(R.string.category_videos_title_dynamic, vaultStats.totalVideoFiles)
+        binding.textCategoryVideosDetails.text = String.format(Locale.getDefault(),
+            "%d Files, %s",
+            vaultStats.totalVideoFiles,
+            formatSize(vaultStats.totalVideoSize)
+        )
 
-        binding.textCategoryVideosTitle.text = getString(R.string.category_videos, videoFiles, formatSize(videoSizeMb))
-         binding.textCategoryVideosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %.1f MB", videoFiles, videoSizeMb)
-
-
-        binding.textCategoryDocumentsTitle.text = getString(R.string.category_documents, docFiles, formatSize(docSizeMb))
+        // Update "Documents" category
+        binding.textCategoryDocumentsTitle.text = getString(R.string.category_documents_title_dynamic, vaultStats.totalDocumentFiles)
         binding.textCategoryDocumentsDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %.1f MB", docFiles, docSizeMb)
+            "%d Files, %s",
+            vaultStats.totalDocumentFiles,
+            formatSize(vaultStats.totalDocumentSize)
+        )
 
-        if (allFiles == 0 && allFolders == 0) {
+        // Show/hide empty vault message
+        if (vaultStats.grandTotalFiles == 0 && vaultStats.grandTotalFolders == 0) {
             binding.textEmptyVault.visibility = View.VISIBLE
+            binding.categoriesScrollView.visibility = View.GONE // Hide categories if empty
         } else {
             binding.textEmptyVault.visibility = View.GONE
+            binding.categoriesScrollView.visibility = View.VISIBLE // Show categories
         }
     }
 
-    private fun formatSize(sizeMb: Float): String {
-        return if (sizeMb >= 1024) {
-            String.format(Locale.getDefault(), "%.1f GB", sizeMb / 1024)
-        } else {
-            String.format(Locale.getDefault(), "%.1f MB", sizeMb)
+    private fun showCreateFolderDialog() {
+        context?.let { ctx ->
+            val builder = androidx.appcompat.app.AlertDialog.Builder(ctx)
+            builder.setTitle("Create New Folder")
+
+            val input = android.widget.EditText(ctx)
+            input.inputType = android.text.InputType.TYPE_CLASS_TEXT
+            input.hint = "Folder Name"
+            val layout = android.widget.FrameLayout(ctx)
+            val params = android.widget.FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            params.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+            params.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+            input.layoutParams = params
+            layout.addView(input)
+            builder.setView(layout)
+
+
+            builder.setPositiveButton("Create") { dialog, _ ->
+                val folderName = input.text.toString().trim()
+                if (folderName.isNotEmpty()) {
+                    // TODO: Allow selecting parent folder. For now, create in root.
+                    val createdFolder = FileManager.createSubFolderInVault(folderName, null)
+                    if (createdFolder != null && createdFolder.exists()) {
+                        android.widget.Toast.makeText(ctx, "Folder created: $folderName", android.widget.Toast.LENGTH_SHORT).show()
+                        loadDashboardData() // Refresh dashboard
+                    } else {
+                        android.widget.Toast.makeText(ctx, "Failed to create folder. It may already exist or the name is invalid.", android.widget.Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    android.widget.Toast.makeText(ctx, "Folder name cannot be empty", android.widget.Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+            builder.show()
         }
     }
 
+
+    private fun formatSize(sizeBytes: Long): String {
+        val kb = sizeBytes / 1024.0
+        val mb = kb / 1024.0
+        val gb = mb / 1024.0
+
+        return when {
+            gb >= 1 -> String.format(Locale.getDefault(), "%.1f GB", gb)
+            mb >= 1 -> String.format(Locale.getDefault(), "%.1f MB", mb)
+            kb >= 1 -> String.format(Locale.getDefault(), "%.1f KB", kb)
+            else -> String.format(Locale.getDefault(), "%d Bytes", sizeBytes)
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

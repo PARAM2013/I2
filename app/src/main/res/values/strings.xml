@@ -46,6 +46,12 @@
     <string name="category_photos">Photos (%1$d Files, %2$s)</string>
     <string name="category_videos">Videos (%1$d Files, %2$s)</string>
     <string name="category_documents">Documents (%1$d Files, %2$s)</string>
+
+    <!-- Dynamic titles for dashboard categories -->
+    <string name="category_photos_title_dynamic">Photos (%1$d)</string>
+    <string name="category_videos_title_dynamic">Videos (%1$d)</string>
+    <string name="category_documents_title_dynamic">Documents (%1$d)</string>
+
     <string name="empty_vault_message">Your vault is empty. Tap (+) to add files.</string>
     <string name="file_restored_success">File restored to Downloads/SecureUnhide/</string>
     <string name="file_import_success">File imported successfully.</string>
