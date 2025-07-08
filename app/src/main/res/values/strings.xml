@@ -1,6 +1,78 @@
 <resources>
-    <string name="app_name">Secure</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="app_name">iSecure</string>
+    <string name="app_name_post_login">iSecure Vault</string> <!-- Or just iSecure if preferred -->
+    <!-- Remove or repurpose old titles -->
+    <!-- <string name="title_home">Home</string> -->
+    <!-- <string name="title_dashboard">Dashboard</string> -->
+    <!-- <string name="title_notifications">Notifications</string> -->
+
+    <string name="title_secure_dashboard">Secure Dashboard</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_pin_setup">Set PIN</string>
+    <string name="title_lock_screen">Unlock</string>
+
+    <!-- PIN related strings -->
+    <string name="prompt_enter_pin">Enter your 4-digit PIN</string>
+    <string name="prompt_set_pin">Set a 4-digit PIN</string>
+    <string name="prompt_confirm_pin">Confirm your 4-digit PIN</string>
+    <string name="error_pin_mismatch">PINs do not match. Try again.</string>
+    <string name="error_incorrect_pin">Incorrect PIN. Try again.</string>
+    <string name="error_pin_too_short">PIN must be 4 digits.</string>
+    <string name="pin_set_successfully">PIN set successfully.</string>
+    <string name="pin_changed_successfully">PIN changed successfully.</string>
+
+    <!-- Fingerprint/Biometric strings -->
+    <string name="prompt_fingerprint_title">Fingerprint Unlock</string>
+    <string name="prompt_fingerprint_subtitle">Log in using your biometric credential</string>
+    <string name="prompt_fingerprint_description">Place your finger on the sensor</string>
+    <string name="go_to_settings_to_enable_fingerprint">Go to settings to enable fingerprint unlock.</string>
+    <string name="fingerprint_dialog_negative_button_text">Use PIN</string>
+    <string name="biometric_auth_succeeded">Authentication succeeded!</string>
+    <string name="biometric_auth_failed">Authentication failed.</string>
+    <string name="biometric_auth_error_hw_not_available">Biometric hardware not available.</string>
+    <string name="biometric_auth_error_no_fingerprints">No fingerprints enrolled.</string>
+    <string name="biometric_auth_error_none_enrolled">No biometric credentials enrolled. Please add at least one to your device.</string>
+    <string name="biometric_auth_error_sdk_too_low">Biometric authentication not supported on this SDK version.</string>
+    <string name="biometric_auth_error_user_canceled">Authentication canceled by user.</string>
+    <string name="biometric_auth_error_lockout">Authentication locked out due to too many attempts. Try again later.</string>
+    <string name="biometric_auth_error_lockout_permanent">Authentication locked out permanently. Secure lock screen must be used.</string>
+    <string name="biometric_auth_error_prefix">Authentication error:</string>
+
+
+    <!-- File Management -->
+    <string name="fab_import_file">Import File</string>
+    <string name="fab_create_folder">Create Folder</string>
+    <string name="category_all_files">All Files (%1$d Folders, %2$s)</string>
+    <string name="category_photos">Photos (%1$d Files, %2$s)</string>
+    <string name="category_videos">Videos (%1$d Files, %2$s)</string>
+    <string name="category_documents">Documents (%1$d Files, %2$s)</string>
+    <string name="empty_vault_message">Your vault is empty. Tap (+) to add files.</string>
+    <string name="file_restored_success">File restored to Downloads/SecureUnhide/</string>
+    <string name="file_import_success">File imported successfully.</string>
+    <string name="file_delete_success">File deleted successfully.</string>
+    <string name="folder_create_success">Folder created successfully.</string>
+    <string name="dialog_create_folder_title">Create New Folder</string>
+    <string name="hint_folder_name">Folder Name</string>
+    <string name="button_create">Create</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="error_folder_name_empty">Folder name cannot be empty.</string>
+    <string name="error_folder_exists">A folder with this name already exists.</string>
+    <string name="confirm_delete_file_title">Confirm Delete</string>
+    <string name="confirm_delete_file_message">Are you sure you want to permanently delete this file from the vault?</string>
+    <string name="confirm_unhide_file_title">Confirm Restore</string>
+    <string name="confirm_unhide_file_message">Are you sure you want to restore this file? It will be moved to Downloads/SecureUnhide/.</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_unhide">Restore</string>
+    <string name="sharing_blocked_message">Only PDF or document sharing is allowed.</string>
+
+
+    <!-- Settings -->
+    <string name="settings_change_pin">Change App PIN</string>
+    <string name="settings_enable_fingerprint">Enable Fingerprint Unlock</string>
+    <string name="settings_disable_fingerprint">Disable Fingerprint Unlock</string>
+    <string name="settings_enable_metadata_removal">Remove Metadata on Import</string>
+    <string name="settings_disable_metadata_removal">Keep Metadata on Import</string>
+    <string name="settings_category_security">Security</string>
+    <string name="settings_category_general">General</string>
+
 </resources>
