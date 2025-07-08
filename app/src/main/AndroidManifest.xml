@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- For Android 11 (API 30) and above, MANAGE_EXTERNAL_STORAGE might be needed if Scoped Storage is not sufficient.
+         Requesting it broadly can lead to Play Store rejection.
+         Consider if truly necessary or if alternative APIs (like Storage Access Framework) can be used.
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    -->
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,16 +20,48 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Secure">
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
-            android:name=".MainActivity"
+            android:name=".LauncherActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.App.Starting"> <!-- Optional: Use a splash screen theme -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name_post_login" />
+            <!-- This is the main app activity after login, not exported -->
+
+        <activity
+            android:name=".ui.pin.PinSetupActivity"
+            android:label="@string/title_pin_setup"
+            android:theme="@style/Theme.Secure.NoActionBar" />
+            <!-- Using NoActionBar or a custom theme for full screen appearance -->
+
+        <activity
+            android:name=".ui.lockscreen.LockScreenActivity"
+            android:label="@string/title_lock_screen"
+            android:theme="@style/Theme.Secure.NoActionBar"
+            android:launchMode="singleTop" />
+            <!-- singleTop to prevent multiple lock screens -->
+
     </application>
 
 </manifest>

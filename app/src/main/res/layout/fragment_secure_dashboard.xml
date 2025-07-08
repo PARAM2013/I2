@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SecureDashboardFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
+
+    <!-- Category: All Files -->
+    <TextView
+        android:id="@+id/text_category_all_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="All Vault Content"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <TextView
+        android:id="@+id/text_category_all_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        tools:text="0 Folders, 0 Files, 0 MB"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintTop_toBottomOf="@id/text_category_all_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <!-- Category: Photos -->
+    <TextView
+        android:id="@+id/text_category_photos_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/category_photos"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toBottomOf="@id/text_category_all_details"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <TextView
+        android:id="@+id/text_category_photos_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        tools:text="0 Files, 0 MB"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintTop_toBottomOf="@id/text_category_photos_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <!-- Category: Videos -->
+    <TextView
+        android:id="@+id/text_category_videos_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/category_videos"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toBottomOf="@id/text_category_photos_details"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <TextView
+        android:id="@+id/text_category_videos_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        tools:text="0 Files, 0 MB"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintTop_toBottomOf="@id/text_category_videos_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <!-- Category: Documents -->
+    <TextView
+        android:id="@+id/text_category_documents_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/category_documents"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        app:layout_constraintTop_toBottomOf="@id/text_category_videos_details"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <TextView
+        android:id="@+id/text_category_documents_details"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        tools:text="0 Files, 0 MB"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+        app:layout_constraintTop_toBottomOf="@id/text_category_documents_title"
+        app:layout_constraintStart_toStartOf="@id/guideline_start"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"/>
+
+    <!-- RecyclerView for files will go below this, or this screen is just a summary
+         and clicking a category navigates to a file list.
+         For now, this is a summary dashboard. -->
+    <TextView
+        android:id="@+id/text_empty_vault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_vault_message"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/text_category_documents_details"
+        app:layout_constraintBottom_toTopOf="@id/fab_main"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.4"/>
+
+
+    <!-- FABs for actions -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_import_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_add_file"
+        app:backgroundTint="?attr/colorSecondary"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_main"
+        app:layout_constraintEnd_toEndOf="@id/fab_main"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:contentDescription="@string/fab_import_file" />
+
+    <TextView
+        android:id="@+id/fab_import_file_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fab_import_file"
+        android:background="@drawable/bg_fab_label"
+        android:paddingStart="8dp" android:paddingEnd="8dp"
+        android:paddingTop="4dp" android:paddingBottom="4dp"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/fab_import_file"
+        app:layout_constraintTop_toTopOf="@id/fab_import_file"
+        app:layout_constraintEnd_toStartOf="@id/fab_import_file"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_create_folder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_create_folder"
+        app:backgroundTint="?attr/colorSecondary"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_import_file"
+        app:layout_constraintEnd_toEndOf="@id/fab_import_file"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:contentDescription="@string/fab_create_folder" />
+
+    <TextView
+        android:id="@+id/fab_create_folder_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fab_create_folder"
+        android:background="@drawable/bg_fab_label"
+        android:paddingStart="8dp" android:paddingEnd="8dp"
+        android:paddingTop="4dp" android:paddingBottom="4dp"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/fab_create_folder"
+        app:layout_constraintTop_toTopOf="@id/fab_create_folder"
+        app:layout_constraintEnd_toStartOf="@id/fab_create_folder"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="?attr/colorPrimary"
+        app:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        android:contentDescription="Main FAB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
