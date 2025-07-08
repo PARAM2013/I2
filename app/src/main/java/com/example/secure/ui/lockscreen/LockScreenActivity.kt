@@ -13,6 +13,9 @@ import com.example.secure.AppGlobalState
 import com.example.secure.TrackedActivity
 import com.example.secure.auth.PinManager
 import com.example.secure.databinding.ActivityLockScreenBinding
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
 import com.example.secure.databinding.LayoutPinInputBinding
 import java.util.concurrent.Executor
 
@@ -42,6 +45,37 @@ class LockScreenActivity : TrackedActivity() {
         setupKeypad()
         updatePinDisplay()
         pinInputBinding.pinPromptTextview.text = getString(R.string.prompt_enter_pin)
+
+        // Request focus on the hidden EditText to bring up the keyboard
+        pinInputBinding.pinEditTextHidden.requestFocus()
+
+        // Set a click listener on the visible PIN display to bring up the keyboard
+        pinInputBinding.pinDisplayLayout.setOnClickListener {
+            pinInputBinding.pinEditTextHidden.requestFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(pinInputBinding.pinEditTextHidden, InputMethodManager.SHOW_IMPLICIT)
+        }
+
+        // Add TextWatcher to handle input from the soft keyboard
+        pinInputBinding.pinEditTextHidden.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Update enteredPin with the current content of the hidden EditText
+                enteredPin.clear()
+                if (s != null) {
+                    enteredPin.append(s.toString())
+                }
+                updatePinDisplay()
+                pinInputBinding.pinErrorTextview.visibility = View.GONE
+
+                if (enteredPin.length == 4) {
+                    verifyPin()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
 
         executor = ContextCompat.getMainExecutor(this)
