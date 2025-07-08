@@ -1,5 +1,6 @@
 package com.example.secure
 
+import androidx.appcompat.app.AppCompatActivity
 import java.util.Timer
 import java.util.TimerTask
 import android.os.Handler

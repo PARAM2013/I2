@@ -11,22 +11,8 @@ import com.example.secure.R
 import com.example.secure.databinding.FragmentSecureDashboardBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Locale
-
-class SecureDashboardFragment : Fragment() {
-
-    private var _binding: FragmentSecureDashboardBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSecureDashboardBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-import com.example.secure.file.FileManager // Import FileManager
-import java.io.File // For potential use with File objects if needed directly
+import com.example.secure.file.FileManager
+import java.io.File
 
 class SecureDashboardFragment : Fragment() {
 
@@ -160,10 +146,8 @@ class SecureDashboardFragment : Fragment() {
         // Show/hide empty vault message
         if (vaultStats.grandTotalFiles == 0 && vaultStats.grandTotalFolders == 0) {
             binding.textEmptyVault.visibility = View.VISIBLE
-            binding.categoriesScrollView.visibility = View.GONE // Hide categories if empty
         } else {
             binding.textEmptyVault.visibility = View.GONE
-            binding.categoriesScrollView.visibility = View.VISIBLE // Show categories
         }
     }
 

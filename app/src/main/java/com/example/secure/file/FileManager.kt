@@ -237,7 +237,7 @@ object FileManager {
     )
 
     fun getFileCategory(fileName: String): FileCategory {
-        val extension = fileName.substringAfterLast('.', "").toLowerCase()
+        val extension = fileName.substringAfterLast('.', "").lowercase()
         return when (extension) {
             "jpg", "jpeg", "png", "gif", "bmp", "webp" -> FileCategory.PHOTO
             "mp4", "mkv", "avi", "mov", "wmv", "flv" -> FileCategory.VIDEO
