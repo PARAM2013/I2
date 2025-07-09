@@ -74,6 +74,9 @@ dependencies {
     // Encrypted SharedPreferences for secure data storage
     implementation(libs.androidx.security.crypto)
 
+    // For EXIF data manipulation
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

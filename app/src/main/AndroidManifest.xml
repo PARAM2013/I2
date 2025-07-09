@@ -58,6 +58,26 @@
             android:launchMode="singleTop" />
             <!-- singleTop to prevent multiple lock screens -->
 
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Secure">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.settings.PinChangeActivity"
+            android:label="Change PIN"
+            android:parentActivityName=".ui.settings.SettingsActivity"
+            android:theme="@style/Theme.Secure">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.settings.SettingsActivity" />
+        </activity>
+
     </application>
 
 </manifest>

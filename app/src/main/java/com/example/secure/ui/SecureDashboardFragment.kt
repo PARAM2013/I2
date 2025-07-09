@@ -24,9 +24,16 @@ class SecureDashboardFragment : Fragment() {
 
     private val viewModel: SecureDashboardViewModel by viewModels()
 
-    private val importFileLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
-        uri?.let {
-            viewModel.importFile(it)
+    private val importFileLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetMultipleContents()) { uris: List<android.net.Uri>? ->
+        uris?.let {
+            if (it.isEmpty()) {
+                Log.d("SecureDashboardFragment", "No files selected for import.")
+                return@let
+            }
+            Log.d("SecureDashboardFragment", "Selected ${it.size} files for import.")
+            for (uri in it) {
+                viewModel.importFile(uri)
+            }
         }
     }
 

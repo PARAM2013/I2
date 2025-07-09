@@ -66,7 +66,8 @@ class MainActivity : TrackedActivity() {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     MainDashboardScreen(
                         onSettingsClick = {
-                            Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show()
+                            // Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, com.example.secure.ui.settings.SettingsActivity::class.java))
                         },
                         onImportFile = {
                             pickFileLauncher.launch("*/*")

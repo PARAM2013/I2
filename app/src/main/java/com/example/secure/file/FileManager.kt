@@ -10,6 +10,10 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import androidx.exifinterface.media.ExifInterface
+import com.example.secure.auth.PinManager
 
 object FileManager {
 
@@ -185,8 +189,7 @@ object FileManager {
             if (vaultFile.renameTo(destinationFile)) {
                 Log.d("FileManager", "Successfully unhidden ${vaultFile.name} via rename.")
                 // Optionally, trigger a media scan for the unhidden file so it appears in galleries etc.
-                // This is where 'context' would be useful.
-                // MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
+                android.media.MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
                 return destinationFile
             } else {
                 Log.w("FileManager", "Rename failed for ${vaultFile.name}, attempting copy and delete.")
@@ -195,7 +198,7 @@ object FileManager {
                 if (destinationFile.exists() && destinationFile.length() == vaultFile.length()) {
                     vaultFile.delete()
                     Log.d("FileManager", "Successfully unhidden ${vaultFile.name} via copy/delete.")
-                    // MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
+                    android.media.MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
                     return destinationFile
                 } else {
                     Log.e("FileManager", "Failed to move file to unhide directory after copy attempt: ${vaultFile.name}")
@@ -416,11 +419,79 @@ object FileManager {
 
         try {
             Log.d("FileManager", "importFile: Importing file from $sourceFileUri to ${destinationFile.absolutePath}")
-            contentResolver.openInputStream(sourceFileUri)?.use { inputStream ->
+
+            var tempFileToProcess: File? = null
+            var streamToDelete: InputStream? = null // Keep track of stream if temp file is used
+
+            if (PinManager.isMetadataRemovalEnabled(context) && (extension.equals("jpg", true) || extension.equals("jpeg", true) || extension.equals("png", true))) {
+                Log.d("FileManager", "Metadata removal enabled for $fileName")
+                try {
+                    // Copy to a temporary file to use with ExifInterface
+                    tempFileToProcess = File.createTempFile("metadata_strip_", ".${extension}", context.cacheDir)
+                    contentResolver.openInputStream(sourceFileUri)?.use { input ->
+                        FileOutputStream(tempFileToProcess).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    if (tempFileToProcess.exists() && tempFileToProcess.length() > 0) {
+                        Log.d("FileManager", "Copied to temp file for metadata stripping: ${tempFileToProcess.absolutePath}")
+                        val exifInterface = ExifInterface(tempFileToProcess.absolutePath)
+                        // Clear common tags. Add more as needed.
+                        exifInterface.setAttribute(ExifInterface.TAG_DATETIME, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_DATETIME_DIGITIZED, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_EXPOSURE_TIME, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_F_NUMBER, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_FLASH, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_FOCAL_LENGTH, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_ALTITUDE, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_ISO_SPEED_RATINGS, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_MAKE, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_MODEL, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_SOFTWARE, null)
+                        // For PNG, some specific chunks might need different handling,
+                        // but ExifInterface has some support.
+                        // Add any other specific tags you want to remove.
+
+                        exifInterface.saveAttributes() // This saves changes to the tempFileToProcess
+                        Log.d("FileManager", "Metadata stripped from temp file.")
+                        streamToDelete = tempFileToProcess.inputStream()
+                    } else {
+                        Log.w("FileManager", "Temp file for metadata stripping is empty or does not exist.")
+                        // Fallback to original stream if temp file creation failed
+                        streamToDelete = contentResolver.openInputStream(sourceFileUri)
+                    }
+                } catch (e: Exception) {
+                    Log.e("FileManager", "Error during metadata stripping for $fileName, falling back to original.", e)
+                    // Fallback to original stream on error
+                    streamToDelete = contentResolver.openInputStream(sourceFileUri)
+                    tempFileToProcess?.delete() // Clean up if partially created
+                    tempFileToProcess = null
+                }
+            } else {
+                // No metadata stripping, use original stream
+                streamToDelete = contentResolver.openInputStream(sourceFileUri)
+            }
+
+            streamToDelete?.use { inputStream ->
                 destinationFile.outputStream().use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
-            } ?: run { Log.e("FileManager", "importFile: Failed to open input stream for URI: $sourceFileUri"); return null } // Failed to open input stream
+            } ?: run { Log.e("FileManager", "importFile: Failed to open input stream for URI: $sourceFileUri"); tempFileToProcess?.delete(); return null }
+
+            tempFileToProcess?.delete() // Clean up the temp file if it was used
 
             Log.d("FileManager", "importFile: File copied successfully to ${destinationFile.absolutePath}")
 

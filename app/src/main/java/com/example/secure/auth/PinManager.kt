@@ -12,6 +12,7 @@ object PinManager {
     private const val PIN_KEY = "app_pin_hash" // Changed to store hash
     private const val SALT_KEY = "app_pin_salt" // Key for storing the salt
     private const val FINGERPRINT_ENABLED_KEY = "fingerprint_enabled"
+    private const val METADATA_REMOVAL_ENABLED_KEY = "metadata_removal_enabled" // New key
     private const val ITERATION_COUNT = 10000
     private const val KEY_LENGTH = 256
 
@@ -80,6 +81,17 @@ object PinManager {
         // Default to false if not explicitly set, but also check if a PIN is set,
         // as fingerprint usually relies on a PIN as a backup.
         return isPinSet(context) && getPreferences(context).getBoolean(FINGERPRINT_ENABLED_KEY, false)
+    }
+
+    // Metadata removal preference
+    fun setMetadataRemovalEnabled(context: Context, enabled: Boolean) {
+        val editor = getPreferences(context).edit()
+        editor.putBoolean(METADATA_REMOVAL_ENABLED_KEY, enabled)
+        editor.apply()
+    }
+
+    fun isMetadataRemovalEnabled(context: Context): Boolean {
+        return getPreferences(context).getBoolean(METADATA_REMOVAL_ENABLED_KEY, false) // Default to false
     }
 
     // Helper functions for hex conversion

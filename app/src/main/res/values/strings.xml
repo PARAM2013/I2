@@ -14,6 +14,8 @@
     <!-- PIN related strings -->
     <string name="prompt_enter_pin">Enter your 4-digit PIN</string>
     <string name="prompt_set_pin">Set a 4-digit PIN</string>
+    <string name="prompt_enter_current_pin">Enter your current 4-digit PIN</string>
+    <string name="prompt_enter_new_pin">Enter a new 4-digit PIN</string>
     <string name="prompt_confirm_pin">Confirm your 4-digit PIN</string>
     <string name="error_pin_mismatch">PINs do not match. Try again.</string>
     <string name="error_incorrect_pin">Incorrect PIN. Try again.</string>
