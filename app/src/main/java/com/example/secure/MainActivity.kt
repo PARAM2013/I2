@@ -10,7 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.secure.databinding.ActivityMainBinding
 import com.example.secure.file.FileManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -18,31 +17,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import com.example.secure.ui.theme.ISecureTheme // Import the custom theme
+import com.example.secure.ui.dashboard.MainDashboardScreen // Import the new dashboard screen
+import com.example.secure.ui.dashboard.MainDashboardViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : TrackedActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    // private lateinit var binding: ActivityMainBinding // No longer needed with Compose
+    // private lateinit var appBarConfiguration: AppBarConfiguration // No longer needed with Compose
 
     private lateinit var manageStoragePermissionLauncher: ActivityResultLauncher<Intent>
-
-    // Auto-lock timer related variables
-    // companion object {
-    //     const val INACTIVITY_TIMEOUT_MS = 90000L // 90 seconds
-    // }
-    // private var lastInteractionTime: Long = 0L
-    // private val inactivityHandler = android.os.Handler(android.os.Looper.getMainLooper())
-    // private val inactivityRunnable = Runnable {
-    //     // Lock the app: navigate to LockScreenActivity
-    //     // You'll need a flag or state management to know the app is locked
-    //     // For now, just log or show a toast
-    //     // Log.d("MainActivity", "Inactivity timeout reached, should lock app.")
-    //     // val intent = Intent(this, LockScreenActivity::class.java)
-    //     // intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    //     // startActivity(intent)
-    //     // finish() // Close MainActivity
-    // }
-
+    private lateinit var pickFileLauncher: ActivityResultLauncher<String>
+    private lateinit var dashboardViewModel: MainDashboardViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Handle the splash screen transition.
@@ -63,11 +53,41 @@ class MainActivity : TrackedActivity() {
             }
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        pickFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let { selectedUri ->
+                dashboardViewModel.importFile(selectedUri)
+            }
+        }
 
-        
+        setContent {
+            dashboardViewModel = viewModel()
+            ISecureTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    MainDashboardScreen(
+                        onSettingsClick = {
+                            Toast.makeText(this, "Settings Clicked", Toast.LENGTH_SHORT).show()
+                        },
+                        onImportFile = {
+                            pickFileLauncher.launch("*/*")
+                        },
+                        onImportFolder = {
+                            Toast.makeText(this, "Import Folder Clicked (TODO)", Toast.LENGTH_SHORT).show()
+                            // TODO: Implement folder picker
+                        },
+                        onCreateFolder = {
+                            // This will require a dialog to get the folder name
+                            Toast.makeText(this, "Create Folder Clicked (TODO)", Toast.LENGTH_SHORT).show()
+                            // For now, let's just create a dummy folder
+                            dashboardViewModel.createFolder("New Folder " + System.currentTimeMillis())
+                        },
+                        viewModel = dashboardViewModel
+                    )
+                }
+            }
+        }
 
+        // Commenting out existing navigation setup as we are using Compose setContent directly for the dashboard
+        /*
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
@@ -75,6 +95,7 @@ class MainActivity : TrackedActivity() {
             setOf(R.id.navigation_secure_dashboard) // Top-level destination
             // drawerLayout = binding.drawerLayout // If you add a DrawerLayout
         )
+        */
 
         // Initialize last interaction time for auto-lock is now handled by TrackedActivity
 
@@ -161,8 +182,14 @@ class MainActivity : TrackedActivity() {
 
 
     override fun onSupportNavigateUp(): Boolean {
+        // This method is part of the old navigation component setup.
+        // If you fully transition to Compose Navigation, this will be removed.
+        // For now, it's commented out as the primary UI is Compose.
+        /*
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        */
+        return super.onSupportNavigateUp()
     }
 
 }
