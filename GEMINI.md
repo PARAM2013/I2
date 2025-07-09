@@ -23,7 +23,7 @@ This document provides a comprehensive overview of the "iSecure" Android applica
 *   **Security & Permissions:**
     *   **Runtime Permissions:** The application handles necessary Android runtime permissions, including `MANAGE_EXTERNAL_STORAGE` for Android 11 (API 30) and above, to ensure proper file access.
     *   **Inactivity Lock:** An automatic inactivity timer (90 seconds) is implemented to lock the application if it remains idle in the foreground, enhancing security.
-    *   **PIN Security (Improvement Needed):** The current PIN storage is a simple string in SharedPreferences and requires hashing for production-grade security.
+    *   **PIN Security:** PINs are now securely hashed using PBKDF2WithHmacSHA1 and a unique salt for each PIN, enhancing security.
 
 ## Technical Architecture
 
@@ -59,10 +59,6 @@ The application follows a structured approach, leveraging standard Android compo
 *   **`SecureDashboardFragment.kt`**: A fragment that displays the vault's contents. It uses a `ViewModel` (`SecureDashboardViewModel`) to interact with the `FileManager` and update the UI.
 *   **`MainDashboardScreen.kt`**: A Jetpack Compose screen that displays the main dashboard UI.
 
-## Potential Areas for Improvement
 
-*   **PIN Hashing:** Implement robust hashing for stored PINs to enhance security.
-*   **File Encryption:** Add encryption for files stored within the vault for an additional layer of security.
-*   **Error Handling:** Enhance error handling and user feedback for file operations and permission issues.
-*   **UI/UX Refinements:** Further refine the user interface and experience, especially for file preview/opening and long-press actions.
-*   **Unit/Integration Tests:** Implement comprehensive unit and integration tests to ensure the reliability and correctness of core functionalities.
+## Run build command after code update
+## Update this file after major changes in project , code etc  

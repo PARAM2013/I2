@@ -37,11 +37,11 @@ class MainActivity : TrackedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Handle the splash screen transition.
         // This should be called before super.onCreate()
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
 
         super.onCreate(savedInstanceState)
 
-        manageStoragePermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        manageStoragePermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
@@ -75,10 +75,8 @@ class MainActivity : TrackedActivity() {
                             Toast.makeText(this, "Import Folder Clicked (TODO)", Toast.LENGTH_SHORT).show()
                             // TODO: Implement folder picker
                         },
-                        onCreateFolder = {
-                            // This action is handled by SecureDashboardFragment's dialog.
-                            // We can optionally show a toast here if this is unexpectedly triggered.
-                            Toast.makeText(this, "Create Folder action triggered (handled by Fragment)", Toast.LENGTH_SHORT).show()
+                        onCreateFolder = { folderName ->
+                            dashboardViewModel.createFolder(folderName)
                         },
                         viewModel = dashboardViewModel
                     )

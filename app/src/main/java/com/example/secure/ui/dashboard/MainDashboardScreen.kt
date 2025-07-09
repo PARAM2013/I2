@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,13 +27,24 @@ import com.example.secure.ui.dashboard.FileType
 @Composable
 fun MainDashboardScreen(
     onSettingsClick: () -> Unit,
-    onImportFile: (Uri) -> Unit,
+    onImportFile: () -> Unit,
     onImportFolder: () -> Unit,
     onCreateFolder: (String) -> Unit,
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     var isGridView by remember { mutableStateOf(false) }
     val vaultFiles by viewModel.vaultFiles.collectAsState()
+    var showCreateFolderDialog by remember { mutableStateOf(false) }
+
+    if (showCreateFolderDialog) {
+        CreateFolderDialog(
+            onConfirm = { folderName ->
+                onCreateFolder(folderName)
+                showCreateFolderDialog = false
+            },
+            onDismiss = { showCreateFolderDialog = false }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -41,7 +53,7 @@ fun MainDashboardScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.ViewModule,
+                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Default.ViewModule,
                             contentDescription = if (isGridView) "Switch to List View" else "Switch to Grid View"
                         )
                     }
@@ -53,9 +65,9 @@ fun MainDashboardScreen(
         },
         floatingActionButton = {
             MultiDirectionalFab(
-                onImportFile = { /* TODO: Implement file picker and pass URI */ },
+                onImportFile = onImportFile,
                 onImportFolder = onImportFolder,
-                onCreateFolder = onCreateFolder
+                onCreateFolder = { showCreateFolderDialog = true }
             )
         }
     ) { paddingValues ->
@@ -135,7 +147,7 @@ fun EmptyVaultState(modifier: Modifier = Modifier) {
 fun MultiDirectionalFab(
     onImportFile: () -> Unit,
     onImportFolder: () -> Unit,
-    onCreateFolder: (String) -> Unit
+    onCreateFolder: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
@@ -145,7 +157,7 @@ fun MultiDirectionalFab(
 
     Column(horizontalAlignment = Alignment.End) {
         if (expanded) {
-            SmallFabItem(text = "Create Folder", icon = Icons.Default.CreateNewFolder) { onCreateFolder("New Folder"); expanded = false } // Pass a default name for now
+            SmallFabItem(text = "Create Folder", icon = Icons.Default.CreateNewFolder) { onCreateFolder(); expanded = false }
             Spacer(modifier = Modifier.height(8.dp))
             SmallFabItem(text = "Import Folder", icon = Icons.Default.FolderOpen) { onImportFolder(); expanded = false }
             Spacer(modifier = Modifier.height(8.dp))
@@ -160,6 +172,37 @@ fun MultiDirectionalFab(
             )
         }
     }
+}
+
+@Composable
+fun CreateFolderDialog(onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
+    var folderName by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Create New Folder") },
+        text = {
+            OutlinedTextField(
+                value = folderName,
+                onValueChange = { folderName = it },
+                label = { Text("Folder Name") },
+                singleLine = true
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(folderName) },
+                enabled = folderName.isNotBlank()
+            ) {
+                Text("Create")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable
@@ -180,9 +223,9 @@ fun MainDashboardScreenPreview() {
     MaterialTheme {
         MainDashboardScreen(
             onSettingsClick = {},
-            onImportFile = { _ -> },
+            onImportFile = {},
             onImportFolder = {},
-            onCreateFolder = { _ -> }
+            onCreateFolder = {}
         )
     }
 }
@@ -202,7 +245,7 @@ fun MultiDirectionalFabPreview() {
         MultiDirectionalFab(
             onImportFile = {},
             onImportFolder = {},
-            onCreateFolder = { _ -> }
+            onCreateFolder = {}
         )
     }
 }

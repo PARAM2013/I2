@@ -264,9 +264,6 @@ object FileManager {
         fun processDirectory(currentDir: File, parentFolderStat: VaultFolder?) {
             val items = currentDir.listFiles() ?: return
 
-            
-
-
             for (item in items) {
                 if (item.isDirectory) {
                     stats.grandTotalFolders++
@@ -282,9 +279,6 @@ object FileManager {
                     if (parentFolderStat != null) {
                         parentFolderStat.totalFiles += folderStat.totalFiles
                         parentFolderStat.totalSize += folderStat.totalSize
-                    } else {
-                        // For top-level folders, their own totalFiles and totalSize are calculated within processDirectory
-                        // The grand total for files and size is accumulated directly from files discovered at any level
                     }
                 } else { // It's a file
                     val category = getFileCategory(item.name)
