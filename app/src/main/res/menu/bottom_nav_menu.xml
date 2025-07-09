@@ -4,11 +4,4 @@
 
     <!-- This menu is currently not used by a BottomNavigationView. -->
     <!-- It can be repurposed for an OptionsMenu (e.g., in a Toolbar) if needed. -->
-    <!-- Example for a Settings action item:
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings" <!- Add ic_settings.xml to res/drawable -->
-        android:title="@string/title_settings"
-        app:showAsAction="ifRoom" />
-    -->
 </menu>

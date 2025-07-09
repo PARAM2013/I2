@@ -220,6 +220,7 @@ class LockScreenActivity : TrackedActivity() {
 
     // Prevent going back to PinSetupActivity or other unprotected states
     @Deprecated("This method is deprecated in favor of using the OnBackPressedDispatcher to handle back button events.")
+    @Suppress("MissingSuperCall", "GestureBackNavigation")
     override fun onBackPressed() {
         // To prevent bypassing the lock screen, typically you'd minimize the app
         // or finish the activity stack if it's the root.
