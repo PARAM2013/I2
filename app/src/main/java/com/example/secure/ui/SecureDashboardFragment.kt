@@ -1,42 +1,34 @@
 package com.example.secure.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.secure.R
 import com.example.secure.databinding.FragmentSecureDashboardBinding
+import com.example.secure.file.FileManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Locale
-import com.example.secure.file.FileManager
-import java.io.File
-import android.util.Log
 
 class SecureDashboardFragment : Fragment() {
 
     private var _binding: FragmentSecureDashboardBinding? = null
     private val binding get() = _binding!!
 
-    // Define ActivityResultLauncher for file import and folder creation
+    private val viewModel: SecureDashboardViewModel by viewModels()
+
     private val importFileLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetContent()) { uri: android.net.Uri? ->
         uri?.let {
-            // Handle the selected file URI
-            context?.let { ctx ->
-                // TODO: Potentially ask user for target folder within vault, for now import to root
-                val importedFile = FileManager.importFile(it, ctx, null, true)
-                if (importedFile != null) {
-                    android.widget.Toast.makeText(ctx, "File imported: ${importedFile.name}", android.widget.Toast.LENGTH_SHORT).show()
-                    loadDashboardData() // Refresh dashboard
-                } else {
-                    android.widget.Toast.makeText(ctx, "Failed to import file. Check logs for details.", android.widget.Toast.LENGTH_LONG).show()
-                }
-            }
+            viewModel.importFile(it)
         }
     }
-    // No specific launcher for create folder as we'll use a dialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,8 +41,66 @@ class SecureDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFABs()
-        loadDashboardData() // Load actual data
+        observeViewModel()
+        viewModel.loadDashboardData() // Initial data load
     }
+
+    private fun observeViewModel() {
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
+            // Handle loading state (e.g., show/hide progress bar)
+            binding.progressBar.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+
+            state.stats?.let { vaultStats ->
+                updateDashboardUI(vaultStats)
+            }
+
+            state.fileOperationResult?.let { message ->
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                viewModel.clearFileOperationResult() // Clear after showing
+            }
+
+            state.error?.let { errorMessage ->
+                Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
+                Log.e("SecureDashboardFragment", "Error from ViewModel: $errorMessage")
+                viewModel.clearError() // Clear after showing
+                 // Optionally, update UI to show a persistent error message
+            }
+        }
+    }
+
+    private fun updateDashboardUI(vaultStats: FileManager.VaultStats) {
+        binding.textCategoryAllDetails.text = String.format(Locale.getDefault(),
+            "%d Folders, %d Files, %s",
+            vaultStats.grandTotalFolders,
+            vaultStats.grandTotalFiles,
+            formatSize(vaultStats.grandTotalSize)
+        )
+        binding.textCategoryPhotosTitle.text = getString(R.string.category_photos_title_dynamic, vaultStats.totalPhotoFiles)
+        binding.textCategoryPhotosDetails.text = String.format(Locale.getDefault(),
+            "%d Files, %s",
+            vaultStats.totalPhotoFiles,
+            formatSize(vaultStats.totalPhotoSize)
+        )
+        binding.textCategoryVideosTitle.text = getString(R.string.category_videos_title_dynamic, vaultStats.totalVideoFiles)
+        binding.textCategoryVideosDetails.text = String.format(Locale.getDefault(),
+            "%d Files, %s",
+            vaultStats.totalVideoFiles,
+            formatSize(vaultStats.totalVideoSize)
+        )
+        binding.textCategoryDocumentsTitle.text = getString(R.string.category_documents_title_dynamic, vaultStats.totalDocumentFiles)
+        binding.textCategoryDocumentsDetails.text = String.format(Locale.getDefault(),
+            "%d Files, %s",
+            vaultStats.totalDocumentFiles,
+            formatSize(vaultStats.totalDocumentSize)
+        )
+
+        binding.textEmptyVault.visibility = if (vaultStats.grandTotalFiles == 0 && vaultStats.grandTotalFolders == 0) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
 
     private fun setupFABs() {
         val fabMain: FloatingActionButton = binding.fabMain
@@ -59,10 +109,13 @@ class SecureDashboardFragment : Fragment() {
         val fabImportFileLabel: View = binding.fabImportFileLabel
         val fabCreateFolderLabel: View = binding.fabCreateFolderLabel
 
-        val fabOpen: Animation = AnimationUtils.loadAnimation(context, R.anim.fab_open)
-        val fabClose: Animation = AnimationUtils.loadAnimation(context, R.anim.fab_close)
-        val rotateForward: Animation = AnimationUtils.loadAnimation(context, R.anim.rotate_forward)
-        val rotateBackward: Animation = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
+        // Ensure context is available for AnimationUtils
+        val currentContext = context ?: return
+
+        val fabOpen: Animation = AnimationUtils.loadAnimation(currentContext, R.anim.fab_open)
+        val fabClose: Animation = AnimationUtils.loadAnimation(currentContext, R.anim.fab_close)
+        val rotateForward: Animation = AnimationUtils.loadAnimation(currentContext, R.anim.rotate_forward)
+        val rotateBackward: Animation = AnimationUtils.loadAnimation(currentContext, R.anim.rotate_backward)
 
         var isFabMenuOpen = false
 
@@ -103,59 +156,15 @@ class SecureDashboardFragment : Fragment() {
         fabCreateFolder.setOnClickListener {
             Log.d("SecureDashboardFragment", "Create Folder FAB clicked!")
             showCreateFolderDialog()
-            // if (isFabMenuOpen) fabMain.performClick() // Close FAB menu - Removed as it might close dialog prematurely
-        }
-    }
-
-    private fun loadDashboardData() {
-        // Ensure context is not null, though less likely here than in a callback
-        context ?: return
-
-        val vaultStats = FileManager.listFilesInVault()
-
-        // Update "All Files" category
-        binding.textCategoryAllDetails.text = String.format(Locale.getDefault(),
-            "%d Folders, %d Files, %s",
-            vaultStats.grandTotalFolders,
-            vaultStats.grandTotalFiles,
-            formatSize(vaultStats.grandTotalSize)
-        )
-
-        // Update "Photos" category
-        binding.textCategoryPhotosTitle.text = getString(R.string.category_photos_title_dynamic, vaultStats.totalPhotoFiles)
-        binding.textCategoryPhotosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalPhotoFiles,
-            formatSize(vaultStats.totalPhotoSize)
-        )
-
-        // Update "Videos" category
-        binding.textCategoryVideosTitle.text = getString(R.string.category_videos_title_dynamic, vaultStats.totalVideoFiles)
-        binding.textCategoryVideosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalVideoFiles,
-            formatSize(vaultStats.totalVideoSize)
-        )
-
-        // Update "Documents" category
-        binding.textCategoryDocumentsTitle.text = getString(R.string.category_documents_title_dynamic, vaultStats.totalDocumentFiles)
-        binding.textCategoryDocumentsDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalDocumentFiles,
-            formatSize(vaultStats.totalDocumentSize)
-        )
-
-        // Show/hide empty vault message
-        if (vaultStats.grandTotalFiles == 0 && vaultStats.grandTotalFolders == 0) {
-            binding.textEmptyVault.visibility = View.VISIBLE
-        } else {
-            binding.textEmptyVault.visibility = View.GONE
+             // Closing menu here could be abrupt if dialog is interaction based.
+            // Consider closing it after dialog dismisses or based on dialog interaction.
+            // if (isFabMenuOpen) fabMain.performClick()
         }
     }
 
     private fun showCreateFolderDialog() {
         context?.let { ctx ->
-            val builder = androidx.appcompat.app.AlertDialog.Builder(ctx)
+            val builder = AlertDialog.Builder(ctx)
             builder.setTitle("Create New Folder")
 
             val input = android.widget.EditText(ctx)
@@ -166,35 +175,33 @@ class SecureDashboardFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            params.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
-            params.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+            // It's good practice to use resources for margins if available
+            val margin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
+            params.leftMargin = margin
+            params.rightMargin = margin
             input.layoutParams = params
             layout.addView(input)
             builder.setView(layout)
-
 
             builder.setPositiveButton("Create") { dialog, _ ->
                 val folderName = input.text.toString().trim()
                 Log.d("SecureDashboardFragment", "Attempting to create folder with name: '$folderName'")
                 if (folderName.isNotEmpty()) {
-                    // TODO: Allow selecting parent folder. For now, create in root.
-                    val createdFolder = FileManager.createSubFolderInVault(folderName, null)
-                    if (createdFolder != null && createdFolder.exists()) {
-                        android.widget.Toast.makeText(ctx, "Folder created: $folderName", android.widget.Toast.LENGTH_SHORT).show()
-                        loadDashboardData() // Refresh dashboard
-                    } else {
-                        android.widget.Toast.makeText(ctx, "Failed to create folder. Check logs for details.", android.widget.Toast.LENGTH_LONG).show()
-                    }
+                    viewModel.createFolder(folderName)
                 } else {
-                    android.widget.Toast.makeText(ctx, "Folder name cannot be empty", android.widget.Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, "Folder name cannot be empty", Toast.LENGTH_SHORT).show()
                 }
+                // Consider if fab menu should be closed here
+                // if (binding.fabMain.isExtended) binding.fabMain.performClick()
                 dialog.dismiss()
             }
-            builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                // if (binding.fabMain.isExtended) binding.fabMain.performClick() // Close if cancelling too
+                dialog.cancel()
+            }
             builder.show()
         }
     }
-
 
     private fun formatSize(sizeBytes: Long): String {
         val kb = sizeBytes / 1024.0
