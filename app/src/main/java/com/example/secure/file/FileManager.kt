@@ -260,65 +260,49 @@ object FileManager {
 
     fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
         val stats = VaultStats()
+        val items = directory.listFiles() ?: return stats // Return empty stats if directory is not listable
 
-        fun processDirectory(currentDir: File, parentFolderStat: VaultFolder?) {
-            val items = currentDir.listFiles() ?: return
+        for (item in items) {
+            if (item.isDirectory) {
+                stats.grandTotalFolders++ // Counts as one folder in the current listing
+                val folderStat = VaultFolder(folder = item, totalFiles = 0, totalSize = 0) // Initialize with 0, not recursive content
+                // We list immediate children, so subFolders and files within this VaultFolder are not populated here.
+                // The UI will navigate into it and call listFilesInVault again for that sub-folder.
+                stats.allFolders.add(folderStat)
+            } else { // It's a file
+                val category = getFileCategory(item.name)
+                val size = item.length()
+                val vaultFile = VaultFile(item, category, size)
 
-            for (item in items) {
-                if (item.isDirectory) {
-                    stats.grandTotalFolders++
-                    val folderStat = VaultFolder(item)
-                    if (parentFolderStat == null) { // Root level folder
-                        stats.allFolders.add(folderStat)
-                    } else {
-                        parentFolderStat.subFolders.add(folderStat)
+                stats.allFiles.add(vaultFile) // Add to list of files in current directory
+                stats.grandTotalFiles++
+                stats.grandTotalSize += size
+
+                // Update category-specific stats for the current directory's content
+                when (category) {
+                    FileCategory.PHOTO -> {
+                        stats.totalPhotoFiles++
+                        stats.totalPhotoSize += size
                     }
-                    processDirectory(item, folderStat) // Recurse for subdirectories
-
-                    // Accumulate file counts and sizes from subdirectories into their direct parent
-                    if (parentFolderStat != null) {
-                        parentFolderStat.totalFiles += folderStat.totalFiles
-                        parentFolderStat.totalSize += folderStat.totalSize
+                    FileCategory.VIDEO -> {
+                        stats.totalVideoFiles++
+                        stats.totalVideoSize += size
                     }
-                } else { // It's a file
-                    val category = getFileCategory(item.name)
-                    val size = item.length()
-                    val vaultFile = VaultFile(item, category, size)
-
-                    stats.allFiles.add(vaultFile) // Add to flat list of all files
-                    stats.grandTotalFiles++
-                    stats.grandTotalSize += size
-
-                    if (parentFolderStat != null) {
-                        parentFolderStat.files.add(vaultFile)
-                        parentFolderStat.totalFiles++
-                        parentFolderStat.totalSize += size
+                    FileCategory.DOCUMENT -> {
+                        stats.totalDocumentFiles++
+                        stats.totalDocumentSize += size
                     }
-                    // If parentFolderStat is null, it means the file is in the root of the scanned directory.
-                    // These files contribute to grandTotalFiles and grandTotalSize directly.
-
-                    when (category) {
-                        FileCategory.PHOTO -> {
-                            stats.totalPhotoFiles++
-                            stats.totalPhotoSize += size
-                        }
-                        FileCategory.VIDEO -> {
-                            stats.totalVideoFiles++
-                            stats.totalVideoSize += size
-                        }
-                        FileCategory.DOCUMENT -> {
-                            stats.totalDocumentFiles++
-                            stats.totalDocumentSize += size
-                        }
-                        FileCategory.OTHER -> {
-                            stats.totalOtherFiles++
-                            stats.totalOtherSize += size
-                        }
+                    FileCategory.OTHER -> {
+                        stats.totalOtherFiles++
+                        stats.totalOtherSize += size
                     }
                 }
             }
         }
-        processDirectory(directory, null)
+        // Sort folders and files by name for consistent listing (optional, can also be done in ViewModel)
+        stats.allFolders.sortBy { it.folder.name }
+        stats.allFiles.sortBy { it.file.name }
+
         return stats
     }
 

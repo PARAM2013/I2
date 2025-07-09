@@ -2,12 +2,14 @@ package com.example.secure.ui.dashboard
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -15,31 +17,39 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import android.net.Uri
-import com.example.secure.ui.dashboard.VaultFile
-import com.example.secure.ui.dashboard.FileType
+// import android.net.Uri // Not directly used here, but MainDashboardViewModel uses it.
+// import com.example.secure.ui.dashboard.VaultFile // Already implicitly used via viewModel
+// import com.example.secure.ui.dashboard.FileType // Already implicitly used via viewModel
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainDashboardScreen(
     onSettingsClick: () -> Unit,
     onImportFile: () -> Unit,
-    onImportFolder: () -> Unit,
-    onCreateFolder: (String) -> Unit,
+    onImportFolder: () -> Unit, // Keep for FAB, though full implementation might be complex
+    onCreateFolder: (String) -> Unit, // Used by FAB -> Dialog -> ViewModel
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     var isGridView by remember { mutableStateOf(false) }
     val vaultFiles by viewModel.vaultFiles.collectAsState()
+    val currentPath by viewModel.currentPath.collectAsState()
     var showCreateFolderDialog by remember { mutableStateOf(false) }
+
+    // Handle system back button for navigation
+    BackHandler(enabled = currentPath.isNotEmpty()) {
+        viewModel.navigateUp()
+    }
 
     if (showCreateFolderDialog) {
         CreateFolderDialog(
             onConfirm = { folderName ->
-                onCreateFolder(folderName)
+                viewModel.createFolder(folderName) // Call ViewModel directly
                 showCreateFolderDialog = false
             },
             onDismiss = { showCreateFolderDialog = false }
@@ -49,7 +59,23 @@ fun MainDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("iSecure") },
+                title = {
+                    Text(
+                        text = if (currentPath.isEmpty()) "iSecure" else "iSecure / ${currentPath.replace(File.separatorChar, '/')}",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    if (currentPath.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Navigate Up"
+                            )
+                        }
+                    }
+                },
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
@@ -66,7 +92,7 @@ fun MainDashboardScreen(
         floatingActionButton = {
             MultiDirectionalFab(
                 onImportFile = onImportFile,
-                onImportFolder = onImportFolder,
+                onImportFolder = onImportFolder, // This still calls the MainActivity lambda
                 onCreateFolder = { showCreateFolderDialog = true }
             )
         }
@@ -74,6 +100,17 @@ fun MainDashboardScreen(
         if (vaultFiles.isEmpty()) {
             EmptyVaultState(modifier = Modifier.padding(paddingValues))
         } else {
+            val fileClickHandler: (VaultFile) -> Unit = { file ->
+                if (file.isFolder) {
+                    viewModel.navigateTo(file.name)
+                } else {
+                    // TODO: Handle actual file click (e.g., open, view details)
+                    // For now, perhaps a Toast or log
+                    // Toast.makeText(context, "Clicked on file: ${file.name}", Toast.LENGTH_SHORT).show()
+                    println("Clicked on file: ${file.name}")
+                }
+            }
+
             if (isGridView) {
                 LazyVerticalGrid(
                     columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(2),
@@ -84,13 +121,13 @@ fun MainDashboardScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(vaultFiles) { file ->
+                    items(vaultFiles, key = { it.name + it.isFolder }) { file -> // Added key for stability
                         FileListItem(
                             file = file,
                             isGridView = true,
-                            onFileClick = { /* TODO: Handle file click */ },
+                            onFileClick = fileClickHandler,
                             onFileLongClick = { /* TODO: Handle file long click */ },
-                            onView = { /* TODO: Handle view */ },
+                            onView = { /* TODO: Handle view action */ },
                             onUnhide = { viewModel.unhideFile(it) },
                             onDelete = { viewModel.deleteFile(it) }
                         )
@@ -104,13 +141,13 @@ fun MainDashboardScreen(
                     contentPadding = PaddingValues(8.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    items(vaultFiles) { file ->
+                    items(vaultFiles, key = { it.name + it.isFolder }) { file -> // Added key for stability
                         FileListItem(
                             file = file,
                             isGridView = false,
-                            onFileClick = { /* TODO: Handle file click */ },
+                            onFileClick = fileClickHandler,
                             onFileLongClick = { /* TODO: Handle file long click */ },
-                            onView = { /* TODO: Handle view */ },
+                            onView = { /* TODO: Handle view action */ },
                             onUnhide = { viewModel.unhideFile(it) },
                             onDelete = { viewModel.deleteFile(it) }
                         )
