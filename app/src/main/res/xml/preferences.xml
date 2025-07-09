@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:key="category_security"
+        android:key="category_security"
         app:title="Security">
 
         <Preference
-            app:key="key_change_pin"
+            android:key="key_change_pin"
             app:title="Change App PIN"
             app:summary="Update your application access PIN." />
 
         <SwitchPreferenceCompat
-            app:key="key_fingerprint_unlock"
+            android:key="key_fingerprint_unlock"
             app:title="Fingerprint Unlock"
             app:summary="Enable or disable unlocking the app with your fingerprint."
             app:defaultValue="false" />
@@ -19,11 +20,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:key="category_file_management"
+        android:key="category_file_management"
         app:title="File Management">
 
         <SwitchPreferenceCompat
-            app:key="key_metadata_removal"
+            android:key="key_metadata_removal"
             app:title="Remove Metadata on Import"
             app:summary="Automatically remove EXIF and other metadata from files upon import."
             app:defaultValue="false" />
