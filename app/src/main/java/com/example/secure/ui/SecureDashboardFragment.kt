@@ -13,6 +13,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Locale
 import com.example.secure.file.FileManager
 import java.io.File
+import android.util.Log
 
 class SecureDashboardFragment : Fragment() {
 
@@ -30,7 +31,7 @@ class SecureDashboardFragment : Fragment() {
                     android.widget.Toast.makeText(ctx, "File imported: ${importedFile.name}", android.widget.Toast.LENGTH_SHORT).show()
                     loadDashboardData() // Refresh dashboard
                 } else {
-                    android.widget.Toast.makeText(ctx, "Failed to import file", android.widget.Toast.LENGTH_SHORT).show()
+                    android.widget.Toast.makeText(ctx, "Failed to import file. Check logs for details.", android.widget.Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -100,8 +101,9 @@ class SecureDashboardFragment : Fragment() {
         }
 
         fabCreateFolder.setOnClickListener {
+            Log.d("SecureDashboardFragment", "Create Folder FAB clicked!")
             showCreateFolderDialog()
-            if (isFabMenuOpen) fabMain.performClick() // Close FAB menu
+            // if (isFabMenuOpen) fabMain.performClick() // Close FAB menu - Removed as it might close dialog prematurely
         }
     }
 
@@ -173,6 +175,7 @@ class SecureDashboardFragment : Fragment() {
 
             builder.setPositiveButton("Create") { dialog, _ ->
                 val folderName = input.text.toString().trim()
+                Log.d("SecureDashboardFragment", "Attempting to create folder with name: '$folderName'")
                 if (folderName.isNotEmpty()) {
                     // TODO: Allow selecting parent folder. For now, create in root.
                     val createdFolder = FileManager.createSubFolderInVault(folderName, null)
@@ -180,7 +183,7 @@ class SecureDashboardFragment : Fragment() {
                         android.widget.Toast.makeText(ctx, "Folder created: $folderName", android.widget.Toast.LENGTH_SHORT).show()
                         loadDashboardData() // Refresh dashboard
                     } else {
-                        android.widget.Toast.makeText(ctx, "Failed to create folder. It may already exist or the name is invalid.", android.widget.Toast.LENGTH_LONG).show()
+                        android.widget.Toast.makeText(ctx, "Failed to create folder. Check logs for details.", android.widget.Toast.LENGTH_LONG).show()
                     }
                 } else {
                     android.widget.Toast.makeText(ctx, "Folder name cannot be empty", android.widget.Toast.LENGTH_SHORT).show()

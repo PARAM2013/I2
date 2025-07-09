@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.File
@@ -33,8 +34,10 @@ object FileManager {
         val publicRootDir = Environment.getExternalStorageDirectory()
         val vaultDir = File(publicRootDir, VAULT_FOLDER_NAME)
         if (!vaultDir.exists()) {
+            Log.d("FileManager", "Creating vault directory: ${vaultDir.absolutePath}")
             vaultDir.mkdirs() // Attempt to create if it doesn't exist (requires permission)
         }
+        Log.d("FileManager", "Vault directory: ${vaultDir.absolutePath}")
         return vaultDir
     }
 
@@ -46,8 +49,10 @@ object FileManager {
         val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val unhideDir = File(downloadsDir, UNHIDE_FOLDER_NAME)
         if (!unhideDir.exists()) {
+            Log.d("FileManager", "Creating unhide directory: ${unhideDir.absolutePath}")
             unhideDir.mkdirs()
         }
+        Log.d("FileManager", "Unhide directory: ${unhideDir.absolutePath}")
         return unhideDir
     }
 
@@ -124,33 +129,39 @@ object FileManager {
 
     fun deleteFileFromVault(item: File): Boolean {
         if (!item.path.startsWith(getVaultDirectory().path)) {
-            // Security check: ensure the file or folder is actually within the vault
-            android.util.Log.w("FileManager", "Attempt to delete item outside vault: ${item.path}")
+            Log.w("FileManager", "Attempt to delete item outside vault: ${item.path}")
             return false
         }
         if (item.exists()) {
-            return if (item.isDirectory) {
+            val deleted = if (item.isDirectory) {
                 item.deleteRecursively() // Deletes folder and its contents
             } else {
                 item.delete() // Deletes a single file
             }
+            if (deleted) {
+                Log.d("FileManager", "Successfully deleted: ${item.path}")
+            } else {
+                Log.e("FileManager", "Failed to delete: ${item.path}")
+            }
+            return deleted
         }
+        Log.w("FileManager", "Attempt to delete non-existent item: ${item.path}")
         return false // Item doesn't exist
     }
 
     fun unhideFile(vaultFile: File, context: Context): File? {
         if (!vaultFile.exists() || !vaultFile.isFile) {
-            android.util.Log.w("FileManager", "Unhide failed: source file does not exist or is not a file: ${vaultFile.path}")
+            Log.w("FileManager", "Unhide failed: source file does not exist or is not a file: ${vaultFile.path}")
             return null
         }
         if (!vaultFile.path.startsWith(getVaultDirectory().path)) {
-            android.util.Log.w("FileManager", "Attempt to unhide file outside vault: ${vaultFile.path}")
+            Log.w("FileManager", "Attempt to unhide file outside vault: ${vaultFile.path}")
             return null
         }
 
         val unhideDir = getUnhideDirectory()
         if (!unhideDir.exists() && !unhideDir.mkdirs()) {
-            android.util.Log.e("FileManager", "Failed to create unhide directory: ${unhideDir.path}")
+            Log.e("FileManager", "Failed to create unhide directory: ${unhideDir.path}")
             return null
         }
 
@@ -170,29 +181,30 @@ object FileManager {
         }
 
         try {
-            // Using renameTo for moving files within the same filesystem is generally efficient.
-            // If it fails (e.g., across different filesystems, though less likely here),
-            // a copy-then-delete strategy would be a fallback.
+            Log.d("FileManager", "Attempting to unhide ${vaultFile.name} to ${destinationFile.absolutePath}")
             if (vaultFile.renameTo(destinationFile)) {
+                Log.d("FileManager", "Successfully unhidden ${vaultFile.name} via rename.")
                 // Optionally, trigger a media scan for the unhidden file so it appears in galleries etc.
                 // This is where 'context' would be useful.
                 // MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
                 return destinationFile
             } else {
+                Log.w("FileManager", "Rename failed for ${vaultFile.name}, attempting copy and delete.")
                 // Fallback: try copy and delete if rename fails
                 vaultFile.copyTo(destinationFile, overwrite = true) // overwrite should be safe due to conflict handling
                 if (destinationFile.exists() && destinationFile.length() == vaultFile.length()) {
                     vaultFile.delete()
+                    Log.d("FileManager", "Successfully unhidden ${vaultFile.name} via copy/delete.")
                     // MediaScannerConnection.scanFile(context, arrayOf(destinationFile.absolutePath), null, null)
                     return destinationFile
                 } else {
-                    android.util.Log.e("FileManager", "Failed to move file to unhide directory after copy attempt: ${vaultFile.name}")
+                    Log.e("FileManager", "Failed to move file to unhide directory after copy attempt: ${vaultFile.name}")
                     if(destinationFile.exists()) destinationFile.delete() // Clean up partial copy
                     return null
                 }
             }
         } catch (e: Exception) {
-            android.util.Log.e("FileManager", "Error unhiding file: ${vaultFile.name}", e)
+            Log.e("FileManager", "Error unhiding file: ${vaultFile.name}", e)
             e.printStackTrace()
             return null
         }
@@ -252,15 +264,12 @@ object FileManager {
         fun processDirectory(currentDir: File, parentFolderStat: VaultFolder?) {
             val items = currentDir.listFiles() ?: return
 
-            if (parentFolderStat == null) { // Root directory processing
-                // Correctly count only top-level folders for stats.grandTotalFolders initially
-                // Sub-folder counts will be part of their parent VaultFolder objects if needed elsewhere
-                 stats.grandTotalFolders = items.count { it.isDirectory }
-            }
+            
 
 
             for (item in items) {
                 if (item.isDirectory) {
+                    stats.grandTotalFolders++
                     val folderStat = VaultFolder(item)
                     if (parentFolderStat == null) { // Root level folder
                         stats.allFolders.add(folderStat)
@@ -321,7 +330,7 @@ object FileManager {
 
     fun createSubFolderInVault(folderName: String, parentRelativePath: String? = null): File? {
         if (folderName.isBlank() || folderName.contains(File.separatorChar)) {
-            // Invalid folder name
+            Log.w("FileManager", "Invalid folder name: $folderName")
             return null
         }
 
@@ -332,15 +341,35 @@ object FileManager {
         }
 
         if (!parentDir.exists() || !parentDir.isDirectory) {
-            // Parent directory doesn't exist or is not a directory
+            Log.e("FileManager", "Parent directory does not exist or is not a directory: ${parentDir.absolutePath}")
             return null
         }
 
         val newFolder = File(parentDir, folderName)
         return if (newFolder.exists()) {
-            if (newFolder.isDirectory) newFolder else null // Exists and is a directory, return it. If it's a file, return null.
+            if (newFolder.isDirectory) {
+                Log.d("FileManager", "createSubFolderInVault: Folder already exists: ${newFolder.absolutePath}")
+                newFolder
+            } else {
+                Log.e("FileManager", "createSubFolderInVault: Cannot create folder, a file with the same name exists: ${newFolder.absolutePath}")
+                null // Exists and is a file, return null.
+            }
         } else {
-            if (newFolder.mkdirs()) newFolder else null // Try to create, return if successful
+            try {
+                if (newFolder.mkdirs()) {
+                    Log.d("FileManager", "createSubFolderInVault: Folder created successfully: ${newFolder.absolutePath}")
+                    newFolder
+                } else {
+                    Log.e("FileManager", "createSubFolderInVault: Failed to create folder (mkdirs returned false): ${newFolder.absolutePath}")
+                    null // Try to create, return if successful
+                }
+            } catch (e: SecurityException) {
+                Log.e("FileManager", "createSubFolderInVault: SecurityException creating folder ${newFolder.absolutePath}: ${e.message}")
+                null
+            } catch (e: Exception) {
+                Log.e("FileManager", "createSubFolderInVault: Unexpected error creating folder ${newFolder.absolutePath}: ${e.message}")
+                null
+            }
         }
     }
 
@@ -364,11 +393,11 @@ object FileManager {
         }
 
         if (fileName == null) {
-            // Could not determine file name from URI
+            Log.e("FileManager", "importFile: Could not determine file name from URI: $sourceFileUri")
             return null
         }
         if (fileName!!.contains(File.separatorChar) || fileName == "." || fileName == "..") {
-             // Invalid filename
+            Log.e("FileManager", "importFile: Invalid filename extracted from URI: $fileName")
             return null
         }
 
@@ -379,12 +408,15 @@ object FileManager {
             File(getVaultDirectory(), targetRelativePath)
         }
 
-        if (!targetDir.exists() && !targetDir.mkdirs()) {
-            // Failed to create target directory in vault
-            return null
+        if (!targetDir.exists()) {
+            Log.d("FileManager", "importFile: Target directory does not exist, attempting to create: ${targetDir.absolutePath}")
+            if (!targetDir.mkdirs()) {
+                Log.e("FileManager", "importFile: Failed to create target directory in vault: ${targetDir.absolutePath}")
+                return null
+            }
         }
         if(!targetDir.isDirectory){
-            //Target path is not a directory
+            Log.e("FileManager", "importFile: Target path is not a directory: ${targetDir.absolutePath}")
             return null
         }
 
@@ -405,47 +437,51 @@ object FileManager {
         }
 
         try {
+            Log.d("FileManager", "importFile: Importing file from $sourceFileUri to ${destinationFile.absolutePath}")
             contentResolver.openInputStream(sourceFileUri)?.use { inputStream ->
                 destinationFile.outputStream().use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
-            } ?: return null // Failed to open input stream
+            } ?: run { Log.e("FileManager", "importFile: Failed to open input stream for URI: $sourceFileUri"); return null } // Failed to open input stream
+
+            Log.d("FileManager", "importFile: File copied successfully to ${destinationFile.absolutePath}")
 
             // Optionally delete original file
-            // This is tricky with Uris, especially for files not owned by the app or from external providers.
-            // For SAF Uris (content://), direct deletion is usually done via DocumentsContract.deleteDocument.
-            // For file:// Uris (if we ever get those directly, less common now), direct File.delete() might work if we have path.
-            // Given the complexity and risk, especially with Scoped Storage, we'll make this robust later.
-            // For now, if deleteOriginal is true, we'll attempt it only if it's a file URI and we can get a path.
-            // This part needs significant improvement for production.
             if (deleteOriginal) {
                 if ("file" == sourceFileUri.scheme) {
-                    sourceFileUri.path?.let { File(it).delete() }
+                    sourceFileUri.path?.let { path ->
+                        val originalFile = File(path)
+                        if (originalFile.exists() && originalFile.delete()) {
+                            Log.d("FileManager", "importFile: Successfully deleted original file (file:// scheme): $sourceFileUri")
+                        } else {
+                            Log.w("FileManager", "importFile: Failed to delete original file (file:// scheme) or file did not exist: $sourceFileUri")
+                        }
+                    }
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
                            android.provider.DocumentsContract.isDocumentUri(context, sourceFileUri)) {
                     try {
                         if (android.provider.DocumentsContract.deleteDocument(context.contentResolver, sourceFileUri)) {
-                            android.util.Log.i("FileManager", "Original document deleted successfully: $sourceFileUri")
+                            Log.i("FileManager", "importFile: Original document deleted successfully: $sourceFileUri")
                         } else {
-                            android.util.Log.w("FileManager", "Failed to delete original document (deleteDocument returned false): $sourceFileUri")
+                            Log.w("FileManager", "importFile: Failed to delete original document (deleteDocument returned false): $sourceFileUri")
                         }
                     } catch (e: SecurityException) {
-                        android.util.Log.e("FileManager", "SecurityException when trying to delete original document: $sourceFileUri", e)
-                        // This often means the app doesn't have permission to delete this URI.
-                        // It might require persistent permissions to a document tree, or the URI itself isn't deletable by this app.
+                        Log.e("FileManager", "importFile: SecurityException when trying to delete original document: $sourceFileUri", e)
                     } catch (e: Exception) {
-                        android.util.Log.e("FileManager", "Exception when trying to delete original document: $sourceFileUri", e)
+                        Log.e("FileManager", "importFile: Exception when trying to delete original document: $sourceFileUri", e)
                     }
                 } else {
-                     android.util.Log.w("FileManager", "Original file at $sourceFileUri was not a file:// URI or a deletable Document URI. Manual deletion might be required by user.")
+                     Log.w("FileManager", "importFile: Original file at $sourceFileUri was not a file:// URI or a deletable Document URI. Manual deletion might be required by user.")
                 }
             }
 
             return destinationFile
         } catch (e: Exception) {
+            Log.e("FileManager", "importFile: Error importing file from URI: $sourceFileUri", e)
             e.printStackTrace()
             // If copy failed, delete the partially created file
             if (destinationFile.exists()) {
+                Log.w("FileManager", "importFile: Deleting partially created file: ${destinationFile.absolutePath}")
                 destinationFile.delete()
             }
             return null

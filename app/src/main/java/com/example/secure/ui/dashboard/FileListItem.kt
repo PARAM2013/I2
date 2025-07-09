@@ -13,17 +13,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-// Placeholder for file data model
-data class VaultFile(
-    val name: String,
-    val isFolder: Boolean,
-    val type: FileType = FileType.OTHER // Default to OTHER
-)
-
-enum class FileType {
-    FOLDER, IMAGE, VIDEO, DOCUMENT, OTHER
-}
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FileListItem(

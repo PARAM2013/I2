@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.net.Uri
+import com.example.secure.ui.dashboard.VaultFile
+import com.example.secure.ui.dashboard.FileType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

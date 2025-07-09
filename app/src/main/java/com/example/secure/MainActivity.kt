@@ -55,8 +55,9 @@ class MainActivity : TrackedActivity() {
 
         pickFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let { selectedUri ->
+                Toast.makeText(this, "Selected file: ${selectedUri.lastPathSegment}", Toast.LENGTH_SHORT).show()
                 dashboardViewModel.importFile(selectedUri)
-            }
+            } ?: Toast.makeText(this, "File selection cancelled.", Toast.LENGTH_SHORT).show()
         }
 
         setContent {
@@ -75,10 +76,9 @@ class MainActivity : TrackedActivity() {
                             // TODO: Implement folder picker
                         },
                         onCreateFolder = {
-                            // This will require a dialog to get the folder name
-                            Toast.makeText(this, "Create Folder Clicked (TODO)", Toast.LENGTH_SHORT).show()
-                            // For now, let's just create a dummy folder
-                            dashboardViewModel.createFolder("New Folder " + System.currentTimeMillis())
+                            // This action is handled by SecureDashboardFragment's dialog.
+                            // We can optionally show a toast here if this is unexpectedly triggered.
+                            Toast.makeText(this, "Create Folder action triggered (handled by Fragment)", Toast.LENGTH_SHORT).show()
                         },
                         viewModel = dashboardViewModel
                     )

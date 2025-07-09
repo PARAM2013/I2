@@ -39,4 +39,6 @@ The application follows a structured approach, leveraging standard Android compo
 *   **UI/UX Refinements:** Further refine the user interface and experience, especially for file preview/opening and long-press actions.
 *   **Unit/Integration Tests:** Implement comprehensive unit and integration tests to ensure the reliability and correctness of core functionalities.
 
-Run build command after code update
+## Run build command after code update
+
+## Update this file after major changes in project , code etc
