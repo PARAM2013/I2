@@ -9,13 +9,13 @@
         <Preference
             android:key="key_change_pin"
             app:title="Change App PIN"
-            app:summary="Update your application access PIN." />
+            android:summary="Update your application access PIN." />
 
         <SwitchPreferenceCompat
             android:key="key_fingerprint_unlock"
             app:title="Fingerprint Unlock"
-            app:summary="Enable or disable unlocking the app with your fingerprint."
-            app:defaultValue="false" />
+            android:summary="Enable or disable unlocking the app with your fingerprint."
+            android:defaultValue="false" />
 
     </PreferenceCategory>
 
@@ -26,8 +26,8 @@
         <SwitchPreferenceCompat
             android:key="key_metadata_removal"
             app:title="Remove Metadata on Import"
-            app:summary="Automatically remove EXIF and other metadata from files upon import."
-            app:defaultValue="false" />
+            android:summary="Automatically remove EXIF and other metadata from files upon import."
+            android:defaultValue="false" />
 
     </PreferenceCategory>
 
