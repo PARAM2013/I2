@@ -77,6 +77,9 @@ dependencies {
     // For EXIF data manipulation
     implementation("androidx.exifinterface:exifinterface:1.3.7")
 
+    // AndroidX Preference Library
+    implementation(libs.androidx.preference.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
