@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.PhotoFilter
@@ -128,13 +129,4 @@ private fun SwitchSettingItem(
     }
 }
 
-// BackNavigationIcon.kt - Ensure this icon is available or use Icons.AutoMirrored.Filled.ArrowBack for LTR/RTL support
-@Composable
-fun BackNavigationIcon(onClick: () -> Unit) {
-    // If you don't have a custom ArrowBack, you can use:
-    // import androidx.compose.material.icons.automirrored.filled.ArrowBack
-    // Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.clickable(onClick = onClick))
-    // For simplicity, using Filled.ArrowBack as placeholder if AutoMirrored is not directly used.
-    // Make sure to handle LTR/RTL if necessary for your app.
-    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.clickable(onClick = onClick))
-}
+// Removed unused BackNavigationIcon composable
