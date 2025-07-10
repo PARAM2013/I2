@@ -1,5 +1,6 @@
 package com.example.secure.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,8 +25,8 @@ fun LockScreen(
     var enteredPin by remember { mutableStateOf("") }
     val maxPinLength = 4
 
-    // TODO: Replace with actual Lottie animation
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(com.example.secure.R.raw.lock_animation))
+    // Using login_animation.json as requested
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(com.example.secure.R.raw.login_animation))
     val progress by animateLottieCompositionAsState(composition)
 
     Scaffold { paddingValues ->
@@ -68,18 +69,15 @@ fun LockScreen(
                     for (i in 0 until maxPinLength) {
                         OutlinedBox(
                             modifier = Modifier.size(24.dp),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center // This should center its direct child
                         ) {
                             if (i < enteredPin.length) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .align(Alignment.Center)
+                                // The Canvas will be the direct child, let OutlinedBox center it.
+                                // Apply the size for the dot directly to Canvas.
+                                androidx.compose.foundation.Canvas(
+                                    modifier = Modifier.size(16.dp) // Size of the dot
                                 ) {
-                                    // Filled circle
-                                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
-                                        drawCircle(color = MaterialTheme.colorScheme.primary)
-                                    }
+                                    drawCircle(color = MaterialTheme.colorScheme.primary)
                                 }
                             }
                         }
