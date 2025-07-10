@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.example.secure.R
+import com.example.secure.auth.PinManager
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -21,11 +23,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // 2. Enable/Disable Fingerprint Unlock
-        findPreference<androidx.preference.SwitchPreferenceCompat>("key_fingerprint_unlock")?.apply {
-            setOnPreferenceChangeListener { preference, newValue ->
+        findPreference<SwitchPreferenceCompat>("key_fingerprint_unlock")?.apply {
+            setOnPreferenceChangeListener { _, newValue ->
                 val enabled = newValue as Boolean
                 activity?.let { PinManager.setFingerprintAuthEnabled(it, enabled) }
-                // UI will update automatically
                 true
             }
             // Set initial checked state based on current settings
@@ -33,8 +34,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
 
         // 3. Enable/Disable Metadata Removal
-        findPreference<androidx.preference.SwitchPreferenceCompat>("key_metadata_removal")?.apply {
-            setOnPreferenceChangeListener { preference, newValue ->
+        findPreference<SwitchPreferenceCompat>("key_metadata_removal")?.apply {
+            setOnPreferenceChangeListener { _, newValue ->
                 val enabled = newValue as Boolean
                 activity?.let { PinManager.setMetadataRemovalEnabled(it, enabled) }
                 true
