@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.PhotoFilter
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +19,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.secure.auth.PinManager
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.FileProvider
+import com.example.secure.R // Required for R.string.app_name
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +93,19 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
                             PinManager.setMetadataRemovalEnabled(context, newCheckedState)
                         }
                     )
-                    // No divider after the last item in the main list
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                }
+
+                // Share App
+                item {
+                    SettingItem(
+                        icon = Icons.Filled.Share,
+                        title = "Share App",
+                        onClick = {
+                            shareApplication(activityContext) // Using activityContext as it's readily available
+                        }
+                    )
+                    // No divider after the last item
                 }
             }
 
@@ -153,6 +176,61 @@ fun SwitchSettingItem(
         )
     }
 }
+
+// Function to handle sharing the application APK
+private fun shareApplication(context: Context) { // Context is already imported from android.content.Context
+    try {
+        val applicationInfo = context.applicationInfo
+        val sourceApk = File(applicationInfo.sourceDir)
+
+        // Define a name for the copied APK in cache
+        val apkName = "iSecureApp.apk" // You can customize this name
+        val destApk = File(context.cacheDir, apkName)
+
+        // Copy APK to cache directory
+        FileInputStream(sourceApk).use { inputStream ->
+            FileOutputStream(destApk).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        // Ensure the file is readable by other apps (though FileProvider handles permissions)
+        destApk.setReadable(true, false)
+
+
+        val authority = "${context.packageName}.provider"
+        val contentUri = FileProvider.getUriForFile(context, authority, destApk)
+
+        if (contentUri == null) {
+            Log.e("ShareApp", "Failed to get content URI for APK.")
+            Toast.makeText(context, "Error: Could not prepare app for sharing.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/vnd.android.package-archive"
+            putExtra(Intent.EXTRA_STREAM, contentUri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            // Add a subject and text for a richer share experience
+            val appName = try { context.getString(R.string.app_name) } catch (e: Exception) { "this app" }
+            putExtra(Intent.EXTRA_SUBJECT, "Sharing $appName")
+            putExtra(Intent.EXTRA_TEXT, "Check out $appName!")
+        }
+
+        val chooserIntent = Intent.createChooser(shareIntent, "Share $appName Via")
+        context.startActivity(chooserIntent)
+
+    } catch (e: ActivityNotFoundException) {
+        Log.e("ShareApp", "ActivityNotFoundException: No app can handle this request.", e)
+        Toast.makeText(context, "Cannot find an app to share with.", Toast.LENGTH_LONG).show()
+    } catch (e: IOException) {
+        Log.e("ShareApp", "IOException during APK copy: ${e.message}", e)
+        Toast.makeText(context, "Error preparing app for sharing.", Toast.LENGTH_LONG).show()
+    } catch (e: Exception) {
+        Log.e("ShareApp", "Generic exception during app share: ${e.message}", e)
+        Toast.makeText(context, "An unexpected error occurred while sharing.", Toast.LENGTH_LONG).show()
+    }
+}
+
 
 // Preview code remains commented out as before.
 /*
