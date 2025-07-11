@@ -89,9 +89,15 @@
     <string name="fab_options_toggle">Toggle FAB options</string> <!-- Added for FAB in MainDashboardScreen -->
     <string name="create_folder_dialog_title">Create New Folder</string> <!-- Added for Dialog in MainDashboardScreen -->
     <string name="folder_name_hint">Folder Name</string> <!-- Added for Dialog in MainDashboardScreen -->
-    <string name="create_button">Create</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
-    <string name="cancel_button">Cancel</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
-    <string name="folder_name_empty_error">Folder name cannot be empty.</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
+    <string name="create_button">Create</string> <!-- Used in multiple dialogs -->
+    <string name="cancel_button">Cancel</string> <!-- Used in multiple dialogs -->
+    <string name="folder_name_empty_error">Folder name cannot be empty.</string> <!-- Used in create folder dialog -->
 
+    <!-- AllFilesScreen specific -->
+    <string name="empty_vault_all_files_title">Vault is Empty</string>
+    <string name="empty_vault_all_files_message">Add some files or folders to see them here.</string>
+    <string name="folder_icon_desc">Folder</string>
+    <string name="file_icon_desc">File</string>
+    <string name="file_size_kb">%1$d KB</string>
 
 </resources>
