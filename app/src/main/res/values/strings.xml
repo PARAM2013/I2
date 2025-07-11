@@ -115,5 +115,17 @@
     <string name="confirm_delete_item_message">Are you sure you want to permanently delete \'%1$s\'? This action cannot be undone.</string>
     <string name="confirm_delete_folder_message">Are you sure you want to permanently delete the folder \'%1$s\' and all its contents? This action cannot be undone.</string>
 
+    <!-- Rename Item Dialog -->
+    <string name="rename_dialog_title">Rename Item</string>
+    <string name="rename_dialog_message">Enter new name for \'%1$s\':</string>
+    <string name="new_name_hint">New name</string>
+    <string name="rename_button_text">Rename</string>
+
+    <!-- Rename operation messages -->
+    <string name="rename_success">\'%1$s\' successfully renamed to \'%2$s\'.</string>
+    <string name="error_invalid_name">Invalid name: \'%1$s\'. Name cannot contain /\\:*?\"&lt;&gt;| or be empty.</string>
+    <string name="rename_failed">Failed to rename \'%1$s\'.</string>
+    <string name="rename_failed_exists">Failed to rename. An item named \'%1$s\' already exists.</string>
+
 
 </resources>

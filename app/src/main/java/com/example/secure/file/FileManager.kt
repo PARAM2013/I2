@@ -597,4 +597,67 @@ object FileManager {
             return false
         }
     }
+
+    fun renameItemInVault(itemToRename: File, newName: String, context: Context): File? {
+        if (newName.isBlank() || newName.contains(File.separatorChar) || newName == "." || newName == "..") {
+            Log.w("FileManager", "renameItemInVault: Invalid new name provided: '$newName'")
+            // Optionally, provide a more specific error message to the user via ViewModel
+            // For now, just logging and returning null.
+            return null
+        }
+
+        if (!itemToRename.exists()) {
+            Log.w("FileManager", "renameItemInVault: Item to rename does not exist: ${itemToRename.absolutePath}")
+            return null
+        }
+
+        if (!itemToRename.path.startsWith(getVaultDirectory().path)) {
+            Log.w("FileManager", "renameItemInVault: Attempt to rename item outside vault: ${itemToRename.path}")
+            return null
+        }
+
+        val parentDir = itemToRename.parentFile
+        if (parentDir == null) {
+            Log.e("FileManager", "renameItemInVault: Cannot get parent directory for ${itemToRename.absolutePath}")
+            return null
+        }
+
+        val newFile = File(parentDir, newName)
+
+        if (newFile.absolutePath == itemToRename.absolutePath) {
+            Log.i("FileManager", "renameItemInVault: New name is the same as the old name. No action taken.")
+            return itemToRename // Or null if no change should also be an error/no-op from caller's perspective
+        }
+
+        if (newFile.exists()) {
+            Log.w("FileManager", "renameItemInVault: An item with the new name '$newName' already exists in ${parentDir.absolutePath}")
+            // TODO: Propagate this specific error to ViewModel/UI e.g. using R.string.error_folder_exists or similar
+            return null
+        }
+
+        return try {
+            if (itemToRename.renameTo(newFile)) {
+                Log.d("FileManager", "renameItemInVault: Successfully renamed '${itemToRename.name}' to '${newFile.name}'")
+                // If it's a file, update media scanner
+                if (newFile.isFile) {
+                    android.media.MediaScannerConnection.scanFile(
+                        context,
+                        arrayOf(itemToRename.absolutePath, newFile.absolutePath), // Scan old and new paths
+                        null,
+                        null
+                    )
+                }
+                newFile
+            } else {
+                Log.e("FileManager", "renameItemInVault: Failed to rename '${itemToRename.name}' to '${newName}' using renameTo()")
+                null
+            }
+        } catch (e: SecurityException) {
+            Log.e("FileManager", "renameItemInVault: SecurityException while renaming '${itemToRename.name}' to '$newName'", e)
+            null
+        } catch (e: Exception) {
+            Log.e("FileManager", "renameItemInVault: Unexpected error while renaming '${itemToRename.name}' to '$newName'", e)
+            null
+        }
+    }
 }

@@ -295,4 +295,53 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             }
         }
     }
+
+    fun requestRenameItem(item: Any, newName: String) {
+        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
+        viewModelScope.launch {
+            val fileToRename: File? = when (item) {
+                is FileManager.VaultFile -> item.file
+                is FileManager.VaultFolder -> item.folder
+                else -> null
+            }
+            val oldName: String = fileToRename?.name ?: "Item"
+
+            var operationMessage: String
+            var success = false
+
+            if (fileToRename == null) {
+                operationMessage = "Rename failed: Unknown item type."
+                Log.w("MainDashboardVM", "requestRenameItem: Unknown item type")
+            } else if (newName.isBlank()) {
+                operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
+            } else if (newName == oldName) {
+                operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
+                success = true // Considered a "success" as no change was needed and no error occurred.
+            }
+            else {
+                val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
+                if (renamedFile != null) {
+                    success = true
+                    operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
+                } else {
+                    // FileManager.renameItemInVault logs specific errors and returns null for various reasons.
+                    // We check some common reasons here for more specific feedback.
+                    val newFileCheck = File(fileToRename.parentFile, newName)
+                    if (newFileCheck.exists()){
+                        operationMessage = appContext.getString(R.string.rename_failed_exists, newName)
+                    } else if (newName.contains(File.separatorChar) || newName == "." || newName == ".." || newName.any { it in "\\:*?\"<>|" }) { // Added more invalid chars check
+                        operationMessage = appContext.getString(R.string.error_invalid_name, newName)
+                    }
+                    else {
+                        operationMessage = appContext.getString(R.string.rename_failed, oldName)
+                    }
+                }
+            }
+
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
+            // Always refresh, even on failure, to ensure UI consistency or clear selections.
+            // If success, this will show the renamed item.
+            navigateToPath(_currentPath.value)
+        }
+    }
 }

@@ -56,6 +56,7 @@ import com.example.secure.file.FileManager // Required for VaultStats, VaultFile
 import com.example.secure.file.FileManager.VaultFile // Explicit import
 import com.example.secure.file.FileManager.VaultFolder // Explicit import
 import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
+import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -72,7 +73,9 @@ fun AllFilesScreen(
     val currentPath by viewModel.currentPath.collectAsState()
 
     var showFabMenu by remember { mutableStateOf(false) }
-    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) } // State for expanded menu
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
+    var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -220,6 +223,11 @@ fun AllFilesScreen(
                                             viewModel.requestDeleteItem(item)
                                             expandedMenuForItemPath = null // Close menu
                                         },
+                                        onRenameClick = {
+                                            itemToRename = item
+                                            showRenameDialog = true
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
                                         onClick = {
                                             // Construct new path relative to vault root
                                             val folderClickedPath = item.folder.relativeTo(FileManager.getVaultDirectory()).path
@@ -240,6 +248,11 @@ fun AllFilesScreen(
                                         onDeleteClick = {
                                             // TODO: Show confirmation dialog here before calling delete
                                             viewModel.requestDeleteItem(item)
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
+                                        onRenameClick = {
+                                            itemToRename = item
+                                            showRenameDialog = true
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onClick = {
@@ -268,6 +281,36 @@ fun AllFilesScreen(
             }
         )
     }
+
+    if (showRenameDialog && itemToRename != null) {
+        val currentName = when (itemToRename) {
+            is VaultFile -> (itemToRename as VaultFile).file.name
+            is VaultFolder -> (itemToRename as VaultFolder).folder.name
+            else -> "" // Should not happen if itemToRename is set correctly
+        }
+        if (currentName.isNotEmpty()) { // Proceed only if we have a valid current name
+            RenameItemDialog(
+                currentItemName = currentName,
+                onDismissRequest = {
+                    showRenameDialog = false
+                    itemToRename = null
+                },
+                onConfirm = { newName ->
+                    viewModel.requestRenameItem(itemToRename!!, newName)
+                    // Dialog is dismissed and itemToRename reset by RenameItemDialog's onConfirm logic
+                    // if successful, or if name is same/empty.
+                    // ViewModel will update isLoading and fileOperationResult.
+                    // No, RenameItemDialog's onConfirm doesn't dismiss itself if onConfirm is called.
+                    // The caller of RenameItemDialog is responsible for dismissing it.
+                    showRenameDialog = false
+                    itemToRename = null
+                }
+            )
+        } else { // Reset state if currentName is somehow empty, to avoid showing dialog with no name
+            showRenameDialog = false
+            itemToRename = null
+        }
+    }
 }
 
 @Composable
@@ -278,6 +321,7 @@ fun FolderItem(
     onDismissMenu: () -> Unit,
     onUnhideClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onRenameClick: () -> Unit, // New callback
     onClick: () -> Unit
 ) {
     ListItem(
@@ -298,8 +342,9 @@ fun FolderItem(
                     expanded = isMenuExpanded,
                     onDismissRequest = onDismissMenu
                 ) {
-                    DropdownMenuItem(text = { Text("Unhide") }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text("Delete") }, onClick = onDeleteClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
                     // Add other items later
                 }
             }
@@ -316,6 +361,7 @@ fun FileItem(
     onDismissMenu: () -> Unit,
     onUnhideClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onRenameClick: () -> Unit, // New callback
     onClick: () -> Unit
 ) {
     ListItem(
@@ -337,8 +383,9 @@ fun FileItem(
                     expanded = isMenuExpanded,
                     onDismissRequest = onDismissMenu
                 ) {
-                    DropdownMenuItem(text = { Text("Unhide") }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text("Delete") }, onClick = onDeleteClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
                     // Add other items later
                 }
             }
