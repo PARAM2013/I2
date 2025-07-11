@@ -66,6 +66,7 @@ class MainActivity : TrackedActivity() {
                         }
                         composable(NavRoutes.ALL_FILES) {
                             AllFilesScreen(
+                                viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 }
