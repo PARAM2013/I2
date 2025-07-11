@@ -10,58 +10,69 @@ import android.util.Log
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+// import androidx.activity.result.ActivityResultLauncher // No longer directly used here for FAB
+// import androidx.activity.result.contract.ActivityResultContracts // No longer directly used here for FAB
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
+import com.example.secure.ui.allfiles.AllFilesScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 
 class MainActivity : TrackedActivity() {
 
-    // Permission launchers can be defined if MainActivity directly handles file picking.
-    // For now, FAB click is generic.
-    // private lateinit var manageStoragePermissionLauncher: ActivityResultLauncher<Intent>
-    // private lateinit var pickFileLauncher: ActivityResultLauncher<String>
+    // Permission launchers are mostly for the initial permission check now.
+    // File picking and specific actions will be handled within MainDashboardScreen or its ViewModel.
+
+    object NavRoutes {
+        const val DASHBOARD = "dashboard"
+        const val ALL_FILES = "all_files"
+        // Add other routes here if needed
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        // Initialize permission launchers if needed by MainActivity later
-        // setupPermissionLaunchers()
-
         setContent {
-            val dashboardViewModel: MainDashboardViewModel = viewModel() // ViewModel instance
+            val dashboardViewModel: MainDashboardViewModel = viewModel()
+            val navController = rememberNavController()
+
             ISecureTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    MainDashboardScreen(
-                        viewModel = dashboardViewModel,
-                        onSettingsClick = {
-                            startActivity(Intent(this, com.example.secure.ui.settings.SettingsActivity::class.java))
-                        },
-                        onCategoryClick = { categoryId ->
-                            // Handle navigation or action based on categoryId
-                            Toast.makeText(this, "Category Clicked: $categoryId", Toast.LENGTH_SHORT).show()
-                            Log.d("MainActivity", "Category clicked: $categoryId")
-                            // TODO: Implement actual navigation based on categoryId
-                            // when (categoryId) {
-                            //     "all_files" -> navController.navigate("all_files_route")
-                            //     "images" -> navController.navigate("images_route")
-                            //     ...
-                            // }
-                        },
-                        onFabClick = {
-                            // Handle FAB click, e.g., show a dialog to choose import file/folder or create folder
-                            Toast.makeText(this, "FAB Clicked - TODO: Show options (e.g., Import File/Folder, Create Folder)", Toast.LENGTH_LONG).show()
-                            Log.d("MainActivity", "FAB Clicked - Placeholder action")
-                            // TODO: Implement options for FAB (e.g., BottomSheetDialogFragment or another Composable dialog)
+                    NavHost(navController = navController, startDestination = NavRoutes.DASHBOARD) {
+                        composable(NavRoutes.DASHBOARD) {
+                            MainDashboardScreen(
+                                viewModel = dashboardViewModel,
+                                onSettingsClick = {
+                                    startActivity(Intent(this@MainActivity, com.example.secure.ui.settings.SettingsActivity::class.java))
+                                },
+                                onCategoryClick = { categoryId ->
+                                    Log.d("MainActivity", "Category clicked: $categoryId")
+                                    if (categoryId == "all_files") {
+                                        navController.navigate(NavRoutes.ALL_FILES)
+                                    } else {
+                                        // Handle other category clicks if necessary, e.g., show a toast or navigate to specific filtered views
+                                        Toast.makeText(this@MainActivity, "Category Clicked: $categoryId (Not 'All Files')", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            )
                         }
-                    )
+                        composable(NavRoutes.ALL_FILES) {
+                            AllFilesScreen(
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        // Add other composable destinations here
+                    }
                 }
             }
         }

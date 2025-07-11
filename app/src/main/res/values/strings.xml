@@ -83,4 +83,15 @@
     <string name="settings_category_security">Security</string>
     <string name="settings_category_general">General</string>
 
+    <!-- All Files Screen -->
+    <string name="title_all_files">All Files</string>
+    <string name="action_back">Back</string>
+    <string name="fab_options_toggle">Toggle FAB options</string> <!-- Added for FAB in MainDashboardScreen -->
+    <string name="create_folder_dialog_title">Create New Folder</string> <!-- Added for Dialog in MainDashboardScreen -->
+    <string name="folder_name_hint">Folder Name</string> <!-- Added for Dialog in MainDashboardScreen -->
+    <string name="create_button">Create</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
+    <string name="cancel_button">Cancel</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
+    <string name="folder_name_empty_error">Folder name cannot be empty.</string> <!-- Added for Dialog in MainDashboardScreen, also used elsewhere -->
+
+
 </resources>

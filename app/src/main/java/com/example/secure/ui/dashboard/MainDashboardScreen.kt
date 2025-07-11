@@ -1,19 +1,22 @@
 package com.example.secure.ui.dashboard
 
+import android.app.Application
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,24 +28,57 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.secure.R
 import com.example.secure.ui.theme.ISecureTheme
 
-// DashboardCategoryItem is defined in MainDashboardViewModel.kt
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainDashboardScreen(
     viewModel: MainDashboardViewModel = viewModel(),
     onSettingsClick: () -> Unit,
-    onCategoryClick: (String) -> Unit, // Pass category ID or route
-    onFabClick: () -> Unit
+    onCategoryClick: (String) -> Unit // Pass category ID or route
 ) {
     val context = LocalContext.current
-    val categories by viewModel.categories.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    var showFabMenu by remember { mutableStateOf(false) }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris)
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
+
+    // Effect to show snackbar for file operation results
+    LaunchedEffect(uiState.fileOperationResult) {
+        uiState.fileOperationResult?.let {
+            snackbarHostState.showSnackbar(
+                message = it,
+                duration = SnackbarDuration.Short
+            )
+            viewModel.clearFileOperationResult() // Clear after showing
+        }
+    }
+
+    // Effect to show snackbar for errors
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(
+                message = "Error: $it",
+                duration = SnackbarDuration.Long
+            )
+            viewModel.clearError() // Clear after showing
+        }
+    }
 
     ISecureTheme {
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(id = R.string.app_name)) }, // "iSecure"
+                    title = { Text(stringResource(id = R.string.app_name)) },
                     actions = {
                         IconButton(onClick = onSettingsClick) {
                             Icon(
@@ -54,48 +90,122 @@ fun MainDashboardScreen(
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = onFabClick) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = stringResource(R.string.fab_import_file) // Updated to a more generic or specific string
-                    )
-                }
-            }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp, vertical = 8.dp), // Adjusted padding
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                item {
-                    DashboardLottieAnimation(modifier = Modifier.fillMaxWidth().height(150.dp))
-                }
-
-                if (categories.isEmpty()) {
-                    item {
-                        Box(modifier = Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("No categories loaded or defined.") // Placeholder for empty categories
+                Column(horizontalAlignment = Alignment.End) {
+                    if (showFabMenu) {
+                        SmallFloatingActionButton(
+                            onClick = {
+                                viewModel.requestCreateFolderDialog(true)
+                                showFabMenu = false
+                            },
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            Icon(Icons.Filled.CreateNewFolder, stringResource(R.string.fab_create_folder))
+                        }
+                        SmallFloatingActionButton(
+                            onClick = {
+                                filePickerLauncher.launch("*/*") // Or specific MIME types
+                                // showFabMenu will be set to false in onResult by the launcher
+                            },
+                            modifier = Modifier.padding(bottom = 16.dp) // Extra padding for main FAB
+                        ) {
+                            Icon(Icons.Filled.UploadFile, stringResource(R.string.fab_import_file))
                         }
                     }
-                } else {
-                    items(categories, key = { it.id }) { category -> // Use key for better performance
-                        CategoryCard(
-                            title = category.title,
-                            subtitle = category.subtitle,
-                            icon = category.icon,
-                            onClick = { onCategoryClick(category.id) }
+                    FloatingActionButton(onClick = { showFabMenu = !showFabMenu }) {
+                        Icon(
+                            imageVector = if (showFabMenu) Icons.Filled.Close else Icons.Filled.Add,
+                            contentDescription = stringResource(R.string.fab_options_toggle)
                         )
                     }
                 }
-                // Placeholder for file import progress bar (to be implemented later)
-                // item {
-                //     Text("File import progress bar will be here", modifier = Modifier.padding(top = 16.dp))
-                // }
+            }
+        ) { paddingValues ->
+            Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    item {
+                        DashboardLottieAnimation(modifier = Modifier.fillMaxWidth().height(150.dp))
+                    }
+
+                    if (uiState.categories.isEmpty() && !uiState.isLoading) {
+                        item {
+                            Box(modifier = Modifier.fillParentMaxSize().padding(top = 32.dp), contentAlignment = Alignment.Center) {
+                                Text("Vault is empty. Use the + button to add files or folders.")
+                            }
+                        }
+                    } else {
+                        items(uiState.categories, key = { it.id }) { category ->
+                            CategoryCard(
+                                title = category.title,
+                                subtitle = category.subtitle,
+                                icon = category.icon,
+                                onClick = { onCategoryClick(category.id) }
+                            )
+                        }
+                    }
+                }
+
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }
+
+    if (uiState.showCreateFolderDialog) {
+        CreateFolderDialog(
+            onDismissRequest = { viewModel.requestCreateFolderDialog(false) },
+            onConfirm = { folderName ->
+                viewModel.createFolder(folderName)
+                // ViewModel now handles dismissing the dialog by setting showCreateFolderDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun CreateFolderDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var folderNameState by remember { mutableStateOf(TextFieldValue("")) }
+    val context = LocalContext.current
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text(stringResource(R.string.create_folder_dialog_title)) },
+        text = {
+            OutlinedTextField(
+                value = folderNameState,
+                onValueChange = { folderNameState = it },
+                label = { Text(stringResource(R.string.folder_name_hint)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (folderNameState.text.isNotBlank()) {
+                        onConfirm(folderNameState.text.trim())
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.folder_name_empty_error), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.create_button))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(stringResource(R.string.cancel_button))
+            }
+        }
+    )
 }
 
 @Composable
@@ -110,7 +220,7 @@ fun CategoryCard(
             .fillMaxWidth(),
         onClick = onClick,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = MaterialTheme.shapes.medium // Added shape
+        shape = MaterialTheme.shapes.medium
     ) {
         Row(
             modifier = Modifier
@@ -122,19 +232,19 @@ fun CategoryCard(
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = title,
+                    contentDescription = title, // Content description for accessibility
                     modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.primary // Added tint
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = title, style = MaterialTheme.typography.titleLarge) // Adjusted style
-                    Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant) // Adjusted style and color
+                    Text(text = title, style = MaterialTheme.typography.titleLarge)
+                    Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
-                contentDescription = null,
+                contentDescription = null, // Decorative
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
@@ -148,7 +258,7 @@ fun DashboardLottieAnimation(modifier: Modifier = Modifier) {
 
     if (rawId != 0) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(rawId))
-        val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever) // Changed to loop
+        val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
         LottieAnimation(
             composition = composition,
             progress = { progress },
@@ -159,22 +269,43 @@ fun DashboardLottieAnimation(modifier: Modifier = Modifier) {
             modifier = modifier.height(150.dp).fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Text("Lottie Animation (dashboard_animation.json missing)")
+            Text("Lottie animation 'dashboard_animation.json' not found in res/raw")
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
 fun MainDashboardScreenPreview() {
     ISecureTheme {
-        // Provide a preview ViewModel if necessary, or use default which has placeholders
+        // For a more useful preview, consider using a fake ViewModel that provides sample UiState
+        // For instance:
+        // val fakeViewModel = remember {
+        //     object : MainDashboardViewModel(Application()) { // Or a more specific fake Application
+        //         init {
+        //             _uiState.value = MainDashboardUiState(
+        //                 categories = listOf(
+        //                     DashboardCategoryItem("all", "All Files", "10 files, 2 folders", Icons.Filled.Folder),
+        //                     DashboardCategoryItem("img", "Images", "5 files, 10 MB", Icons.Filled.Image)
+        //                 ),
+        //                 isLoading = false
+        //             )
+        //         }
+        //     }
+        // }
         MainDashboardScreen(
+            // viewModel = fakeViewModel, // Use the fake ViewModel here
             onSettingsClick = {},
-            onCategoryClick = {},
-            onFabClick = {}
+            onCategoryClick = {}
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CreateFolderDialogPreview() {
+    ISecureTheme {
+        CreateFolderDialog(onDismissRequest = {}, onConfirm = {})
     }
 }
 
