@@ -94,8 +94,10 @@
     <string name="folder_name_empty_error">Folder name cannot be empty.</string> <!-- Used in create folder dialog -->
 
     <!-- AllFilesScreen specific -->
-    <string name="empty_vault_all_files_title">Vault is Empty</string>
+    <string name="empty_vault_all_files_title">Vault Root is Empty</string> <!-- More specific for root -->
     <string name="empty_vault_all_files_message">Add some files or folders to see them here.</string>
+    <string name="empty_folder_title">Folder is Empty</string> <!-- For sub-folders -->
+    <string name="empty_folder_message">This folder has no items.</string>
     <string name="folder_icon_desc">Folder</string>
     <string name="file_icon_desc">File</string>
     <string name="file_size_kb">%1$d KB</string>

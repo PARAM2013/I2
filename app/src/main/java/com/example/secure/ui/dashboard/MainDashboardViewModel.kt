@@ -41,11 +41,14 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private val _uiState = MutableStateFlow(MainDashboardUiState())
     val uiState: StateFlow<MainDashboardUiState> = _uiState.asStateFlow()
 
+    private val _currentPath = MutableStateFlow<String?>(null) // null represents vault root
+    val currentPath: StateFlow<String?> = _currentPath.asStateFlow()
+
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
 
-    // Predefined category structure
-    private val predefinedCategories = listOf(
+    // Predefined category structure - these will reflect GLOBAL stats
+    private val globalCategoriesTemplate = listOf(
         DashboardCategoryItem("all_files", "All Files", "", Icons.Filled.Folder),
         DashboardCategoryItem("images", "Images", "", Icons.Filled.Image),
         DashboardCategoryItem("videos", "Videos", "", Icons.Filled.Videocam),
@@ -53,44 +56,73 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     )
 
     init {
-        loadDashboardData()
+        loadGlobalDashboardCategories() // For the main dashboard screen
+        navigateToPath(null)      // For AllFilesScreen content (root initially)
     }
 
-    fun loadDashboardData() {
-        _uiState.update { it.copy(isLoading = true) }
+    // Loads global stats for the main dashboard categories
+    private fun loadGlobalDashboardCategories() {
         viewModelScope.launch {
             try {
-                Log.d("MainDashboardVM", "Loading vault data...")
-                val stats = fileManager.listFilesInVault()
-                Log.d("MainDashboardVM", "Vault data loaded. Folders: ${stats.grandTotalFolders}, Files: ${stats.grandTotalFiles}")
-                val updatedCategories = predefinedCategories.map { category ->
+                val globalStats = fileManager.listFilesInVault(FileManager.getVaultDirectory()) // Explicitly list root for global stats
+                val updatedGlobalCategories = globalCategoriesTemplate.map { category ->
                     when (category.id) {
-                        "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(stats))
-                        "images" -> category.copy(subtitle = formatCategorySubtitle(stats.totalPhotoFiles, stats.totalPhotoSize))
-                        "videos" -> category.copy(subtitle = formatCategorySubtitle(stats.totalVideoFiles, stats.totalVideoSize))
-                        "documents" -> category.copy(subtitle = formatCategorySubtitle(stats.totalDocumentFiles, stats.totalDocumentSize))
+                        "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(globalStats))
+                        "images" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalPhotoFiles, globalStats.totalPhotoSize))
+                        "videos" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalVideoFiles, globalStats.totalVideoSize))
+                        "documents" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalDocumentFiles, globalStats.totalDocumentSize))
                         else -> category
                     }
                 }
+                _uiState.update { it.copy(categories = updatedGlobalCategories) }
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error loading global category stats", e)
+                _uiState.update { oldState ->
+                    oldState.copy(categories = globalCategoriesTemplate.map { it.copy(subtitle = "Error") })
+                }
+            }
+        }
+    }
+
+    // Loads contents for a specific path (for AllFilesScreen)
+    private fun loadPathContents(relativePath: String?) {
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
+        viewModelScope.launch {
+            try {
+                val targetDirectory = if (relativePath.isNullOrBlank()) {
+                    FileManager.getVaultDirectory()
+                } else {
+                    File(FileManager.getVaultDirectory(), relativePath)
+                }
+                Log.d("MainDashboardVM", "Loading contents for path: ${targetDirectory.absolutePath}")
+                val pathStats = fileManager.listFilesInVault(targetDirectory)
+                Log.d("MainDashboardVM", "Path data loaded. Folders: ${pathStats.allFolders.size}, Files: ${pathStats.allFiles.size} for $relativePath")
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        categories = updatedCategories,
-                        vaultStats = stats,
+                        vaultStats = pathStats, // This state is for AllFilesScreen
                         error = null
                     )
                 }
             } catch (e: Exception) {
-                Log.e("MainDashboardVM", "Error loading dashboard data", e)
+                Log.e("MainDashboardVM", "Error loading path contents for $relativePath", e)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Failed to load data: ${e.message}",
-                        categories = predefinedCategories.map { cat -> cat.copy(subtitle = "Error loading data") } // Show error in subtitles
+                        error = "Failed to load contents for '$relativePath': ${e.message}",
+                        vaultStats = FileManager.VaultStats() // Clear stats on error
                     )
                 }
             }
         }
+    }
+
+    fun navigateToPath(relativePath: String?) {
+        val newPath = if (relativePath.isNullOrBlank() || relativePath == File.separator) null else relativePath
+        _currentPath.value = newPath
+        loadPathContents(newPath)
+        // Refresh global categories as operations like delete/import in subfolders affect global counts
+        loadGlobalDashboardCategories()
     }
 
     private fun formatAllFilesSubtitle(stats: FileManager.VaultStats): String {
@@ -130,27 +162,27 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var failedImports = 0
             uris.forEach { uri ->
                 try {
-                    Log.d("MainDashboardVM", "Importing file: $uri")
+                    Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
                     // Assuming deleteOriginal = true by default, adjust if needed
-                    val importedFile = fileManager.importFile(uri, appContext, null, true)
+                    val importedFile = fileManager.importFile(uri, appContext, _currentPath.value, true)
                     if (importedFile != null) {
                         successfulImports++
                     } else {
                         failedImports++
                     }
                 } catch (e: Exception) {
-                    Log.e("MainDashboardVM", "Error importing file $uri", e)
+                    Log.e("MainDashboardVM", "Error importing file $uri to path: ${_currentPath.value}", e)
                     failedImports++
                 }
             }
             val message = when {
                 successfulImports > 0 && failedImports == 0 -> "$successfulImports file(s) imported successfully."
                 successfulImports > 0 && failedImports > 0 -> "$successfulImports file(s) imported, $failedImports failed."
-                failedImports > 0 -> "Failed to import $failedImports file(s)."
-                else -> "No files were imported."
+                // failedImports > 0 -> "Failed to import $failedImports file(s)." // Covered by 'else' if successfulImports is 0
+                else -> "No files were imported, or all failed. Check logs if files were selected." // Adjusted message
             }
             _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
-            loadDashboardData() // Refresh data
+            navigateToPath(_currentPath.value) // Refresh current path and global categories
         }
     }
 
@@ -158,14 +190,14 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null, showCreateFolderDialog = false) }
         viewModelScope.launch {
             try {
-                Log.d("MainDashboardVM", "Creating folder: $folderName")
-                val createdFolder = fileManager.createSubFolderInVault(folderName, null)
+                Log.d("MainDashboardVM", "Creating folder: $folderName in path: ${_currentPath.value}")
+                val createdFolder = fileManager.createSubFolderInVault(folderName, _currentPath.value)
                 if (createdFolder != null && createdFolder.exists()) {
                     _uiState.update { it.copy(isLoading = false, fileOperationResult = "Folder created: $folderName") }
-                    loadDashboardData() // Refresh data
+                    navigateToPath(_currentPath.value) // Refresh current path and global categories
                 } else {
-                    val reason = if (createdFolder == null) "API returned null" else "Folder does not exist post-creation"
-                    Log.e("MainDashboardVM", "Failed to create folder. Reason: $reason. Name: $folderName")
+                    val reason = if (createdFolder == null) "API returned null" else "Folder does not exist post-creation or name invalid"
+                    Log.e("MainDashboardVM", "Failed to create folder '$folderName'. Reason: $reason.")
                     _uiState.update { it.copy(isLoading = false, fileOperationResult = "Failed to create folder. Check logs.") }
                 }
             } catch (e: Exception) {

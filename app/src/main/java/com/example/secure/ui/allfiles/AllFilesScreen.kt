@@ -55,12 +55,26 @@ fun AllFilesScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current // For Toasts or other context needs
 
+    val currentPath by viewModel.currentPath.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.title_all_files)) },
+                title = {
+                    Text(
+                        text = currentPath?.let { FileManager.VAULT_FOLDER_NAME + File.separator + it } ?: stringResource(R.string.title_all_files),
+                        style = MaterialTheme.typography.titleMedium // Smaller title for path
+                    )
+                },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = {
+                        val parentPath = currentPath?.let { File(it).parent }
+                        if (parentPath != null || currentPath != null) { // If currentPath is not null, parentPath could be null (at root)
+                            viewModel.navigateToPath(parentPath)
+                        } else {
+                            onNavigateBack() // Original popBackStack behavior if already at root
+                        }
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
@@ -89,11 +103,11 @@ fun AllFilesScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.empty_vault_all_files_title),
+                        text = stringResource(R.string.empty_folder_title), // New string: "Folder is Empty"
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Text(
-                        text = stringResource(R.string.empty_vault_all_files_message),
+                        text = stringResource(R.string.empty_folder_message), // New string: "This folder has no items."
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -106,7 +120,9 @@ fun AllFilesScreen(
                     combinedList.addAll(files.sortedBy { it.file.name.lowercase() })
                 }
 
-                if (combinedList.isEmpty()) { // Handles case where vaultStats is not null but lists are empty
+                // This explicit isEmpty check after combining might be redundant if the above condition for empty state is robust.
+                // However, keeping it for safety in case vaultStats is not null but lists are empty.
+                if (combinedList.isEmpty()) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -115,11 +131,11 @@ fun AllFilesScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = stringResource(R.string.empty_vault_all_files_title),
+                            text = stringResource(R.string.empty_folder_title),
                             style = MaterialTheme.typography.headlineSmall
                         )
                         Text(
-                            text = stringResource(R.string.empty_vault_all_files_message),
+                            text = stringResource(R.string.empty_folder_message),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -135,7 +151,9 @@ fun AllFilesScreen(
                             when (item) {
                                 is VaultFolder -> {
                                     FolderItem(vaultFolder = item, onClick = {
-                                        android.widget.Toast.makeText(context, "Folder clicked: ${item.folder.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        // Construct new path relative to vault root
+                                        val folderClickedPath = item.folder.relativeTo(FileManager.getVaultDirectory()).path
+                                        viewModel.navigateToPath(folderClickedPath)
                                     })
                                 }
                                 is VaultFile -> {
