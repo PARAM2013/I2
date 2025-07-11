@@ -26,6 +26,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.secure.R
+import com.example.secure.ui.composables.CreateFolderDialog // Import extracted dialog
 import com.example.secure.ui.theme.ISecureTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,17 +40,10 @@ fun MainDashboardScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var showFabMenu by remember { mutableStateOf(false) }
-
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents(),
-        onResult = { uris ->
-            if (uris.isNotEmpty()) {
-                viewModel.importFiles(uris)
-            }
-            showFabMenu = false // Close menu after selection or cancellation
-        }
-    )
+    // FAB and related logic (showFabMenu, filePickerLauncher) are being removed from this screen.
+    // They will be added to AllFilesScreen.kt.
+    // var showFabMenu by remember { mutableStateOf(false) } // Removed
+    // val filePickerLauncher = ... // Removed
 
     // Effect to show snackbar for file operation results
     LaunchedEffect(uiState.fileOperationResult) {
@@ -88,37 +82,8 @@ fun MainDashboardScreen(
                         }
                     }
                 )
-            },
-            floatingActionButton = {
-                Column(horizontalAlignment = Alignment.End) {
-                    if (showFabMenu) {
-                        SmallFloatingActionButton(
-                            onClick = {
-                                viewModel.requestCreateFolderDialog(true)
-                                showFabMenu = false
-                            },
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        ) {
-                            Icon(Icons.Filled.CreateNewFolder, stringResource(R.string.fab_create_folder))
-                        }
-                        SmallFloatingActionButton(
-                            onClick = {
-                                filePickerLauncher.launch("*/*") // Or specific MIME types
-                                // showFabMenu will be set to false in onResult by the launcher
-                            },
-                            modifier = Modifier.padding(bottom = 16.dp) // Extra padding for main FAB
-                        ) {
-                            Icon(Icons.Filled.UploadFile, stringResource(R.string.fab_import_file))
-                        }
-                    }
-                    FloatingActionButton(onClick = { showFabMenu = !showFabMenu }) {
-                        Icon(
-                            imageVector = if (showFabMenu) Icons.Filled.Close else Icons.Filled.Add,
-                            contentDescription = stringResource(R.string.fab_options_toggle)
-                        )
-                    }
-                }
             }
+            // floatingActionButton parameter and its content removed from Scaffold
         ) { paddingValues ->
             Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
                 LazyColumn(
@@ -167,46 +132,7 @@ fun MainDashboardScreen(
     }
 }
 
-@Composable
-fun CreateFolderDialog(
-    onDismissRequest: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var folderNameState by remember { mutableStateOf(TextFieldValue("")) }
-    val context = LocalContext.current
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = { Text(stringResource(R.string.create_folder_dialog_title)) },
-        text = {
-            OutlinedTextField(
-                value = folderNameState,
-                onValueChange = { folderNameState = it },
-                label = { Text(stringResource(R.string.folder_name_hint)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    if (folderNameState.text.isNotBlank()) {
-                        onConfirm(folderNameState.text.trim())
-                    } else {
-                        Toast.makeText(context, context.getString(R.string.folder_name_empty_error), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            ) {
-                Text(stringResource(R.string.create_button))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.cancel_button))
-            }
-        }
-    )
-}
+// CreateFolderDialog has been moved to ui/composables/CommonDialogs.kt
 
 @Composable
 fun CategoryCard(
@@ -301,13 +227,7 @@ fun MainDashboardScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CreateFolderDialogPreview() {
-    ISecureTheme {
-        CreateFolderDialog(onDismissRequest = {}, onConfirm = {})
-    }
-}
+// CreateFolderDialogPreview has been moved to ui/composables/CommonDialogs.kt
 
 @Preview(showBackground = true)
 @Composable

@@ -37,10 +37,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.activity.compose.rememberLauncherForActivityResult // For FAB
+import androidx.activity.result.contract.ActivityResultContracts // For FAB
+import androidx.compose.material.icons.filled.Add // For FAB
+import androidx.compose.material.icons.filled.Close // For FAB
+import androidx.compose.material.icons.filled.CreateNewFolder // For FAB
+import androidx.compose.material.icons.filled.UploadFile // For FAB
+import androidx.compose.material3.FloatingActionButton // For FAB
+import androidx.compose.material3.SmallFloatingActionButton // For FAB
+import androidx.compose.runtime.mutableStateOf // For FAB state
+import androidx.compose.runtime.remember // For FAB state
+import androidx.compose.runtime.setValue // For FAB state
 import com.example.secure.R
 import com.example.secure.file.FileManager // Required for VaultStats, VaultFile, VaultFolder
 import com.example.secure.file.FileManager.VaultFile // Explicit import
 import com.example.secure.file.FileManager.VaultFolder // Explicit import
+import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -53,9 +65,20 @@ fun AllFilesScreen(
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current // For Toasts or other context needs
-
+    val context = LocalContext.current
     val currentPath by viewModel.currentPath.collectAsState()
+
+    var showFabMenu by remember { mutableStateOf(false) }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -85,6 +108,35 @@ fun AllFilesScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
+        },
+        floatingActionButton = {
+            Column(horizontalAlignment = Alignment.End) {
+                if (showFabMenu) {
+                    SmallFloatingActionButton(
+                        onClick = {
+                            viewModel.requestCreateFolderDialog(true)
+                            showFabMenu = false
+                        },
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    ) {
+                        Icon(Icons.Filled.CreateNewFolder, stringResource(R.string.fab_create_folder))
+                    }
+                    SmallFloatingActionButton(
+                        onClick = {
+                            filePickerLauncher.launch("*/*")
+                        },
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    ) {
+                        Icon(Icons.Filled.UploadFile, stringResource(R.string.fab_import_file))
+                    }
+                }
+                FloatingActionButton(onClick = { showFabMenu = !showFabMenu }) {
+                    Icon(
+                        imageVector = if (showFabMenu) Icons.Filled.Close else Icons.Filled.Add,
+                        contentDescription = stringResource(R.string.fab_options_toggle)
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         Box(
@@ -169,6 +221,18 @@ fun AllFilesScreen(
                 }
             }
         }
+    }
+
+    // Conditionally display the CreateFolderDialog
+    // It's triggered by viewModel.requestCreateFolderDialog(true)
+    // The ViewModel then sets uiState.showCreateFolderDialog
+    if (uiState.showCreateFolderDialog) {
+        CreateFolderDialog(
+            onDismissRequest = { viewModel.requestCreateFolderDialog(false) },
+            onConfirm = { folderName ->
+                viewModel.createFolder(folderName)
+            }
+        )
     }
 }
 
