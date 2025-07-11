@@ -118,7 +118,42 @@ fun FileImportDialog(progress: Float) {
     )
 }
 
-// Removed corrupted duplicated code block that was here
+
+@Composable
+fun CategoryCard(
+                    icon = Icons.Default.Folder,
+                    title = "All Files",
+                    subtitle = "0 folders, 0 files", // Placeholder
+                    onClick = onNavigateToAllFiles
+                )
+            }
+            item {
+                CategoryCard(
+                    icon = Icons.Default.Image,
+                    title = "Images",
+                    subtitle = "0 files, 0 MB", // Placeholder
+                    onClick = onNavigateToImages
+                )
+            }
+            item {
+                CategoryCard(
+                    icon = Icons.Default.Videocam,
+                    title = "Videos",
+                    subtitle = "0 files, 0 MB", // Placeholder
+                    onClick = onNavigateToVideos
+                )
+            }
+            item {
+                CategoryCard(
+                    icon = Icons.Default.Article,
+                    title = "Documents",
+                    subtitle = "0 files, 0 MB", // Placeholder
+                    onClick = onNavigateToDocuments
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun CategoryCard(
