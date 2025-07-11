@@ -9,12 +9,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import android.widget.Toast
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -47,9 +43,9 @@ fun MainDashboardScreen(
         CreateFolderDialog(
             onDismiss = { showCreateFolderDialog = false },
             onConfirm = { folderName ->
-                viewModel.createFolderInCurrentPath(folderName)
+                viewModel.createFolderInCurrentPath(folderName) // Assuming this method will be added to ViewModel
                 showCreateFolderDialog = false
-                Toast.makeText(context, "Folder '$folderName' creation requested.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Folder '$folderName' creation requested.", Toast.LENGTH_SHORT).show() // User feedback
             }
         )
     }
@@ -185,6 +181,7 @@ fun DashboardLottieAnimation(modifier: Modifier = Modifier) {
 @Composable
 fun MainDashboardScreenPreview() {
     ISecureTheme {
+        // Provide a preview ViewModel if necessary, or use default which has placeholders
         MainDashboardScreen(
             onSettingsClick = {},
             onCategoryClick = {},
@@ -202,12 +199,12 @@ fun CreateFolderDialog(
     var folderName by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create New Folder") },
+        title = { Text("Create New Folder") }, // TODO: String resource
         text = {
             OutlinedTextField(
                 value = folderName,
-                onValueChange = { folderName = it }, // 'it' is implicitly the new String value
-                label = { Text("Folder Name") },    // This is a Composable lambda
+                onValueChange = { folderName = it },
+                label = { Text("Folder Name") }, // TODO: String resource
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
