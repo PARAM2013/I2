@@ -129,3 +129,5 @@ A Row with an Icon (Icons.Default.PhotoFilter) and a Text ("Strip file metadata"
 A Switch on the right to control this setting.
 
 A smaller Text composable below the main label explaining: "Removes location and other EXIF data from photos and videos upon import."
+
+After End of Screen(Footer) set text msg like this "This app is make by KING"
