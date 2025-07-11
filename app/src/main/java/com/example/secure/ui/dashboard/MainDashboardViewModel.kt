@@ -219,4 +219,79 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun clearError() {
         _uiState.update { it.copy(error = null) }
     }
+
+    fun requestUnhideItem(item: Any) {
+        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
+        viewModelScope.launch {
+            val success: Boolean
+            val itemName: String
+            var operationMessage: String
+
+            when (item) {
+                is FileManager.VaultFile -> {
+                    itemName = item.file.name
+                    Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
+                    val unhiddenFile = fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory())
+                    success = unhiddenFile != null
+                    operationMessage = if (success) {
+                        appContext.getString(R.string.file_restored_success) + " ${unhiddenFile?.name}"
+                    } else {
+                        "Failed to unhide file: $itemName"
+                    }
+                }
+                is FileManager.VaultFolder -> {
+                    itemName = item.folder.name
+                    Log.d("MainDashboardVM", "Requesting unhide for folder: $itemName")
+                    success = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
+                    operationMessage = if (success) {
+                        appContext.getString(R.string.file_restored_success) + " Folder: $itemName" // Consider a more folder-specific string
+                    } else {
+                        "Failed to unhide folder: $itemName"
+                    }
+                }
+                else -> {
+                    Log.w("MainDashboardVM", "requestUnhideItem: Unknown item type")
+                    success = false
+                    operationMessage = "Unhide failed: Unknown item type."
+                }
+            }
+
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
+            if (success) {
+                navigateToPath(_currentPath.value) // Refresh content
+            }
+        }
+    }
+
+    fun requestDeleteItem(item: Any) {
+        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
+        viewModelScope.launch {
+            val fileToDelete: File? = when (item) {
+                is FileManager.VaultFile -> item.file
+                is FileManager.VaultFolder -> item.folder
+                else -> null
+            }
+
+            var operationMessage: String
+            var success = false
+
+            if (fileToDelete != null) {
+                Log.d("MainDashboardVM", "Requesting delete for: ${fileToDelete.name}")
+                success = fileManager.deleteFileFromVault(fileToDelete)
+                operationMessage = if (success) {
+                    appContext.getString(R.string.file_delete_success) + " ${fileToDelete.name}"
+                } else {
+                    "Failed to delete: ${fileToDelete.name}"
+                }
+            } else {
+                Log.w("MainDashboardVM", "requestDeleteItem: Unknown item type")
+                operationMessage = "Delete failed: Unknown item type."
+            }
+
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
+            if (success) {
+                navigateToPath(_currentPath.value) // Refresh content
+            }
+        }
+    }
 }

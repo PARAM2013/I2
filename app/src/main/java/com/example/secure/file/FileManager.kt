@@ -153,7 +153,7 @@ object FileManager {
         return false // Item doesn't exist
     }
 
-    fun unhideFile(vaultFile: File, context: Context): File? {
+    fun unhideFile(vaultFile: File, context: Context, destinationDir: File): File? {
         if (!vaultFile.exists() || !vaultFile.isFile) {
             Log.w("FileManager", "Unhide failed: source file does not exist or is not a file: ${vaultFile.path}")
             return null
@@ -163,13 +163,13 @@ object FileManager {
             return null
         }
 
-        val unhideDir = getUnhideDirectory()
-        if (!unhideDir.exists() && !unhideDir.mkdirs()) {
-            Log.e("FileManager", "Failed to create unhide directory: ${unhideDir.path}")
+        // Ensure the specific destination directory exists
+        if (!destinationDir.exists() && !destinationDir.mkdirs()) {
+            Log.e("FileManager", "Failed to create specific destination directory for unhide: ${destinationDir.path}")
             return null
         }
 
-        var destinationFile = File(unhideDir, vaultFile.name)
+        var destinationFile = File(destinationDir, vaultFile.name)
         var counter = 1
         val nameWithoutExt = vaultFile.nameWithoutExtension
         val extension = vaultFile.extension
@@ -534,6 +534,67 @@ object FileManager {
                 destinationFile.delete()
             }
             return null
+        }
+    }
+
+    fun unhideFolderRecursive(folderToUnhide: File, context: Context, baseUnhideDir: File): Boolean {
+        if (!folderToUnhide.exists() || !folderToUnhide.isDirectory) {
+            Log.w("FileManager", "unhideFolderRecursive: source folder does not exist or is not a directory: ${folderToUnhide.path}")
+            return false
+        }
+        if (!folderToUnhide.path.startsWith(getVaultDirectory().path)) {
+            Log.w("FileManager", "unhideFolderRecursive: Attempt to unhide folder outside vault: ${folderToUnhide.path}")
+            return false
+        }
+
+        // Determine target folder name and handle conflicts in the baseUnhideDir
+        var targetUnhiddenFolderPath = File(baseUnhideDir, folderToUnhide.name)
+        var counter = 1
+        val originalName = folderToUnhide.name
+        while (targetUnhiddenFolderPath.exists()) {
+            targetUnhiddenFolderPath = File(baseUnhideDir, "$originalName (${counter++})")
+        }
+
+        if (!targetUnhiddenFolderPath.mkdirs()) {
+            Log.e("FileManager", "unhideFolderRecursive: Failed to create target directory in unhide location: ${targetUnhiddenFolderPath.path}")
+            return false
+        }
+        Log.d("FileManager", "unhideFolderRecursive: Created target folder ${targetUnhiddenFolderPath.path}")
+
+        var allSuccessful = true
+        folderToUnhide.listFiles()?.forEach { item ->
+            if (item.isDirectory) {
+                // Recursively unhide subfolder into the newly created targetUnhiddenFolderPath
+                if (!unhideFolderRecursive(item, context, targetUnhiddenFolderPath)) {
+                    allSuccessful = false
+                    Log.e("FileManager", "unhideFolderRecursive: Failed to unhide subfolder: ${item.name}")
+                    // Decide on error handling: continue or stop? For now, continue and report overall status.
+                }
+            } else { // It's a file
+                // Unhide file into the newly created targetUnhiddenFolderPath
+                val unhiddenFile = unhideFile(item, context, targetUnhiddenFolderPath)
+                if (unhiddenFile == null) {
+                    allSuccessful = false
+                    Log.e("FileManager", "unhideFolderRecursive: Failed to unhide file: ${item.name}")
+                }
+            }
+        }
+
+        if (allSuccessful) {
+            // If all contents were successfully moved, delete the original folder from the vault
+            if (folderToUnhide.deleteRecursively()) {
+                Log.d("FileManager", "unhideFolderRecursive: Successfully unhidden and deleted original folder: ${folderToUnhide.name}")
+                return true
+            } else {
+                Log.e("FileManager", "unhideFolderRecursive: Successfully unhidden contents, but failed to delete original folder: ${folderToUnhide.name}")
+                // This is a partial success state. Contents are unhidden, but original is not cleaned up.
+                return false // Or true, depending on desired strictness. Let's say false if cleanup fails.
+            }
+        } else {
+            Log.e("FileManager", "unhideFolderRecursive: Failed to unhide some contents of folder: ${folderToUnhide.name}. Original folder not deleted.")
+            // Potentially attempt to revert/delete the partially created targetUnhiddenFolderPath?
+            // For now, leave as is to allow user to see what was unhidden.
+            return false
         }
     }
 }

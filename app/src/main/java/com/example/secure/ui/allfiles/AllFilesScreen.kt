@@ -16,8 +16,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu // For Context Menu
+import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -69,6 +72,7 @@ fun AllFilesScreen(
     val currentPath by viewModel.currentPath.collectAsState()
 
     var showFabMenu by remember { mutableStateOf(false) }
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) } // State for expanded menu
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -202,16 +206,46 @@ fun AllFilesScreen(
                         }) { item ->
                             when (item) {
                                 is VaultFolder -> {
-                                    FolderItem(vaultFolder = item, onClick = {
-                                        // Construct new path relative to vault root
-                                        val folderClickedPath = item.folder.relativeTo(FileManager.getVaultDirectory()).path
-                                        viewModel.navigateToPath(folderClickedPath)
-                                    })
+                                    FolderItem(
+                                        vaultFolder = item,
+                                        isMenuExpanded = expandedMenuForItemPath == item.folder.absolutePath,
+                                        onExpandMenu = { expandedMenuForItemPath = item.folder.absolutePath },
+                                        onDismissMenu = { expandedMenuForItemPath = null },
+                                        onUnhideClick = {
+                                            viewModel.requestUnhideItem(item)
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
+                                        onDeleteClick = {
+                                            // TODO: Show confirmation dialog here before calling delete
+                                            viewModel.requestDeleteItem(item)
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
+                                        onClick = {
+                                            // Construct new path relative to vault root
+                                            val folderClickedPath = item.folder.relativeTo(FileManager.getVaultDirectory()).path
+                                            viewModel.navigateToPath(folderClickedPath)
+                                        }
+                                    )
                                 }
                                 is VaultFile -> {
-                                    FileItem(vaultFile = item, onClick = {
-                                        android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
-                                    })
+                                    FileItem(
+                                        vaultFile = item,
+                                        isMenuExpanded = expandedMenuForItemPath == item.file.absolutePath,
+                                        onExpandMenu = { expandedMenuForItemPath = item.file.absolutePath },
+                                        onDismissMenu = { expandedMenuForItemPath = null },
+                                        onUnhideClick = {
+                                            viewModel.requestUnhideItem(item)
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
+                                        onDeleteClick = {
+                                            // TODO: Show confirmation dialog here before calling delete
+                                            viewModel.requestDeleteItem(item)
+                                            expandedMenuForItemPath = null // Close menu
+                                        },
+                                        onClick = {
+                                            android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        }
+                                    )
                                 }
                             }
                             Divider()
@@ -237,7 +271,15 @@ fun AllFilesScreen(
 }
 
 @Composable
-fun FolderItem(vaultFolder: VaultFolder, onClick: () -> Unit) {
+fun FolderItem(
+    vaultFolder: VaultFolder,
+    isMenuExpanded: Boolean,
+    onExpandMenu: () -> Unit,
+    onDismissMenu: () -> Unit,
+    onUnhideClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onClick: () -> Unit
+) {
     ListItem(
         headlineContent = { Text(vaultFolder.folder.name) },
         leadingContent = {
@@ -247,22 +289,59 @@ fun FolderItem(vaultFolder: VaultFolder, onClick: () -> Unit) {
                 modifier = Modifier.size(40.dp)
             )
         },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text("Unhide") }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text("Delete") }, onClick = onDeleteClick)
+                    // Add other items later
+                }
+            }
+        },
         modifier = Modifier.clickable(onClick = onClick)
     )
 }
 
 @Composable
-fun FileItem(vaultFile: VaultFile, onClick: () -> Unit) {
+fun FileItem(
+    vaultFile: VaultFile,
+    isMenuExpanded: Boolean,
+    onExpandMenu: () -> Unit,
+    onDismissMenu: () -> Unit,
+    onUnhideClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onClick: () -> Unit
+) {
     ListItem(
         headlineContent = { Text(vaultFile.file.name) },
         supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
         leadingContent = {
-            // TODO: Could use vaultFile.category to show different icons
             Icon(
                 Icons.Filled.Description, // Generic file icon
                 contentDescription = stringResource(R.string.file_icon_desc),
                 modifier = Modifier.size(40.dp)
             )
+        },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // Same string
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text("Unhide") }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text("Delete") }, onClick = onDeleteClick)
+                    // Add other items later
+                }
+            }
         },
         modifier = Modifier.clickable(onClick = onClick)
     )

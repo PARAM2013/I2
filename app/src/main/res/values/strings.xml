@@ -101,5 +101,19 @@
     <string name="folder_icon_desc">Folder</string>
     <string name="file_icon_desc">File</string>
     <string name="file_size_kb">%1$d KB</string>
+    <string name="context_menu_description">More options</string> <!-- For three-dots icon -->
+    <string name="button_confirm">Confirm</string> <!-- Generic confirm button text -->
+
+    <!-- Context Menu Items -->
+    <string name="context_menu_unhide">Unhide</string>
+    <string name="context_menu_view">View</string>
+    <string name="context_menu_rename">Rename</string>
+    <string name="context_menu_move">Move</string>
+    <!-- "Delete" uses existing R.string.button_delete -->
+
+    <!-- Generic Delete Confirmation (can be used for folders or files if specific one isn't suitable) -->
+    <string name="confirm_delete_item_message">Are you sure you want to permanently delete \'%1$s\'? This action cannot be undone.</string>
+    <string name="confirm_delete_folder_message">Are you sure you want to permanently delete the folder \'%1$s\' and all its contents? This action cannot be undone.</string>
+
 
 </resources>
