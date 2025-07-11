@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -98,13 +99,13 @@ class MainActivity : TrackedActivity() {
                     intent.addCategory("android.intent.category.DEFAULT")
                     intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
                     // manageStoragePermissionLauncher.launch(intent) // Use if launcher is active
-                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_CODE) // Fallback if launcher not used here
+                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) // Fallback if launcher not used here
                     Toast.makeText(this, "Requesting MANAGE_EXTERNAL_STORAGE permission.", Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     val intent = Intent()
                     intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
                     // manageStoragePermissionLauncher.launch(intent) // Use if launcher is active
-                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_CODE) // Fallback
+                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) // Fallback
                     Toast.makeText(this, "Requesting MANAGE_EXTERNAL_STORAGE permission (generic).", Toast.LENGTH_LONG).show()
                 }
             } else {
@@ -126,7 +127,7 @@ class MainActivity : TrackedActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == FileManager.REQUEST_STORAGE_PERMISSION_CODE_LEGACY) {
+        if (requestCode == FileManager.REQUEST_STORAGE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 Toast.makeText(this, "Storage permissions granted.", Toast.LENGTH_SHORT).show()
                 loadVaultContentInitial()
@@ -139,7 +140,7 @@ class MainActivity : TrackedActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FileManager.REQUEST_MANAGE_STORAGE_CODE) {
+        if (requestCode == FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
