@@ -127,5 +127,26 @@
     <string name="rename_failed">Failed to rename \'%1$s\'.</string>
     <string name="rename_failed_exists">Failed to rename. An item named \'%1$s\' already exists.</string>
 
+    <!-- Image Viewer -->
+    <string name="title_image_viewer">Image Viewer</string>
+    <string name="no_images_to_display">No images to display.</string>
+    <string name="image_viewer_content_desc">Image %1$d</string>
+    <string name="image_thumbnail_desc">Image thumbnail</string> <!-- For AllFilesScreen -->
+    <string name="video_thumbnail_desc">Video thumbnail</string> <!-- For AllFilesScreen -->
+
+    <!-- Video Player -->
+    <string name="title_video_player">Video Player</string>
+    <string name="no_videos_to_display">No videos to display.</string>
+
+    <!-- Gallery Screen -->
+    <string name="title_gallery">Gallery</string>
+    <string name="gallery_filter_icon_desc">Filter gallery</string>
+    <string name="gallery_filter_all">All</string>
+    <string name="gallery_filter_images">Images Only</string>
+    <string name="gallery_filter_videos">Videos Only</string>
+    <string name="gallery_empty_images">No images found in your vault.</string>
+    <string name="gallery_empty_videos">No videos found in your vault.</string>
+    <string name="gallery_empty_all">Your gallery is empty. Add some photos or videos!</string>
+    <string name="video_indicator_desc">Video indicator</string>
 
 </resources>

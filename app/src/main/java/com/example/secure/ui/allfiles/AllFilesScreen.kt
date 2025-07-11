@@ -74,6 +74,7 @@ import android.content.Intent
 import android.webkit.MimeTypeMap
 import androidx.compose.material.icons.filled.Movie // For video icon
 import androidx.compose.material.icons.filled.Image // For photo icon
+import androidx.compose.ui.res.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -271,7 +272,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onClick = {
-                                            android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                            viewModel.onFileClicked(item)
                                         }
                                     )
                                 }
@@ -383,11 +384,29 @@ fun FileItem(
         headlineContent = { Text(vaultFile.file.name) },
         supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
         leadingContent = {
-            Icon(
-                Icons.Filled.Description, // Generic file icon
-                contentDescription = stringResource(R.string.file_icon_desc),
-                modifier = Modifier.size(40.dp)
-            )
+            when (vaultFile.category) {
+                FileManager.FileCategory.PHOTO -> AsyncImage(
+                    model = vaultFile.file,
+                    contentDescription = stringResource(R.string.image_thumbnail_desc),
+                    modifier = Modifier.size(40.dp),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.ic_placeholder_image), // Replace with your placeholder
+                    error = painterResource(id = R.drawable.ic_error_image) // Replace with your error image
+                )
+                FileManager.FileCategory.VIDEO -> AsyncImage(
+                    model = vaultFile.file, // Coil can generate thumbnails for local videos
+                    contentDescription = stringResource(R.string.video_thumbnail_desc),
+                    modifier = Modifier.size(40.dp),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.ic_placeholder_video), // Replace with your placeholder
+                    error = painterResource(id = R.drawable.ic_error_video) // Replace with your error image
+                )
+                else -> Icon(
+                    Icons.Filled.Description, // Generic file icon for documents/other
+                    contentDescription = stringResource(R.string.file_icon_desc),
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         },
         trailingContent = {
             Box {

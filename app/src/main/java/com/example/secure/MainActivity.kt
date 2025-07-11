@@ -41,8 +41,9 @@ class MainActivity : TrackedActivity() {
     object NavRoutes {
         const val DASHBOARD = "dashboard"
         const val ALL_FILES = "all_files"
-        const val IMAGE_VIEWER = "image_viewer"
-        const val VIDEO_PLAYER = "video_player"
+        const val IMAGE_VIEWER = "image_viewer" // Existing, but ensure args are consistent
+        const val VIDEO_PLAYER = "video_player" // Existing, but ensure args are consistent
+        const val GALLERY_SCREEN = "gallery_screen"
 
         // Argument names
         const val ARG_ITEM_PATH = "itemPath" // For initially selected item
@@ -69,11 +70,13 @@ class MainActivity : TrackedActivity() {
                                 },
                                 onCategoryClick = { categoryId ->
                                     Log.d("MainActivity", "Category clicked: $categoryId")
-                                    if (categoryId == "all_files") {
-                                        navController.navigate(NavRoutes.ALL_FILES)
-                                    } else {
-                                        // Handle other category clicks if necessary, e.g., show a toast or navigate to specific filtered views
-                                        Toast.makeText(this@MainActivity, "Category Clicked: $categoryId (Not 'All Files')", Toast.LENGTH_SHORT).show()
+                                     when (categoryId) {
+                                         "all_files" -> navController.navigate(NavRoutes.ALL_FILES)
+                                         "gallery" -> navController.navigate(NavRoutes.GALLERY_SCREEN)
+                                         else -> {
+                                             // Handle other category clicks if necessary
+                                             Toast.makeText(this@MainActivity, "Category Clicked: $categoryId", Toast.LENGTH_SHORT).show()
+                                         }
                                     }
                                 }
                             )
@@ -97,14 +100,11 @@ class MainActivity : TrackedActivity() {
                             val initialIndex = backStackEntry.arguments?.getInt(NavRoutes.ARG_INITIAL_INDEX) ?: 0
                             val mediaUrisString = backStackEntry.arguments?.getString(NavRoutes.ARG_MEDIA_URIS) ?: ""
                             val mediaUris = mediaUrisString.split(",").map { URLDecoder.decode(it, Charsets.UTF_8.name()) }
-                            // ImageViewerScreen(
-                            //     navController = navController,
-                            //     imageUris = mediaUris,
-                            //     initialIndex = initialIndex
-                            // )
-                            // Placeholder until ImageViewerScreen is created
-                            Toast.makeText(this@MainActivity, "ImageViewer: $initialIndex, URIs: $mediaUris", Toast.LENGTH_LONG).show()
-                            Log.d("NAV", "ImageViewer: Initial Index: $initialIndex, URIs: $mediaUris")
+                            com.example.secure.ui.viewer.ImageViewerScreen(
+                                navController = navController,
+                                imageUris = mediaUris,
+                                initialIndex = initialIndex
+                            )
                         }
                         composable(
                             route = "${NavRoutes.VIDEO_PLAYER}/{${NavRoutes.ARG_INITIAL_INDEX}}?${NavRoutes.ARG_MEDIA_URIS}={${NavRoutes.ARG_MEDIA_URIS}}",
@@ -116,14 +116,21 @@ class MainActivity : TrackedActivity() {
                             val initialIndex = backStackEntry.arguments?.getInt(NavRoutes.ARG_INITIAL_INDEX) ?: 0
                             val mediaUrisString = backStackEntry.arguments?.getString(NavRoutes.ARG_MEDIA_URIS) ?: ""
                             val mediaUris = mediaUrisString.split(",").map { URLDecoder.decode(it, Charsets.UTF_8.name()) }
-                            // VideoPlayerScreen(
+                            com.example.secure.ui.viewer.VideoPlayerScreen(
+                                navController = navController,
+                                videoUris = mediaUris,
+                                initialIndex = initialIndex
+                            )
+                        }
+                        composable(NavRoutes.GALLERY_SCREEN) {
+                            // GalleryScreen(
                             //     navController = navController,
-                            //     videoUris = mediaUris,
-                            //     initialIndex = initialIndex
+                            //     viewModel = dashboardViewModel // or a dedicated GalleryViewModel
                             // )
-                            // Placeholder until VideoPlayerScreen is created
-                            Toast.makeText(this@MainActivity, "VideoPlayer: $initialIndex, URIs: $mediaUris", Toast.LENGTH_LONG).show()
-                            Log.d("NAV", "VideoPlayer: Initial Index: $initialIndex, URIs: $mediaUris")
+                            com.example.secure.ui.gallery.GalleryScreen(
+                                navController = navController,
+                                viewModel = dashboardViewModel
+                            )
                         }
                     }
                 }
