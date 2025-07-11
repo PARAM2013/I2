@@ -127,11 +127,5 @@
     <string name="rename_failed">Failed to rename \'%1$s\'.</string>
     <string name="rename_failed_exists">Failed to rename. An item named \'%1$s\' already exists.</string>
 
-    <!-- Settings Screen specific -->
-    <string name="settings_use_fingerprint">Use Fingerprint</string>
-    <string name="settings_strip_metadata">Strip file metadata</string>
-    <string name="settings_strip_metadata_desc">Removes location and other EXIF data from photos and videos upon import.</string>
-    <!-- R.string.title_settings ("Settings") already exists -->
-    <!-- R.string.settings_change_pin ("Change App PIN") already exists -->
 
 </resources>
