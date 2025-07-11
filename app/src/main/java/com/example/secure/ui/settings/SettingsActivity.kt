@@ -1,28 +1,41 @@
 package com.example.secure.ui.settings
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.example.secure.R
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import com.example.secure.ui.theme.SecureAppTheme
 
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings) // We'll create this layout next
 
-        if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.settings_container, SettingsFragment())
-                .commit()
-        }
-        // Enable the Up button
+        // Action bar setup
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Settings" // Set title for the ActionBar
+
+        setContent {
+            SecureAppTheme { // Assuming you have a custom theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    SettingsScreen(
+                        onNavigateUp = { finish() },
+                        activityContext = this
+                    )
+                }
+            }
+        }
     }
 
-    // Handle the Up button press
+    // Handle the Up button press from the ActionBar
     override fun onSupportNavigateUp(): Boolean {
-        finish() // or super.onSupportNavigateUp() if you have more complex navigation
+        finish()
         return true
     }
 }
