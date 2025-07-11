@@ -57,18 +57,33 @@ import com.example.secure.file.FileManager.VaultFile // Explicit import
 import com.example.secure.file.FileManager.VaultFolder // Explicit import
 import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
 import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
-import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
+import com.example.secure.ui.dashboard.MainDashboardUiState
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
-import java.io.File // Still needed for File objects within VaultFile/VaultFolder
+import java.io.File
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.layout.ContentScale
+import androidx.core.content.FileProvider
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.secure.MainActivity // For NavRoutes
+import com.example.secure.ui.dashboard.NavigationEvent
+import java.net.URLEncoder
+import kotlin.text.Charsets
+import android.content.Intent
+import android.webkit.MimeTypeMap
+import androidx.compose.material.icons.filled.Movie // For video icon
+import androidx.compose.material.icons.filled.Image // For photo icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllFilesScreen(
-    onNavigateBack: () -> Unit,
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigateTo.collectAsState()
     val context = LocalContext.current
     val currentPath by viewModel.currentPath.collectAsState()
 

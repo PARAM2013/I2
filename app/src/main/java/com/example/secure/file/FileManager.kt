@@ -14,6 +14,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import androidx.exifinterface.media.ExifInterface
 import com.example.secure.auth.PinManager
+import java.net.URLConnection
 
 object FileManager {
 
@@ -255,10 +256,14 @@ object FileManager {
         val extension = fileName.substringAfterLast('.', "").lowercase()
         return when (extension) {
             "jpg", "jpeg", "png", "gif", "bmp", "webp" -> FileCategory.PHOTO
-            "mp4", "mkv", "avi", "mov", "wmv", "flv" -> FileCategory.VIDEO
+            "mp4", "mkv", "avi", "mov", "wmv", "flv", "3gp" -> FileCategory.VIDEO // Added 3gp
             "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf" -> FileCategory.DOCUMENT
             else -> FileCategory.OTHER
         }
+    }
+
+    fun getMimeType(file: File): String? {
+        return URLConnection.guessContentTypeFromName(file.name)
     }
 
     fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
