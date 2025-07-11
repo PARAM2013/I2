@@ -8,63 +8,75 @@ import android.os.Looper
 
 object AppGlobalState {
     var isLocked = true // Start as locked, LauncherActivity will decide
-    var currentActivity: AppCompatActivity? = null // Track current foreground activity
-
+    var currentActivity: android.app.Activity? = null // Track current foreground activity, more generic type
     private var inactivityTimer: Timer? = null
     private const val INACTIVITY_TIMEOUT_MS = 90000L // 90 seconds
     private val handler = Handler(Looper.getMainLooper())
 
-    fun onActivityResumed(activity: AppCompatActivity) {
+    fun onActivityResumed(activity: android.app.Activity) { // Use android.app.Activity
         currentActivity = activity
-        // Add LauncherActivity to the list of activities that don't get auto-redirected to LockScreen
-        if (isLocked && activity !is com.example.secure.ui.lockscreen.LockScreenActivity &&
-            activity !is com.example.secure.ui.pin.PinSetupActivity &&
-            activity !is com.example.secure.LauncherActivity) {
-            // If the app is supposed to be locked and we are not already on a lock/setup screen, redirect.
-            val intent = android.content.Intent(activity, com.example.secure.ui.lockscreen.LockScreenActivity::class.java)
+        // LauncherActivity now handles its own redirection to PinScreen.
+        // This logic here was to force a lock screen if a regular activity resumed while app was locked.
+        // PinScreen is now the gatekeeper. If MainActivity resumes and isLocked is true, it should redirect.
+        // Let's simplify: if isLocked is true, and the current activity is NOT LauncherActivity (which shows PinScreen),
+        // then it implies an activity behind the PinScreen somehow became active.
+        // This check might be more suited for a BaseActivity for all activities *except* Launcher.
+        if (isLocked && activity !is LauncherActivity && activity is MainActivity) {
+            // If app is locked and MainActivity attempts to resume, redirect to Launcher to show PinScreen
+            val intent = android.content.Intent(activity, LauncherActivity::class.java)
             intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
             activity.startActivity(intent)
             activity.finish()
-            return // Important: stop further execution in the original activity's onResume
+            return
         }
         resetInactivityTimer()
     }
 
-    fun onActivityPaused(activity: AppCompatActivity) {
+    fun onActivityPaused(activity: android.app.Activity) { // Use android.app.Activity
         if (currentActivity == activity) {
-            currentActivity = null
+            // currentActivity = null // Keep currentActivity to know what was last active for timer logic
         }
-        stopInactivityTimer()
-        // Optional: Consider if app should lock immediately when any sensitive activity is paused.
-        // For now, rely on timeout or LauncherActivity re-check.
-        // If MainActivity is paused, we can assume it might go to background.
-        // If it's not LockScreenActivity or PinSetupActivity that is being paused.
-        if (activity is MainActivity) {
-             // If app goes to background from MainActivity, set it to locked after timeout.
-             // The timer is already running, if it fires, it will set isLocked = true.
-             // Or, more aggressively, set isLocked = true after a shorter delay or immediately.
-             // For now, the existing timer will handle this.
+        // When an activity is paused, we start or restart the inactivity timer.
+        // If the app goes to background, and currentActivity was MainActivity, the timer will eventually lock.
+        // If currentActivity is LauncherActivity (showing PinScreen), we don't want to auto-lock based on this timer.
+        // The timer should only run if a data-sensitive activity (like MainActivity) is active.
+        if (currentActivity is MainActivity) {
+             resetInactivityTimer() // Start timer when MainActivity is paused (goes to background)
+        } else {
+            stopInactivityTimer() // Stop timer if PinScreen or other non-sensitive screen is active
         }
     }
 
     fun onUserInteraction() {
-        resetInactivityTimer()
+        // Only reset timer if user is interacting with MainActivity
+        if (currentActivity is MainActivity) {
+            resetInactivityTimer()
+        }
     }
 
     private fun resetInactivityTimer() {
         stopInactivityTimer()
-        if (currentActivity is MainActivity) { // Only run timer if a main app activity is active
+        // Only schedule timer if MainActivity is the current one (or anticipated to be).
+        // This check ensures we don't run the timer when PinScreen is up.
+        if (currentActivity is MainActivity && !isLocked) {
             inactivityTimer = Timer()
             inactivityTimer?.schedule(object : TimerTask() {
                 override fun run() {
                     handler.post {
-                        if (currentActivity is MainActivity) { // Check again, activity might have changed
+                        // Check again: if still in MainActivity and app is not already locked by other means
+                        if (currentActivity is MainActivity && !isLocked) {
                             isLocked = true
-                            // No need to navigate from here, onResume of next activity will handle it,
-                            // or LauncherActivity if app is restarted.
-                            // This ensures if MainActivity is in foreground and timeout occurs,
-                            // next interaction or resume will trigger lock screen.
-                            android.util.Log.d("AppGlobalState", "Inactivity timeout. App is now locked.")
+                            android.util.Log.d("AppGlobalState", "Inactivity timeout. App is now locked. MainActivity was active.")
+                            // Optional: force navigation to LockScreen if MainActivity is still in foreground
+                            // This is aggressive. Usually, the lock is enforced upon next resume.
+                            // currentActivity?.let {
+                            //     if (it is MainActivity && !it.isFinishing) {
+                            //         val intent = android.content.Intent(it, LauncherActivity::class.java)
+                            //         intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            //         it.startActivity(intent)
+                            //         it.finish()
+                            //     }
+                            // }
                         }
                     }
                 }
@@ -75,11 +87,12 @@ object AppGlobalState {
     private fun stopInactivityTimer() {
         inactivityTimer?.cancel()
         inactivityTimer = null
+        android.util.Log.d("AppGlobalState", "Inactivity timer stopped.")
     }
 }
 
 // BaseActivity to automatically register with AppGlobalState
-abstract class TrackedActivity : AppCompatActivity() {
+abstract class TrackedActivity : AppCompatActivity() { // Keep AppCompatActivity if other features rely on it
     override fun onResume() {
         super.onResume()
         AppGlobalState.onActivityResumed(this)
