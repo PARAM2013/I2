@@ -190,39 +190,20 @@ fun FileItem(vaultFile: VaultFile, onClick: () -> Unit) {
 @Composable
 fun AllFilesScreenPreview() {
     ISecureTheme {
+        // To fix compilation errors related to anonymous subclassing a final class
+        // and accessing private state, we directly instantiate MainDashboardViewModel.
+        // The preview will show the ViewModel's state after its init block runs.
+        // For a data-rich preview with specific VaultStats, MainDashboardViewModel
+        // would need to be designed for easier state injection in previews (e.g., via constructor or a test helper).
         val previewApplication = LocalContext.current.applicationContext as Application
-        val fakeViewModel = object : MainDashboardViewModel(previewApplication) {
-            init {
-                val fakeBaseDir = previewApplication.cacheDir
-                val folderAFile = File(fakeBaseDir, "FolderA (Preview)")
-                val folderBFile = File(fakeBaseDir, "FolderB (Preview)")
-                val file1Obj = File(fakeBaseDir, "Document.pdf")
-                val file2Obj = File(fakeBaseDir, "Holiday Photo.jpg")
+        val viewModelForPreview = MainDashboardViewModel(previewApplication)
 
-                val previewFolders = listOf(
-                    VaultFolder(folder = folderAFile),
-                    VaultFolder(folder = folderBFile)
-                )
-                val previewFiles = listOf(
-                    VaultFile(file = file1Obj, category = FileManager.FileCategory.DOCUMENT, size = 434567),
-                    VaultFile(file = file2Obj, category = FileManager.FileCategory.PHOTO, size = 800000)
-                )
+        // You could potentially create a more elaborate FakeMainDashboardViewModel if needed,
+        // but this direct instantiation fixes the compile errors.
+        // If you want to show specific data in preview without modifying the actual ViewModel,
+        // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
+        // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
 
-                _uiState.value = MainDashboardUiState(
-                    isLoading = false,
-                    vaultStats = FileManager.VaultStats(
-                        allFiles = previewFiles.toMutableList(),
-                        allFolders = previewFolders.toMutableList(),
-                        grandTotalFiles = 2,
-                        grandTotalFolders = 2,
-                        grandTotalSize = 1234567,
-                        totalPhotoFiles = 1, totalPhotoSize = 800000,
-                        totalDocumentFiles = 1, totalDocumentSize = 434567
-                        // Other stats can be 0 or default
-                    )
-                )
-            }
-        }
-        AllFilesScreen(onNavigateBack = {}, viewModel = fakeViewModel)
+        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview)
     }
 }
