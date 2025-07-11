@@ -181,7 +181,7 @@ object FileManager {
             } else {
                 "$nameWithoutExt (${counter++}).$extension"
             }
-            destinationFile = File(unhideDir, newName)
+            destinationFile = File(destinationDir, newName) // Corrected to use destinationDir
         }
 
         try {
