@@ -8,9 +8,9 @@ Layout:
 
 A Column centered vertically, occupying the full screen.
 
-Welcome Animation (Top Section):
+Welcome Text (Top Section):
 
-A large area at the top dedicated to a Lottie animation. This will provide a visually engaging welcome to the user. A secure-themed or abstract animation is recommended.
+animation already added in current, use same.
 
 Authentication Area (Bottom Section):
 
@@ -30,8 +30,6 @@ An IconButton on the right for backspace.
 
 Component Usage:
 
-Lottie-Compose Library: To render the Lottiefile animation.
-
 Scaffold: For the basic screen structure.
 
 Column/Row: For vertical and horizontal arrangement.
@@ -44,13 +42,17 @@ TextButton: For the numeric keys.
 
 User Interaction:
 
-On app open, the animation plays.
+On app open, 
 
 The user can either tap the fingerprint icon to authenticate instantly or start typing their PIN.
 
 PIN indicators update in real-time as the user types.
 
 Once four digits are entered, the app automatically processes the PIN.
+
+
+
+
 
 # Main Dashboard Screen
 Layout:
