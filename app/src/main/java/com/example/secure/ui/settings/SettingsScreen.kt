@@ -206,12 +206,13 @@ private fun shareApplication(context: Context) { // Context is already imported 
             return
         }
 
+        val appName = try { context.getString(R.string.app_name) } catch (e: Exception) { "this app" }
+
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "application/vnd.android.package-archive"
             putExtra(Intent.EXTRA_STREAM, contentUri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             // Add a subject and text for a richer share experience
-            val appName = try { context.getString(R.string.app_name) } catch (e: Exception) { "this app" }
             putExtra(Intent.EXTRA_SUBJECT, "Sharing $appName")
             putExtra(Intent.EXTRA_TEXT, "Check out $appName!")
         }
