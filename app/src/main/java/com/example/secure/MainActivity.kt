@@ -12,10 +12,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,60 +19,49 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.secure.file.FileManager
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.files.FileBrowserScreen // Import the new screen
 import com.example.secure.ui.theme.ISecureTheme
-
-// Define an enum or sealed class for screen states if navigation becomes more complex
-enum class CurrentScreen {
-    DASHBOARD,
-    FILE_BROWSER
-    // Add other screens like IMAGE_VIEWER, VIDEO_PLAYER, DOCUMENT_VIEWER, SETTINGS etc.
-}
 
 class MainActivity : TrackedActivity() {
 
-    // ... other properties ...
+    // Permission launchers can be defined if MainActivity directly handles file picking.
+    // For now, FAB click is generic.
+    // private lateinit var manageStoragePermissionLauncher: ActivityResultLauncher<Intent>
+    // private lateinit var pickFileLauncher: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        setContent {
-            var currentScreen by remember { mutableStateOf(CurrentScreen.DASHBOARD) }
-            val dashboardViewModel: MainDashboardViewModel = viewModel()
+        // Initialize permission launchers if needed by MainActivity later
+        // setupPermissionLaunchers()
 
+        setContent {
+            val dashboardViewModel: MainDashboardViewModel = viewModel() // ViewModel instance
             ISecureTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    when (currentScreen) {
-                        CurrentScreen.DASHBOARD -> {
-                            MainDashboardScreen(
-                                viewModel = dashboardViewModel,
-                                onSettingsClick = {
-                                    startActivity(Intent(this, com.example.secure.ui.settings.SettingsActivity::class.java))
-                                },
-                                onCategoryClick = { categoryId ->
-                                    if (categoryId == "all_files") {
-                                        currentScreen = CurrentScreen.FILE_BROWSER
-                                    } else {
-                                        Toast.makeText(this, "Category Clicked: $categoryId (Navigation TBD)", Toast.LENGTH_SHORT).show()
-                                        Log.d("MainActivity", "Category clicked: $categoryId")
-                                    }
-                                },
-                                onFabClick = {
-                                    Toast.makeText(this, "FAB Clicked - TODO: Show options", Toast.LENGTH_LONG).show()
-                                    Log.d("MainActivity", "FAB Clicked - Placeholder action")
-                                }
-                            )
+                    MainDashboardScreen(
+                        viewModel = dashboardViewModel,
+                        onSettingsClick = {
+                            startActivity(Intent(this, com.example.secure.ui.settings.SettingsActivity::class.java))
+                        },
+                        onCategoryClick = { categoryId ->
+                            // Handle navigation or action based on categoryId
+                            Toast.makeText(this, "Category Clicked: $categoryId", Toast.LENGTH_SHORT).show()
+                            Log.d("MainActivity", "Category clicked: $categoryId")
+                            // TODO: Implement actual navigation based on categoryId
+                            // when (categoryId) {
+                            //     "all_files" -> navController.navigate("all_files_route")
+                            //     "images" -> navController.navigate("images_route")
+                            //     ...
+                            // }
+                        },
+                        onFabClick = {
+                            // Handle FAB click, e.g., show a dialog to choose import file/folder or create folder
+                            Toast.makeText(this, "FAB Clicked - TODO: Show options (e.g., Import File/Folder, Create Folder)", Toast.LENGTH_LONG).show()
+                            Log.d("MainActivity", "FAB Clicked - Placeholder action")
+                            // TODO: Implement options for FAB (e.g., BottomSheetDialogFragment or another Composable dialog)
                         }
-                        CurrentScreen.FILE_BROWSER -> {
-                            FileBrowserScreen(
-                                onNavigateUp = {
-                                    currentScreen = CurrentScreen.DASHBOARD // Navigate back to dashboard
-                                }
-                            )
-                        }
-                        // Add cases for other screens as they are implemented
-                    }
+                    )
                 }
             }
         }

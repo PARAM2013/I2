@@ -33,22 +33,10 @@ fun MainDashboardScreen(
     viewModel: MainDashboardViewModel = viewModel(),
     onSettingsClick: () -> Unit,
     onCategoryClick: (String) -> Unit, // Pass category ID or route
-    onFabClick: () -> Unit // This will now trigger the dialog
+    onFabClick: () -> Unit
 ) {
     val context = LocalContext.current
     val categories by viewModel.categories.collectAsState()
-    var showCreateFolderDialog by remember { mutableStateOf(false) }
-
-    if (showCreateFolderDialog) {
-        CreateFolderDialog(
-            onDismiss = { showCreateFolderDialog = false },
-            onConfirm = { folderName ->
-                viewModel.createFolderInCurrentPath(folderName) // Assuming this method will be added to ViewModel
-                showCreateFolderDialog = false
-                Toast.makeText(context, "Folder '$folderName' creation requested.", Toast.LENGTH_SHORT).show() // User feedback
-            }
-        )
-    }
 
     ISecureTheme {
         Scaffold(
@@ -66,10 +54,10 @@ fun MainDashboardScreen(
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { showCreateFolderDialog = true }) { // Updated onClick
+                FloatingActionButton(onClick = onFabClick) {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Create or Import" // TODO: Use string resource e.g. R.string.fab_create_or_import
+                        contentDescription = stringResource(R.string.fab_import_file) // Updated to a more generic or specific string
                     )
                 }
             }
@@ -187,53 +175,6 @@ fun MainDashboardScreenPreview() {
             onCategoryClick = {},
             onFabClick = {}
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CreateFolderDialog(
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var folderName by remember { mutableStateOf("") }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Create New Folder") }, // TODO: String resource
-        text = {
-            OutlinedTextField(
-                value = folderName,
-                onValueChange = { folderName = it },
-                label = { Text("Folder Name") }, // TODO: String resource
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    if (folderName.isNotBlank()) {
-                        onConfirm(folderName)
-                    }
-                },
-                enabled = folderName.isNotBlank()
-            ) {
-                Text("Create") // TODO: String resource
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancel") // TODO: String resource
-            }
-        }
-    )
-}
-
-@Preview
-@Composable
-fun CreateFolderDialogPreview() {
-    ISecureTheme {
-        CreateFolderDialog(onDismiss = {}, onConfirm = {})
     }
 }
 

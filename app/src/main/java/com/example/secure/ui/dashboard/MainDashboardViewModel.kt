@@ -9,13 +9,11 @@ import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.secure.file.FileManager
+import com.example.secure.file.FileManager // Will be used later for actual data
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import android.util.Log
-import android.widget.Toast
 
 data class DashboardCategoryItem(
     val id: String,
@@ -30,8 +28,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private val _categories = MutableStateFlow<List<DashboardCategoryItem>>(emptyList())
     val categories: StateFlow<List<DashboardCategoryItem>> = _categories.asStateFlow()
 
-    private val fileManager = FileManager // Re-introduce FileManager
-    private val app = application // For context if needed by FileManager or for Toasts
+    // private val fileManager = FileManager // To be used later
+    // private val context = application.applicationContext // To be used later
 
     init {
         loadDashboardCategories()
@@ -39,56 +37,36 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     private fun loadDashboardCategories() {
         viewModelScope.launch {
+            // In a real app, you would fetch data from FileManager or a repository
+            // For example, count files in each category, total sizes, etc.
             // For now, using placeholder data.
-            // TODO: Later, update subtitles by fetching data from FileManager (e.g., counts, sizes)
             val placeholderCategories = listOf(
                 DashboardCategoryItem(
                     id = "all_files",
                     title = "All Files",
-                    subtitle = "Browse all files and folders", // Updated placeholder
+                    subtitle = "0 folders, 0 files", // Placeholder
                     icon = Icons.Filled.Folder
                 ),
                 DashboardCategoryItem(
                     id = "images",
                     title = "Images",
-                    subtitle = "View your images", // Updated placeholder
+                    subtitle = "0 files, 0 MB", // Placeholder
                     icon = Icons.Filled.Image
                 ),
                 DashboardCategoryItem(
                     id = "videos",
                     title = "Videos",
-                    subtitle = "Watch your videos", // Updated placeholder
+                    subtitle = "0 files, 0 MB", // Placeholder
                     icon = Icons.Filled.Videocam
                 ),
                 DashboardCategoryItem(
                     id = "documents",
                     title = "Documents",
-                    subtitle = "Read your documents", // Updated placeholder
+                    subtitle = "0 files, 0 MB", // Placeholder
                     icon = Icons.Filled.Article
                 )
             )
             _categories.value = placeholderCategories
-        }
-    }
-
-    fun createFolderInCurrentPath(folderName: String) {
-        viewModelScope.launch {
-            // For the main dashboard, "current path" is always the vault root for creating new top-level folders.
-            // If folder creation was context-dependent (e.g., inside another folder),
-            // this ViewModel would need to manage a currentPath state.
-            // For now, we assume creation is at the root of the vault.
-            Log.d("MainDashboardViewModel", "Attempting to create folder: $folderName at vault root.")
-            val newFolder = fileManager.createSubFolderInVault(folderName, null) // null for root path
-            if (newFolder != null) {
-                Log.i("MainDashboardViewModel", "Folder '$folderName' created successfully at ${newFolder.absolutePath}")
-                // Optionally, show a success message to the user via a StateFlow event or similar
-                // For now, the Toast is in the Composable.
-                // If categories needed updating (e.g., 'All Files' subtitle), call loadDashboardCategories() or a specific update method.
-            } else {
-                Log.e("MainDashboardViewModel", "Failed to create folder '$folderName' at vault root.")
-                // Optionally, show an error message
-                Toast.makeText(app, "Failed to create folder '$folderName'", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
