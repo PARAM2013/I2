@@ -76,7 +76,7 @@ fun MainDashboardScreen(
                     actions = {
                         IconButton(onClick = onSettingsClick) {
                             Icon(
-                                imageVector = Icons.Filled.MoreVert,
+                                imageVector = Icons.Filled.Settings, // Changed Icon
                                 contentDescription = stringResource(R.string.title_settings)
                             )
                         }
