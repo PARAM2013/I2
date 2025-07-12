@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -47,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import androidx.compose.foundation.Image
 import androidx.activity.compose.rememberLauncherForActivityResult // For FAB
 import androidx.activity.result.contract.ActivityResultContracts // For FAB
 import androidx.compose.material.icons.filled.Add // For FAB
@@ -280,7 +280,12 @@ fun AllFilesScreen(
                                             onClick = {
                                                 android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
                                             },
-                                            isGridView = isGridView
+                                            isGridView = isGridView,
+                                            onShareClick = {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                    viewModel.shareFile(item)
+                                                }
+                                            }
                                         )
                                     }
                                 }
@@ -345,7 +350,13 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
-                                            }
+                                            },
+                                            onShareClick = {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                    viewModel.shareFile(item)
+                                                }
+                                            },
+                                            isGridView = isGridView
                                         )
                                     }
                                 }
@@ -433,9 +444,6 @@ fun FolderItem(
                 ) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
-                    if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
-                        DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
-                    }
                     DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
                     // Add other items later
                 }
@@ -487,6 +495,9 @@ fun FileItem(
                 ) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
+                    }
                     DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
                     // Add other items later
                 }
