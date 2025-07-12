@@ -197,7 +197,8 @@ fun VideosScreen(
                                     onClick = {
                                         android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
                                     },
-                                    isGridView = isGridView
+                                    isGridView = isGridView,
+                                    onShareClick = {}
                                 )
                             }
                         }
@@ -226,7 +227,8 @@ fun VideosScreen(
                                     onClick = {
                                         android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
                                     },
-                                    isGridView = isGridView
+                                    isGridView = isGridView,
+                                    onShareClick = {}
                                 )
                                 Divider()
                             }
