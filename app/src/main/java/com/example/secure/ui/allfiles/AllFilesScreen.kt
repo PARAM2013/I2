@@ -195,6 +195,8 @@ fun AllFilesScreen(
                     combinedList.addAll(files.sortedBy { it.file.name.lowercase() })
                 }
 
+                // This explicit isEmpty check after combining might be redundant if the above condition for empty state is robust.
+                // However, keeping it for safety in case vaultStats is not null but lists are empty.
                 if (combinedList.isEmpty()) {
                     Column(
                         modifier = Modifier
@@ -233,6 +235,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onDeleteClick = {
+                                            // TODO: Show confirmation dialog here before calling delete
                                             viewModel.requestDeleteItem(item)
                                             expandedMenuForItemPath = null // Close menu
                                         },
@@ -242,6 +245,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onClick = {
+                                            // Construct new path relative to vault root
                                             val folderClickedPath = item.folder.relativeTo(FileManager.getVaultDirectory()).path
                                             viewModel.navigateToPath(folderClickedPath)
                                         }
@@ -258,6 +262,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onDeleteClick = {
+                                            // TODO: Show confirmation dialog here before calling delete
                                             viewModel.requestDeleteItem(item)
                                             expandedMenuForItemPath = null // Close menu
                                         },
@@ -281,6 +286,9 @@ fun AllFilesScreen(
         }
     }
 
+    // Conditionally display the CreateFolderDialog
+    // It's triggered by viewModel.requestCreateFolderDialog(true)
+    // The ViewModel then sets uiState.showCreateFolderDialog
     if (uiState.showCreateFolderDialog) {
         CreateFolderDialog(
             onDismissRequest = { viewModel.requestCreateFolderDialog(false) },
@@ -294,9 +302,9 @@ fun AllFilesScreen(
         val currentName = when (itemToRename) {
             is VaultFile -> (itemToRename as VaultFile).file.name
             is VaultFolder -> (itemToRename as VaultFolder).folder.name
-            else -> ""
+            else -> "" // Should not happen if itemToRename is set correctly
         }
-        if (currentName.isNotEmpty()) {
+        if (currentName.isNotEmpty()) { // Proceed only if we have a valid current name
             RenameItemDialog(
                 currentItemName = currentName,
                 onDismissRequest = {
@@ -305,11 +313,16 @@ fun AllFilesScreen(
                 },
                 onConfirm = { newName ->
                     viewModel.requestRenameItem(itemToRename!!, newName)
+                    // Dialog is dismissed and itemToRename reset by RenameItemDialog's onConfirm logic
+                    // if successful, or if name is same/empty.
+                    // ViewModel will update isLoading and fileOperationResult.
+                    // No, RenameItemDialog's onConfirm doesn't dismiss itself if onConfirm is called.
+                    // The caller of RenameItemDialog is responsible for dismissing it.
                     showRenameDialog = false
                     itemToRename = null
                 }
             )
-        } else {
+        } else { // Reset state if currentName is somehow empty, to avoid showing dialog with no name
             showRenameDialog = false
             itemToRename = null
         }
@@ -317,16 +330,42 @@ fun AllFilesScreen(
 }
 
 @Composable
-fun FolderItem(
-    vaultFolder: VaultFolder,
-    isMenuExpanded: Boolean,
-    onExpandMenu: () -> Unit,
-    onDismissMenu: () -> Unit,
-    onUnhideClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRenameClick: () -> Unit,
-    onClick: () -> Unit
+fun AllFilesScreen(
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
+    viewModel: MainDashboardViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigateTo.collectAsState()
+    val context = LocalContext.current
+    val currentPath by viewModel.currentPath.collectAsState()
+
+    var showFabMenu by remember { mutableStateOf(false) }
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
+    var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
+
+    @Composable
+    fun FolderItem(
+        vaultFolder: VaultFolder,
+        isMenuExpanded: Boolean,
+        onExpandMenu: () -> Unit,
+        onDismissMenu: () -> Unit,
+        onUnhideClick: () -> Unit,
+        onDeleteClick: () -> Unit,
+        onRenameClick: () -> Unit,
+        onClick: () -> Unit
+    ) {
     ListItem(
         headlineContent = { Text(vaultFolder.folder.name) },
         leadingContent = {
@@ -339,15 +378,82 @@ fun FolderItem(
         trailingContent = {
             Box {
                 IconButton(onClick = onExpandMenu) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description))
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
                 }
                 DropdownMenu(
                     expanded = isMenuExpanded,
                     onDismissRequest = onDismissMenu
                 ) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
                     DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
+                }
+            }
+        },
+        modifier = Modifier.clickable(onClick = onClick)
+    )
+}
+
+@Composable
+fun AllFilesScreen(
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
+    viewModel: MainDashboardViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigateTo.collectAsState()
+    val context = LocalContext.current
+    val currentPath by viewModel.currentPath.collectAsState()
+
+    var showFabMenu by remember { mutableStateOf(false) }
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
+    var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
+
+    @Composable
+    fun FolderItem(
+        vaultFolder: VaultFolder,
+        isMenuExpanded: Boolean,
+        onExpandMenu: () -> Unit,
+        onDismissMenu: () -> Unit,
+        onUnhideClick: () -> Unit,
+        onDeleteClick: () -> Unit,
+        onRenameClick: () -> Unit,
+        onClick: () -> Unit
+    ) {
+    ListItem(
+        headlineContent = { Text(vaultFolder.folder.name) },
+        leadingContent = {
+            Icon(
+                Icons.Filled.Folder,
+                contentDescription = stringResource(R.string.folder_icon_desc),
+                modifier = Modifier.size(40.dp)
+            )
+        },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
                 }
             }
         },
@@ -376,19 +482,19 @@ fun FileItem(
                     contentDescription = stringResource(R.string.image_thumbnail_desc),
                     modifier = Modifier.size(40.dp),
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(id = R.drawable.ic_placeholder_image),
-                    error = painterResource(id = R.drawable.ic_error_image)
+                    placeholder = painterResource(id = R.drawable.ic_placeholder_image), // Replace with your placeholder
+                    error = painterResource(id = R.drawable.ic_error_image) // Replace with your error image
                 )
                 FileManager.FileCategory.VIDEO -> AsyncImage(
-                    model = vaultFile.file,
+                    model = vaultFile.file, // Coil can generate thumbnails for local videos
                     contentDescription = stringResource(R.string.video_thumbnail_desc),
                     modifier = Modifier.size(40.dp),
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(id = R.drawable.ic_placeholder_video),
-                    error = painterResource(id = R.drawable.ic_error_video)
+                    placeholder = painterResource(id = R.drawable.ic_placeholder_video), // Replace with your placeholder
+                    error = painterResource(id = R.drawable.ic_error_video) // Replace with your error image
                 )
                 else -> Icon(
-                    Icons.Filled.Description,
+                    Icons.Filled.Description, // Generic file icon for documents/other
                     contentDescription = stringResource(R.string.file_icon_desc),
                     modifier = Modifier.size(40.dp)
                 )
@@ -397,15 +503,16 @@ fun FileItem(
         trailingContent = {
             Box {
                 IconButton(onClick = onExpandMenu) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description))
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // Same string
                 }
                 DropdownMenu(
                     expanded = isMenuExpanded,
                     onDismissRequest = onDismissMenu
                 ) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
                     DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
                 }
             }
         },
@@ -417,8 +524,19 @@ fun FileItem(
 @Composable
 fun AllFilesScreenPreview() {
     ISecureTheme {
+        // To fix compilation errors related to anonymous subclassing a final class
+        // and accessing private state, we directly instantiate MainDashboardViewModel.
+        // The preview will show the ViewModel's state after its init block runs.
+        // For a data-rich preview with specific VaultStats, MainDashboardViewModel
+        // would need to be designed for easier state injection in previews (e.g., via constructor or a test helper).
         val previewApplication = LocalContext.current.applicationContext as Application
         val viewModelForPreview = MainDashboardViewModel(previewApplication)
+
+        // You could potentially create a more elaborate FakeMainDashboardViewModel if needed,
+        // but this direct instantiation fixes the compile errors.
+        // If you want to show specific data in preview without modifying the actual ViewModel,
+        // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
+        // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
         val navController = androidx.navigation.compose.rememberNavController()
         AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview, navController = navController)
     }
