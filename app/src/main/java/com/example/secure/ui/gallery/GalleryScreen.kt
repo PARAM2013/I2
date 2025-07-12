@@ -26,6 +26,7 @@ import coil.compose.AsyncImage
 import com.example.secure.R
 import com.example.secure.file.FileManager
 import com.example.secure.ui.dashboard.MainDashboardViewModel
+import android.net.Uri
 import java.net.URLEncoder
 import kotlin.text.Charsets
 import com.example.secure.MainActivity.NavRoutes // For navigation routes
