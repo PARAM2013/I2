@@ -433,6 +433,9 @@ fun FolderItem(
                 ) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
                     DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
+                    }
                     DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
                     // Add other items later
                 }
@@ -452,6 +455,7 @@ fun FileItem(
     onDeleteClick: () -> Unit,
     onRenameClick: () -> Unit, // New callback
     onClick: () -> Unit,
+    onShareClick: () -> Unit,
     isGridView: Boolean = false
 ) {
     ListItem(

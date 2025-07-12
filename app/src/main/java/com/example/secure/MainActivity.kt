@@ -22,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
 import com.example.secure.ui.allfiles.AllFilesScreen
 import com.example.secure.ui.allfiles.ImagesScreen
+import com.example.secure.ui.allfiles.VideosScreen
+import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -35,6 +37,8 @@ class MainActivity : TrackedActivity() {
         const val DASHBOARD = "dashboard"
         const val ALL_FILES = "all_files"
         const val IMAGES = "images"
+        const val VIDEOS = "videos"
+        const val DOCUMENTS = "documents"
         // Add other routes here if needed
     }
 
@@ -57,13 +61,15 @@ class MainActivity : TrackedActivity() {
                                 },
                                 onCategoryClick = { categoryId ->
                                     Log.d("MainActivity", "Category clicked: $categoryId")
-                                    if (categoryId == "all_files") {
-                                        navController.navigate(NavRoutes.ALL_FILES)
-                                    } else if (categoryId == "images") {
-                                        navController.navigate(NavRoutes.IMAGES)
-                                    } else {
-                                        // Handle other category clicks if necessary, e.g., show a toast or navigate to specific filtered views
-                                        Toast.makeText(this@MainActivity, "Category Clicked: $categoryId (Not 'All Files')", Toast.LENGTH_SHORT).show()
+                                    when (categoryId) {
+                                        "all_files" -> navController.navigate(NavRoutes.ALL_FILES)
+                                        "images" -> navController.navigate(NavRoutes.IMAGES)
+                                        "videos" -> navController.navigate(NavRoutes.VIDEOS)
+                                        "documents" -> navController.navigate(NavRoutes.DOCUMENTS)
+                                        else -> {
+                                            // Handle other category clicks if necessary, e.g., show a toast or navigate to specific filtered views
+                                            Toast.makeText(this@MainActivity, "Category Clicked: $categoryId (Not Implemented)", Toast.LENGTH_SHORT).show()
+                                        }
                                     }
                                 }
                             )
@@ -79,6 +85,22 @@ class MainActivity : TrackedActivity() {
                         composable(NavRoutes.IMAGES) {
                             ImagesScreen(
                                 viewModel = dashboardViewModel, // Pass the ViewModel
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable(NavRoutes.VIDEOS) {
+                            VideosScreen(
+                                viewModel = dashboardViewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable(NavRoutes.DOCUMENTS) {
+                            DocumentsScreen(
+                                viewModel = dashboardViewModel,
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 }

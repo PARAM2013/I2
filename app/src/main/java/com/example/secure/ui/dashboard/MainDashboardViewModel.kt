@@ -36,7 +36,9 @@ data class MainDashboardUiState(
     val fileOperationResult: String? = null, // For toasts/messages
     val showCreateFolderDialog: Boolean = false,
     val vaultStats: FileManager.VaultStats? = null, // To hold all stats
-    val imageFiles: List<FileManager.VaultFile> = emptyList()
+    val imageFiles: List<FileManager.VaultFile> = emptyList(),
+    val videoFiles: List<FileManager.VaultFile> = emptyList(),
+    val documentFiles: List<FileManager.VaultFile> = emptyList()
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -92,6 +94,56 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 Log.e("MainDashboardVM", "Error loading global category stats", e)
                 _uiState.update { oldState ->
                     oldState.copy(categories = globalCategoriesTemplate.map { it.copy(subtitle = "Error") })
+                }
+            }
+        }
+    }
+
+    fun loadAllVideos() {
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
+        viewModelScope.launch {
+            try {
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+                val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        videoFiles = videoFiles,
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error loading all videos", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load videos: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+
+    fun loadAllDocuments() {
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
+        viewModelScope.launch {
+            try {
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+                val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        documentFiles = documentFiles,
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error loading all documents", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load documents: ${e.message}"
+                    )
                 }
             }
         }
@@ -380,6 +432,34 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             // Always refresh, even on failure, to ensure UI consistency or clear selections.
             // If success, this will show the renamed item.
             navigateToPath(_currentPath.value)
+        }
+    }
+
+    fun shareFile(file: FileManager.VaultFile) {
+        viewModelScope.launch {
+            try {
+                val context = getApplication<Application>().applicationContext
+                val uri = androidx.core.content.FileProvider.getUriForFile(
+                    context,
+                    "com.example.secure.provider",
+                    file.file
+                )
+                val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                    type = context.contentResolver.getType(uri)
+                    putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                    addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                val chooser = android.content.Intent.createChooser(intent, "Share File")
+                chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(chooser)
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error sharing file", e)
+                _uiState.update {
+                    it.copy(
+                        error = "Failed to share file: ${e.message}"
+                    )
+                }
+            }
         }
     }
 }

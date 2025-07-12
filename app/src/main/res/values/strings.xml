@@ -109,6 +109,7 @@
     <string name="context_menu_view">View</string>
     <string name="context_menu_rename">Rename</string>
     <string name="context_menu_move">Move</string>
+    <string name="context_menu_share">Share</string>
     <!-- "Delete" uses existing R.string.button_delete -->
 
     <!-- Generic Delete Confirmation (can be used for folders or files if specific one isn't suitable) -->
