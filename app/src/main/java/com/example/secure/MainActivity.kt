@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
 import com.example.secure.ui.allfiles.AllFilesScreen
+import com.example.secure.ui.allfiles.ImagesScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -33,6 +34,7 @@ class MainActivity : TrackedActivity() {
     object NavRoutes {
         const val DASHBOARD = "dashboard"
         const val ALL_FILES = "all_files"
+        const val IMAGES = "images"
         // Add other routes here if needed
     }
 
@@ -57,6 +59,8 @@ class MainActivity : TrackedActivity() {
                                     Log.d("MainActivity", "Category clicked: $categoryId")
                                     if (categoryId == "all_files") {
                                         navController.navigate(NavRoutes.ALL_FILES)
+                                    } else if (categoryId == "images") {
+                                        navController.navigate(NavRoutes.IMAGES)
                                     } else {
                                         // Handle other category clicks if necessary, e.g., show a toast or navigate to specific filtered views
                                         Toast.makeText(this@MainActivity, "Category Clicked: $categoryId (Not 'All Files')", Toast.LENGTH_SHORT).show()
@@ -66,6 +70,14 @@ class MainActivity : TrackedActivity() {
                         }
                         composable(NavRoutes.ALL_FILES) {
                             AllFilesScreen(
+                                viewModel = dashboardViewModel, // Pass the ViewModel
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable(NavRoutes.IMAGES) {
+                            ImagesScreen(
                                 viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()

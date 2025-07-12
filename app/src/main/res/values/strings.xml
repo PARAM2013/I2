@@ -126,6 +126,7 @@
     <string name="error_invalid_name">Invalid name: \'%1$s\'. Name cannot contain /\\:*?\"&lt;&gt;| or be empty.</string>
     <string name="rename_failed">Failed to rename \'%1$s\'.</string>
     <string name="rename_failed_exists">Failed to rename. An item named \'%1$s\' already exists.</string>
+    <string name="action_toggle_view">Toggle view</string>
 
 
 </resources>
