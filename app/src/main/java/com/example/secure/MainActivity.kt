@@ -19,19 +19,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.secure.file.FileManager
 import com.example.secure.ui.allfiles.AllFilesScreen
-// Import new screens once they are created
-// import com.example.secure.ui.viewer.ImageViewerScreen
-// import com.example.secure.ui.viewer.VideoPlayerScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
-import java.net.URLDecoder
-import java.net.URLEncoder
-import kotlin.text.Charsets
 
 class MainActivity : TrackedActivity() {
 
@@ -41,13 +33,7 @@ class MainActivity : TrackedActivity() {
     object NavRoutes {
         const val DASHBOARD = "dashboard"
         const val ALL_FILES = "all_files"
-        const val IMAGE_VIEWER = "image_viewer"
-        const val VIDEO_PLAYER = "video_player"
-
-        // Argument names
-        const val ARG_ITEM_PATH = "itemPath" // For initially selected item
-        const val ARG_INITIAL_INDEX = "initialIndex"
-        const val ARG_MEDIA_URIS = "mediaUris" // List of media item URIs for pager
+        // Add other routes here if needed
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,51 +66,13 @@ class MainActivity : TrackedActivity() {
                         }
                         composable(NavRoutes.ALL_FILES) {
                             AllFilesScreen(
-                                viewModel = dashboardViewModel,
-                                navController = navController, // Pass NavController
+                                viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 }
                             )
                         }
-                        composable(
-                            route = "${NavRoutes.IMAGE_VIEWER}/{${NavRoutes.ARG_INITIAL_INDEX}}?${NavRoutes.ARG_MEDIA_URIS}={${NavRoutes.ARG_MEDIA_URIS}}",
-                            arguments = listOf(
-                                navArgument(NavRoutes.ARG_INITIAL_INDEX) { type = NavType.IntType },
-                                navArgument(NavRoutes.ARG_MEDIA_URIS) { type = NavType.StringType; nullable = false }
-                            )
-                        ) { backStackEntry ->
-                            val initialIndex = backStackEntry.arguments?.getInt(NavRoutes.ARG_INITIAL_INDEX) ?: 0
-                            val mediaUrisString = backStackEntry.arguments?.getString(NavRoutes.ARG_MEDIA_URIS) ?: ""
-                            val mediaUris = mediaUrisString.split(",").map { URLDecoder.decode(it, Charsets.UTF_8.name()) }
-                            // ImageViewerScreen(
-                            //     navController = navController,
-                            //     imageUris = mediaUris,
-                            //     initialIndex = initialIndex
-                            // )
-                            // Placeholder until ImageViewerScreen is created
-                            Toast.makeText(this@MainActivity, "ImageViewer: $initialIndex, URIs: $mediaUris", Toast.LENGTH_LONG).show()
-                            Log.d("NAV", "ImageViewer: Initial Index: $initialIndex, URIs: $mediaUris")
-                        }
-                        composable(
-                            route = "${NavRoutes.VIDEO_PLAYER}/{${NavRoutes.ARG_INITIAL_INDEX}}?${NavRoutes.ARG_MEDIA_URIS}={${NavRoutes.ARG_MEDIA_URIS}}",
-                            arguments = listOf(
-                                navArgument(NavRoutes.ARG_INITIAL_INDEX) { type = NavType.IntType },
-                                navArgument(NavRoutes.ARG_MEDIA_URIS) { type = NavType.StringType; nullable = false }
-                            )
-                        ) { backStackEntry ->
-                            val initialIndex = backStackEntry.arguments?.getInt(NavRoutes.ARG_INITIAL_INDEX) ?: 0
-                            val mediaUrisString = backStackEntry.arguments?.getString(NavRoutes.ARG_MEDIA_URIS) ?: ""
-                            val mediaUris = mediaUrisString.split(",").map { URLDecoder.decode(it, Charsets.UTF_8.name()) }
-                            // VideoPlayerScreen(
-                            //     navController = navController,
-                            //     videoUris = mediaUris,
-                            //     initialIndex = initialIndex
-                            // )
-                            // Placeholder until VideoPlayerScreen is created
-                            Toast.makeText(this@MainActivity, "VideoPlayer: $initialIndex, URIs: $mediaUris", Toast.LENGTH_LONG).show()
-                            Log.d("NAV", "VideoPlayer: Initial Index: $initialIndex, URIs: $mediaUris")
-                        }
+                        // Add other composable destinations here
                     }
                 }
             }

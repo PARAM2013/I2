@@ -19,12 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
+import java.io.File // Added missing import
 import java.util.Locale
-import androidx.core.content.FileProvider
-import com.example.secure.MainActivity
-import java.net.URLEncoder
-import kotlin.text.Charsets
 
 data class DashboardCategoryItem(
     val id: String,
@@ -42,13 +38,6 @@ data class MainDashboardUiState(
     val vaultStats: FileManager.VaultStats? = null // To hold all stats
 )
 
-// Sealed class for navigation events
-sealed class NavigationEvent {
-    data class ToImageViewer(val initialIndex: Int, val mediaUris: String) : NavigationEvent()
-    data class ToVideoPlayer(val initialIndex: Int, val mediaUris: String) : NavigationEvent()
-    data class ToSystemApp(val fileUri: Uri, val mimeType: String) : NavigationEvent()
-}
-
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(MainDashboardUiState())
@@ -56,10 +45,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     private val _currentPath = MutableStateFlow<String?>(null) // null represents vault root
     val currentPath: StateFlow<String?> = _currentPath.asStateFlow()
-
-    // Single event for navigation
-    private val _navigateTo = MutableStateFlow<NavigationEvent?>(null)
-    val navigateTo: StateFlow<NavigationEvent?> = _navigateTo.asStateFlow()
 
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
@@ -358,53 +343,5 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             // If success, this will show the renamed item.
             navigateToPath(_currentPath.value)
         }
-
-    fun onFileClicked(clickedFile: FileManager.VaultFile) {
-        val mimeType = FileManager.getMimeType(clickedFile.file) ?: "*/*"
-        Log.d("MainDashboardVM", "File clicked: ${clickedFile.file.name}, MIME: $mimeType")
-
-        when {
-            mimeType.startsWith("image/") -> {
-                val imageFiles = _uiState.value.vaultStats?.allFiles
-                    ?.filter { it.category == FileManager.FileCategory.PHOTO }
-                    ?.map { Uri.fromFile(it.file).toString() } ?: emptyList()
-                val clickedIndex = imageFiles.indexOf(Uri.fromFile(clickedFile.file).toString())
-                if (clickedIndex != -1) {
-                    val encodedUris = imageFiles.joinToString(",") { URLEncoder.encode(it, Charsets.UTF_8.name()) }
-                    _navigateTo.value = NavigationEvent.ToImageViewer(clickedIndex, encodedUris)
-                } else {
-                    Log.e("MainDashboardVM", "Clicked image not found in the filtered list.")
-                    _uiState.update { it.copy(fileOperationResult = "Error: Could not find image in list.") }
-                }
-            }
-            mimeType.startsWith("video/") -> {
-                val videoFiles = _uiState.value.vaultStats?.allFiles
-                    ?.filter { it.category == FileManager.FileCategory.VIDEO }
-                    ?.map { Uri.fromFile(it.file).toString() } ?: emptyList()
-                val clickedIndex = videoFiles.indexOf(Uri.fromFile(clickedFile.file).toString())
-                if (clickedIndex != -1) {
-                    val encodedUris = videoFiles.joinToString(",") { URLEncoder.encode(it, Charsets.UTF_8.name()) }
-                    _navigateTo.value = NavigationEvent.ToVideoPlayer(clickedIndex, encodedUris)
-                } else {
-                    Log.e("MainDashboardVM", "Clicked video not found in the filtered list.")
-                    _uiState.update { it.copy(fileOperationResult = "Error: Could not find video in list.") }
-                }
-            }
-            else -> { // Documents and other types
-                try {
-                    val authority = "${appContext.packageName}.provider"
-                    val fileUri = FileProvider.getUriForFile(appContext, authority, clickedFile.file)
-                    _navigateTo.value = NavigationEvent.ToSystemApp(fileUri, mimeType)
-                } catch (e: Exception) {
-                    Log.e("MainDashboardVM", "Error getting FileProvider URI for ${clickedFile.file.name}", e)
-                    _uiState.update { it.copy(fileOperationResult = "Error: Could not open file. ${e.message}") }
-                }
-            }
-        }
-    }
-
-    fun onNavigationHandled() {
-        _navigateTo.value = null
-    }
     }
 }
