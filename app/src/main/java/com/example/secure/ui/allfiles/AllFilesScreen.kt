@@ -445,7 +445,7 @@ fun AllFilesScreenPreview() {
         // If you want to show specific data in preview without modifying the actual ViewModel,
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
-        val navController = androidx.navigation.compose.rememberNavController()
-        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview, navController = navController)
+
+        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview)
     }
 }
