@@ -88,6 +88,7 @@ class MainActivity : TrackedActivity() {
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 },
+                                onFileClick = dashboardViewModel::onFileClicked // Pass method reference
                             )
                         }
                         composable(
