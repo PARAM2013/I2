@@ -84,10 +84,11 @@ class MainActivity : TrackedActivity() {
                         composable(NavRoutes.ALL_FILES) {
                             AllFilesScreen(
                                 viewModel = dashboardViewModel,
-                                navController = navController, // Pass NavController
+                                navController = navController,
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                }
+                                },
+                                onFileClick = dashboardViewModel::onFileClicked // Pass method reference
                             )
                         }
                         composable(

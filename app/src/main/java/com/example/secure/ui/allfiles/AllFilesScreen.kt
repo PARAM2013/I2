@@ -79,9 +79,10 @@ import androidx.compose.ui.res.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllFilesScreen(
-    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
-    navController: NavController, // Added NavController
-    viewModel: MainDashboardViewModel = viewModel()
+    onNavigateBack: () -> Unit,
+    navController: NavController,
+    viewModel: MainDashboardViewModel = viewModel(),
+    onFileClick: (FileManager.VaultFile) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navigationEvent by viewModel.navigateTo.collectAsState()
@@ -272,7 +273,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onClick = {
-                                            viewModel.onFileClicked(item)
+                                            onFileClick(item)
                                         }
                                     )
                                 }
@@ -446,6 +447,11 @@ fun AllFilesScreenPreview() {
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
         val navController = androidx.navigation.compose.rememberNavController()
-        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview, navController = navController)
+        AllFilesScreen(
+            onNavigateBack = {},
+            viewModel = viewModelForPreview,
+            navController = navController,
+            onFileClick = {} // Provide a dummy lambda for the preview
+        )
     }
 }
