@@ -309,6 +309,21 @@ object FileManager {
         return stats
     }
 
+    fun listAllFilesRecursively(directory: File): List<VaultFile> {
+        val allFiles = mutableListOf<VaultFile>()
+        val filesAndFolders = directory.listFiles() ?: return allFiles
+        for (file in filesAndFolders) {
+            if (file.isDirectory) {
+                allFiles.addAll(listAllFilesRecursively(file))
+            } else {
+                val category = getFileCategory(file.name)
+                val size = file.length()
+                allFiles.add(VaultFile(file, category, size))
+            }
+        }
+        return allFiles
+    }
+
     fun createSubFolderInVault(folderName: String, parentRelativePath: String? = null): File? {
         if (folderName.isBlank() || folderName.contains(File.separatorChar)) {
             Log.w("FileManager", "Invalid folder name: $folderName")

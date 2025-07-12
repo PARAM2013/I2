@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -78,21 +79,15 @@ fun ImagesScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    var showFabMenu by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        viewModel.loadAllImages()
+    }
+
     var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
     var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
     var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
-    var isGridView by remember { mutableStateOf(false) }
+    var isGridView by remember { mutableStateOf(true) }
 
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetMultipleContents(),
-        onResult = { uris ->
-            if (uris.isNotEmpty()) {
-                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
-            }
-            showFabMenu = false // Close menu after selection or cancellation
-        }
-    )
 
     Scaffold(
         topBar = {
@@ -126,35 +121,6 @@ fun ImagesScreen(
                 }
             )
         },
-        floatingActionButton = {
-            Column(horizontalAlignment = Alignment.End) {
-                if (showFabMenu) {
-                    SmallFloatingActionButton(
-                        onClick = {
-                            viewModel.requestCreateFolderDialog(true)
-                            showFabMenu = false
-                        },
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    ) {
-                        Icon(Icons.Filled.CreateNewFolder, stringResource(R.string.fab_create_folder))
-                    }
-                    SmallFloatingActionButton(
-                        onClick = {
-                            filePickerLauncher.launch("image/*")
-                        },
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    ) {
-                        Icon(Icons.Filled.UploadFile, stringResource(R.string.fab_import_file))
-                    }
-                }
-                FloatingActionButton(onClick = { showFabMenu = !showFabMenu }) {
-                    Icon(
-                        imageVector = if (showFabMenu) Icons.Filled.Close else Icons.Filled.Add,
-                        contentDescription = stringResource(R.string.fab_options_toggle)
-                    )
-                }
-            }
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -203,7 +169,7 @@ fun ImagesScreen(
                 } else {
                     if (isGridView) {
                         LazyVerticalGrid(
-                            columns = GridCells.Adaptive(minSize = 128.dp),
+                            columns = GridCells.Fixed(3),
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp)

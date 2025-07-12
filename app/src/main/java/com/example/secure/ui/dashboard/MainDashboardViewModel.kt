@@ -129,6 +129,31 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         loadGlobalDashboardCategories()
     }
 
+    fun loadAllImages() {
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
+        viewModelScope.launch {
+            try {
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+                val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        imageFiles = imageFiles,
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error loading all images", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load images: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+
     private fun formatAllFilesSubtitle(stats: FileManager.VaultStats): String {
         return String.format(Locale.getDefault(),
             "%d Folders, %d Files, %s",
