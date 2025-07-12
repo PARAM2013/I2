@@ -79,10 +79,9 @@ import androidx.compose.ui.res.painterResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllFilesScreen(
-    onNavigateBack: () -> Unit,
-    navController: NavController,
-    viewModel: MainDashboardViewModel = viewModel(),
-    onFileClick: (FileManager.VaultFile) -> Unit
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
+    viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navigationEvent by viewModel.navigateTo.collectAsState()
@@ -273,7 +272,7 @@ fun AllFilesScreen(
                                             expandedMenuForItemPath = null // Close menu
                                         },
                                         onClick = {
-                                            onFileClick(item)
+                                            viewModel.onFileClicked(item)
                                         }
                                     )
                                 }
@@ -331,16 +330,108 @@ fun AllFilesScreen(
 }
 
 @Composable
-fun FolderItem(
-    vaultFolder: VaultFolder,
-    isMenuExpanded: Boolean,
-    onExpandMenu: () -> Unit,
-    onDismissMenu: () -> Unit,
-    onUnhideClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRenameClick: () -> Unit, // New callback
-    onClick: () -> Unit
+fun AllFilesScreen(
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
+    viewModel: MainDashboardViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigateTo.collectAsState()
+    val context = LocalContext.current
+    val currentPath by viewModel.currentPath.collectAsState()
+
+    var showFabMenu by remember { mutableStateOf(false) }
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
+    var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
+
+    @Composable
+    fun FolderItem(
+        vaultFolder: VaultFolder,
+        isMenuExpanded: Boolean,
+        onExpandMenu: () -> Unit,
+        onDismissMenu: () -> Unit,
+        onUnhideClick: () -> Unit,
+        onDeleteClick: () -> Unit,
+        onRenameClick: () -> Unit,
+        onClick: () -> Unit
+    ) {
+    ListItem(
+        headlineContent = { Text(vaultFolder.folder.name) },
+        leadingContent = {
+            Icon(
+                Icons.Filled.Folder,
+                contentDescription = stringResource(R.string.folder_icon_desc),
+                modifier = Modifier.size(40.dp)
+            )
+        },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
+                }
+            }
+        },
+        modifier = Modifier.clickable(onClick = onClick)
+    )
+}
+
+@Composable
+fun AllFilesScreen(
+    onNavigateBack: () -> Unit, // Kept for explicit back from root, though VM handles path changes
+    navController: NavController, // Added NavController
+    viewModel: MainDashboardViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val navigationEvent by viewModel.navigateTo.collectAsState()
+    val context = LocalContext.current
+    val currentPath by viewModel.currentPath.collectAsState()
+
+    var showFabMenu by remember { mutableStateOf(false) }
+    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
+    var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.importFiles(uris) // ViewModel's importFiles uses currentPath
+            }
+            showFabMenu = false // Close menu after selection or cancellation
+        }
+    )
+
+    @Composable
+    fun FolderItem(
+        vaultFolder: VaultFolder,
+        isMenuExpanded: Boolean,
+        onExpandMenu: () -> Unit,
+        onDismissMenu: () -> Unit,
+        onUnhideClick: () -> Unit,
+        onDeleteClick: () -> Unit,
+        onRenameClick: () -> Unit,
+        onClick: () -> Unit
+    ) {
     ListItem(
         headlineContent = { Text(vaultFolder.folder.name) },
         leadingContent = {
@@ -378,7 +469,7 @@ fun FileItem(
     onDismissMenu: () -> Unit,
     onUnhideClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onRenameClick: () -> Unit, // New callback
+    onRenameClick: () -> Unit,
     onClick: () -> Unit
 ) {
     ListItem(
@@ -447,11 +538,6 @@ fun AllFilesScreenPreview() {
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
         val navController = androidx.navigation.compose.rememberNavController()
-        AllFilesScreen(
-            onNavigateBack = {},
-            viewModel = viewModelForPreview,
-            navController = navController,
-            onFileClick = {} // Provide a dummy lambda for the preview
-        )
+        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview, navController = navController)
     }
 }
