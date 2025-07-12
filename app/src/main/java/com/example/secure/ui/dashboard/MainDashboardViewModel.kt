@@ -35,7 +35,8 @@ data class MainDashboardUiState(
     val error: String? = null,
     val fileOperationResult: String? = null, // For toasts/messages
     val showCreateFolderDialog: Boolean = false,
-    val vaultStats: FileManager.VaultStats? = null // To hold all stats
+    val vaultStats: FileManager.VaultStats? = null, // To hold all stats
+    val imageFiles: List<FileManager.VaultFile> = emptyList()
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -103,6 +104,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         vaultStats = pathStats, // This state is for AllFilesScreen
+                        imageFiles = pathStats.allFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO },
                         error = null
                     )
                 }
@@ -281,7 +283,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 success = fileManager.deleteFileFromVault(fileToDelete)
                 operationMessage = if (success) {
                     appContext.getString(R.string.file_delete_success) + " ${fileToDelete.name}"
-                } else {.
+                } else {
                     "Failed to delete: ${fileToDelete.name}"
                 }
             } else {

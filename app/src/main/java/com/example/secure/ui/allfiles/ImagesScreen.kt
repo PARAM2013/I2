@@ -77,7 +77,6 @@ fun ImagesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val currentPath by viewModel.currentPath.collectAsState()
 
     var showFabMenu by remember { mutableStateOf(false) }
     var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
