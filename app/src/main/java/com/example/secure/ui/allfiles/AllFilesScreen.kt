@@ -279,7 +279,8 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
-                                            }
+                                            },
+                                            isGridView = isGridView
                                         )
                                     }
                                 }
@@ -450,7 +451,8 @@ fun FileItem(
     onUnhideClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onRenameClick: () -> Unit, // New callback
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isGridView: Boolean = false
 ) {
     ListItem(
         headlineContent = { Text(vaultFile.file.name) },
@@ -460,13 +462,13 @@ fun FileItem(
                 Image(
                     painter = rememberAsyncImagePainter(vaultFile.file),
                     contentDescription = stringResource(R.string.file_icon_desc),
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
             } else {
                 Icon(
                     Icons.Filled.Description, // Generic file icon
                     contentDescription = stringResource(R.string.file_icon_desc),
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
             }
         },

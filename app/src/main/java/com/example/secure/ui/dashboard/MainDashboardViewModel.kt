@@ -67,13 +67,23 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private fun loadGlobalDashboardCategories() {
         viewModelScope.launch {
             try {
-                val globalStats = fileManager.listFilesInVault(FileManager.getVaultDirectory()) // Explicitly list root for global stats
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+                val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
+                val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
+                val allFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+
+                val totalImageSize = imageFiles.sumOf { it.size }
+                val totalVideoSize = videoFiles.sumOf { it.size }
+                val totalDocumentSize = documentFiles.sumOf { it.size }
+                val grandTotalSize = allFiles.sumOf { it.size }
+
                 val updatedGlobalCategories = globalCategoriesTemplate.map { category ->
                     when (category.id) {
-                        "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(globalStats))
-                        "images" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalPhotoFiles, globalStats.totalPhotoSize))
-                        "videos" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalVideoFiles, globalStats.totalVideoSize))
-                        "documents" -> category.copy(subtitle = formatCategorySubtitle(globalStats.totalDocumentFiles, globalStats.totalDocumentSize))
+                        "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
+                        "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
+                        "videos" -> category.copy(subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize))
+                        "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
                         else -> category
                     }
                 }
@@ -154,12 +164,13 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    private fun formatAllFilesSubtitle(stats: FileManager.VaultStats): String {
-        return String.format(Locale.getDefault(),
+    private fun formatAllFilesSubtitle(folders: Int, files: Int, size: Long): String {
+        return String.format(
+            Locale.getDefault(),
             "%d Folders, %d Files, %s",
-            stats.grandTotalFolders,
-            stats.grandTotalFiles,
-            formatSize(stats.grandTotalSize)
+            folders,
+            files,
+            formatSize(size)
         )
     }
 

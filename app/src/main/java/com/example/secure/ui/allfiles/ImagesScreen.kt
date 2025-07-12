@@ -196,7 +196,8 @@ fun ImagesScreen(
                                     },
                                     onClick = {
                                         android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
-                                    }
+                                    },
+                                    isGridView = isGridView
                                 )
                             }
                         }
@@ -224,7 +225,8 @@ fun ImagesScreen(
                                     },
                                     onClick = {
                                         android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
-                                    }
+                                    },
+                                    isGridView = isGridView
                                 )
                                 Divider()
                             }
