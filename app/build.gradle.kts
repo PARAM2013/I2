@@ -94,9 +94,4 @@ dependencies {
     // ExoPlayer for video playback
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
-    implementation(libs.androidx.media3.common)
-
-    // Accompanist Pager
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.pager.indicators)
 }

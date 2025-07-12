@@ -96,18 +96,14 @@ fun MainDashboardScreen(
                         DashboardLottieAnimation(modifier = Modifier.fillMaxWidth().height(150.dp))
                     }
 
-                    val categoriesToShow = uiState.categories + listOf(
-                        DashboardCategoryItem("gallery", "Gallery", "View all media", Icons.Filled.PhotoLibrary) // Add Gallery
-                    )
-
-                    if (categoriesToShow.isEmpty() && !uiState.isLoading) {
+                    if (uiState.categories.isEmpty() && !uiState.isLoading) {
                         item {
                             Box(modifier = Modifier.fillParentMaxSize().padding(top = 32.dp), contentAlignment = Alignment.Center) {
-                                Text("Vault is empty or no categories available.") // Updated message
+                                Text("Vault is empty. Use the + button to add files or folders.")
                             }
                         }
                     } else {
-                        items(categoriesToShow, key = { it.id }) { category ->
+                        items(uiState.categories, key = { it.id }) { category ->
                             CategoryCard(
                                 title = category.title,
                                 subtitle = category.subtitle,

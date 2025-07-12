@@ -263,21 +263,7 @@ object FileManager {
     }
 
     fun getMimeType(file: File): String? {
-        val fileName = file.name
-        val extension = fileName.substringAfterLast('.', "").lowercase()
-        // First, try MimeTypeMap for common Android types
-        var mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-
-        // Fallback to URLConnection if MimeTypeMap doesn't know the extension
-        if (mimeType == null) {
-            mimeType = URLConnection.guessContentTypeFromName(fileName)
-        }
-
-        // Log if MIME type could not be determined (optional)
-        if (mimeType == null) {
-            Log.w("FileManager", "Could not determine MIME type for file: $fileName (extension: $extension)")
-        }
-        return mimeType
+        return URLConnection.guessContentTypeFromName(file.name)
     }
 
     fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
