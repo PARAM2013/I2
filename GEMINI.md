@@ -16,9 +16,8 @@ This document provides a comprehensive overview of the "iSecure" Android applica
     *   **Data Deletion:** Allows for the secure deletion of files and folders from within the vault.
 
 *   **User Experience & Interface:**
-    *   **Activity Flow:** The application manages user flow through `LauncherActivity` (initial setup/lock check), `MainActivity` (main content), `PinSetupActivity`, and `LockScreenActivity`.
+    *   **Activity Flow:** The application manages user flow through `LauncherActivity` (initial setup/lock check), `MainActivity` (main content), and `PinActivity`.
     *   **Modern UI (Jetpack Compose):** The main dashboard is built using Jetpack Compose, providing a modern and responsive user interface.
-    *   **Traditional Views:** The PIN input and lock screens are built with traditional Android Views.
 
 *   **Security & Permissions:**
     *   **Runtime Permissions:** The application handles necessary Android runtime permissions, including `MANAGE_EXTERNAL_STORAGE` for Android 11 (API 30) and above, to ensure proper file access.
@@ -29,10 +28,10 @@ This document provides a comprehensive overview of the "iSecure" Android applica
 
 The application follows a structured approach, leveraging standard Android components and modern development practices.
 
-*   **Component-Based Design:** Utilizes a combination of Android Activities and Fragments to modularize different screens and functionalities.
+*   **Component-Based Design:** Utilizes a combination of Android Activities and Jetpack Compose to modularize different screens and functionalities.
 *   **Data Management:** The `FileManager` object serves as a central point for all file-related operations, acting as a data layer for interacting with the secure vault.
 *   **Global State Management:** `AppGlobalState` is a singleton object that maintains the application's global state, such as its locked status and the currently active `Activity`. This is crucial for the auto-lock feature.
-*   **UI Frameworks:** Employs both traditional Android Views (for PIN input keypads) and Jetpack Compose for the main dashboard.
+*   **UI Frameworks:** Employs Jetpack Compose for the main dashboard and PIN entry screens.
 
 ### Code Breakdown
 
@@ -47,18 +46,16 @@ The application follows a structured approach, leveraging standard Android compo
     *   `createSubFolderInVault()`: Creates a new folder within the vault.
     *   `importFile()`: Imports a file into the vault.
 *   **`PinManager.kt`**: A singleton object for managing the user's PIN and fingerprint authentication settings.
-    *   `savePin()`, `getPin()`, `isPinSet()`, `verifyPin()`, `clearPin()`: Basic PIN management functions.
+    *   `savePin()`, `verifyPin()`, `isPinSet()`, `clearPin()`: Basic PIN management functions.
     *   `setFingerprintAuthEnabled()`, `isFingerprintAuthEnabled()`: Manage fingerprint authentication preferences.
 *   **`AppGlobalState.kt`**: A singleton for managing the application's global state.
     *   `isLocked`: A boolean that tracks if the app is locked.
     *   `currentActivity`: Tracks the current foreground activity.
     *   `onActivityResumed()`, `onActivityPaused()`, `onUserInteraction()`: Manage the inactivity timer for the auto-lock feature.
-*   **`LauncherActivity.kt`**: The initial activity that checks if a PIN is set and navigates to either `PinSetupActivity` or `LockScreenActivity`.
-*   **`PinSetupActivity.kt`**: An activity for setting up the user's PIN for the first time.
-*   **`LockScreenActivity.kt`**: The activity that prompts the user for their PIN or biometric authentication to unlock the app.
-*   **`SecureDashboardFragment.kt`**: A fragment that displays the vault's contents. It uses a `ViewModel` (`SecureDashboardViewModel`) to interact with the `FileManager` and update the UI.
+*   **`LauncherActivity.kt`**: The initial activity that checks if a PIN is set and navigates to either `PinActivity` or `MainActivity`.
+*   **`PinActivity.kt`**: An activity for setting up and entering the user's PIN.
 *   **`MainDashboardScreen.kt`**: A Jetpack Compose screen that displays the main dashboard UI.
-
+*   **`PinViewModel.kt`**: A ViewModel that manages the state for the PIN entry screen.
 
 ## Run build command after code update
-## Update this file after major changes in project , code etc  
+## Update this file after major changes in project , code etc
