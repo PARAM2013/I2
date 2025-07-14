@@ -195,7 +195,9 @@ fun VideosScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                        intent.putExtra("file_path", file.file.absolutePath)
+                                        context.startActivity(intent)
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}
@@ -225,7 +227,9 @@ fun VideosScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                        intent.putExtra("file_path", file.file.absolutePath)
+                                        context.startActivity(intent)
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}

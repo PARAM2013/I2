@@ -278,7 +278,9 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                                intent.putExtra("file_path", item.file.absolutePath)
+                                                context.startActivity(intent)
                                             },
                                             isGridView = isGridView,
                                             onShareClick = {
@@ -349,7 +351,9 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                                intent.putExtra("file_path", item.file.absolutePath)
+                                                context.startActivity(intent)
                                             },
                                             onShareClick = {
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
