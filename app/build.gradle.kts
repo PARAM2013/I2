@@ -93,7 +93,6 @@ dependencies {
 
     // Accompanist for pager
     implementation("com.google.accompanist:accompanist-pager:0.28.0")
-    implementation("com.google.accompanist:accompanist-pager-graphics:0.28.0")
 
     // ExoPlayer
     implementation("androidx.media3:media3-exoplayer:1.3.1")

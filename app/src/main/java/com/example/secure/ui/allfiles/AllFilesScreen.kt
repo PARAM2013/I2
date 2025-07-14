@@ -16,14 +16,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ViewList
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu // For Context Menu
 import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -116,7 +116,7 @@ fun AllFilesScreen(
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
                         )
                     }
@@ -127,7 +127,7 @@ fun AllFilesScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
+                            imageVector = if (isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
                         )
                     }
@@ -281,7 +281,7 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 when (item.category) {
-                                                    FileManager.FileCategory.PHOTO -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.IMAGE -> onNavigateToImageViewer(item.file.absolutePath)
                                                     FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
                                                     else -> viewModel.shareFile(item)
                                                 }
@@ -356,7 +356,7 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 when (item.category) {
-                                                    FileManager.FileCategory.PHOTO -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.IMAGE -> onNavigateToImageViewer(item.file.absolutePath)
                                                     FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
                                                     else -> viewModel.shareFile(item)
                                                 }
@@ -370,7 +370,7 @@ fun AllFilesScreen(
                                         )
                                     }
                                 }
-                                HorizontalDivider()
+                                Divider()
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                         }

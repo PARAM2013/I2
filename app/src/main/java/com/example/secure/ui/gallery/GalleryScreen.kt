@@ -79,7 +79,7 @@ fun GalleryScreen(
                             file = file,
                             onClick = {
                                 when (file.category) {
-                                    FileManager.FileCategory.PHOTO -> onNavigateToImageViewer(file.file.absolutePath)
+                                    FileManager.FileCategory.IMAGE -> onNavigateToImageViewer(file.file.absolutePath)
                                     FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(file.file.absolutePath)
                                     else -> {}
                                 }

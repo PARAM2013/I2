@@ -21,9 +21,9 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     fun loadMediaFiles(filter: Filter = Filter.ALL) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            val allFiles = FileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+            val allFiles = FileManager.getAllFiles()
             val mediaFiles = allFiles.filter {
-                it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO
+                it.category == FileManager.FileCategory.IMAGE || it.category == FileManager.FileCategory.VIDEO
             }
             _uiState.update {
                 it.copy(
@@ -31,7 +31,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
                     mediaFiles = mediaFiles,
                     filteredMediaFiles = when (filter) {
                         Filter.ALL -> mediaFiles
-                        Filter.IMAGES -> mediaFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO }
+                        Filter.IMAGES -> mediaFiles.filter { file -> file.category == FileManager.FileCategory.IMAGE }
                         Filter.VIDEOS -> mediaFiles.filter { file -> file.category == FileManager.FileCategory.VIDEO }
                     }
                 )

@@ -16,20 +16,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import coil.compose.rememberAsyncImagePainter
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ImageViewerScreen(
     imagePath: String,
     allImagePaths: List<String>
 ) {
-    val pagerState = rememberPagerState(initialPage = allImagePaths.indexOf(imagePath), pageCount = { allImagePaths.size })
+    val pagerState = rememberPagerState(initialPage = allImagePaths.indexOf(imagePath))
 
     Scaffold {
         HorizontalPager(
+            count = allImagePaths.size,
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
