@@ -26,12 +26,7 @@ import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.gallery.GalleryScreen
-import com.example.secure.ui.gallery.ImageViewerScreen
-import com.example.secure.ui.gallery.VideoViewerScreen
 import com.example.secure.ui.theme.ISecureTheme
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 
 class MainActivity : TrackedActivity() {
 
@@ -44,9 +39,6 @@ class MainActivity : TrackedActivity() {
         const val IMAGES = "images"
         const val VIDEOS = "videos"
         const val DOCUMENTS = "documents"
-        const val GALLERY = "gallery"
-        const val IMAGE_VIEWER = "image_viewer/{imagePath}"
-        const val VIDEO_VIEWER = "video_viewer/{videoPath}"
         // Add other routes here if needed
     }
 
@@ -71,7 +63,6 @@ class MainActivity : TrackedActivity() {
                                     Log.d("MainActivity", "Category clicked: $categoryId")
                                     when (categoryId) {
                                         "all_files" -> navController.navigate(NavRoutes.ALL_FILES)
-                                        "gallery" -> navController.navigate(NavRoutes.GALLERY)
                                         "images" -> navController.navigate(NavRoutes.IMAGES)
                                         "videos" -> navController.navigate(NavRoutes.VIDEOS)
                                         "documents" -> navController.navigate(NavRoutes.DOCUMENTS)
@@ -88,12 +79,6 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                },
-                                onNavigateToImageViewer = { imagePath ->
-                                    navController.navigate("image_viewer/$imagePath")
-                                },
-                                onNavigateToVideoViewer = { videoPath ->
-                                    navController.navigate("video_viewer/$videoPath")
                                 }
                             )
                         }
@@ -120,39 +105,6 @@ class MainActivity : TrackedActivity() {
                                     navController.popBackStack()
                                 }
                             )
-                        }
-                        composable(NavRoutes.GALLERY) {
-                            GalleryScreen(
-                                onNavigateToImageViewer = { imagePath ->
-                                    navController.navigate("image_viewer/$imagePath")
-                                },
-                                onNavigateToVideoViewer = { videoPath ->
-                                    navController.navigate("video_viewer/$videoPath")
-                                }
-                            )
-                        }
-                        composable(
-                            route = NavRoutes.IMAGE_VIEWER,
-                            arguments = listOf(navArgument("imagePath") { type = NavType.StringType })
-                        ) { backStackEntry ->
-                            val imagePath = backStackEntry.arguments?.getString("imagePath")
-                            if (imagePath != null) {
-                                ImageViewerScreen(
-                                    imagePath = imagePath,
-                                    allImagePaths = dashboardViewModel.uiState.value.vaultStats?.allFiles
-                                        ?.filter { it.category == FileManager.FileCategory.IMAGE }
-                                        ?.map { it.file.absolutePath } ?: emptyList()
-                                )
-                            }
-                        }
-                        composable(
-                            route = NavRoutes.VIDEO_VIEWER,
-                            arguments = listOf(navArgument("videoPath") { type = NavType.StringType })
-                        ) { backStackEntry ->
-                            val videoPath = backStackEntry.arguments?.getString("videoPath")
-                            if (videoPath != null) {
-                                VideoViewerScreen(videoPath = videoPath)
-                            }
                         }
                         // Add other composable destinations here
                     }

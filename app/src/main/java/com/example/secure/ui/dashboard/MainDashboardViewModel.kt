@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
@@ -56,7 +55,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
         DashboardCategoryItem("all_files", "All Files", "", Icons.Filled.Folder),
-        DashboardCategoryItem("gallery", "Gallery", "", Icons.Filled.PhotoLibrary),
         DashboardCategoryItem("images", "Images", "", Icons.Filled.Image),
         DashboardCategoryItem("videos", "Videos", "", Icons.Filled.Videocam),
         DashboardCategoryItem("documents", "Documents", "", Icons.AutoMirrored.Filled.Article)
@@ -85,7 +83,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 val updatedGlobalCategories = globalCategoriesTemplate.map { category ->
                     when (category.id) {
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
-                        "gallery" -> category.copy(subtitle = "View all media")
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
                         "videos" -> category.copy(subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize))
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
