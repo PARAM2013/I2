@@ -32,7 +32,7 @@ import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(activityContext: Activity) {
+fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
     val context = LocalContext.current
 
     var fingerprintEnabled by remember {
@@ -64,7 +64,7 @@ fun SettingsScreen(activityContext: Activity) {
                             activityContext.startActivity(intent)
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Enable Fingerprint Unlock
@@ -78,7 +78,7 @@ fun SettingsScreen(activityContext: Activity) {
                             PinManager.setFingerprintAuthEnabled(context, newCheckedState)
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Remove Metadata on Import
@@ -93,7 +93,7 @@ fun SettingsScreen(activityContext: Activity) {
                             PinManager.setMetadataRemovalEnabled(context, newCheckedState)
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Share App

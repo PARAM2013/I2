@@ -36,6 +36,7 @@ fun MainDashboardScreen(
     onSettingsClick: () -> Unit,
     onCategoryClick: (String) -> Unit // Pass category ID or route
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
