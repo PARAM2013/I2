@@ -516,8 +516,7 @@ fun AllFilesScreenPreview() {
         // The preview will show the ViewModel's state after its init block runs.
         // For a data-rich preview with specific VaultStats, MainDashboardViewModel
         // would need to be designed for easier state injection in previews (e.g., via constructor or a test helper).
-        val previewApplication = LocalContext.current.applicationContext as Application
-        val viewModelForPreview = MainDashboardViewModel(previewApplication)
+        val viewModelForPreview: MainDashboardViewModel = viewModel()
 
         // You could potentially create a more elaborate FakeMainDashboardViewModel if needed,
         // but this direct instantiation fixes the compile errors.
