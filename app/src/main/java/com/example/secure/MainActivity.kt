@@ -26,12 +26,27 @@ import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
+import com.example.secure.ui.gallery.GalleryScreen
+import com.example.secure.ui.gallery.ImageViewerScreen
+import com.example.secure.ui.gallery.VideoViewerScreen
 import com.example.secure.ui.theme.ISecureTheme
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : TrackedActivity() {
 
-    // Permission launchers are mostly for the initial permission check now.
-    // File picking and specific actions will be handled within MainDashboardScreen or its ViewModel.
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
+                    loadVaultContentInitial()
+                } else {
+                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
     object NavRoutes {
         const val DASHBOARD = "dashboard"
@@ -39,6 +54,9 @@ class MainActivity : TrackedActivity() {
         const val IMAGES = "images"
         const val VIDEOS = "videos"
         const val DOCUMENTS = "documents"
+        const val GALLERY = "gallery"
+        const val IMAGE_VIEWER = "image_viewer/{imagePath}"
+        const val VIDEO_VIEWER = "video_viewer/{videoPath}"
         // Add other routes here if needed
     }
 
@@ -63,6 +81,7 @@ class MainActivity : TrackedActivity() {
                                     Log.d("MainActivity", "Category clicked: $categoryId")
                                     when (categoryId) {
                                         "all_files" -> navController.navigate(NavRoutes.ALL_FILES)
+                                        "gallery" -> navController.navigate(NavRoutes.GALLERY)
                                         "images" -> navController.navigate(NavRoutes.IMAGES)
                                         "videos" -> navController.navigate(NavRoutes.VIDEOS)
                                         "documents" -> navController.navigate(NavRoutes.DOCUMENTS)
@@ -79,6 +98,12 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
+                                },
+                                onNavigateToImageViewer = { imagePath ->
+                                    navController.navigate("image_viewer/$imagePath")
+                                },
+                                onNavigateToVideoViewer = { videoPath ->
+                                    navController.navigate("video_viewer/$videoPath")
                                 }
                             )
                         }
@@ -105,6 +130,39 @@ class MainActivity : TrackedActivity() {
                                     navController.popBackStack()
                                 }
                             )
+                        }
+                        composable(NavRoutes.GALLERY) {
+                            GalleryScreen(
+                                onNavigateToImageViewer = { imagePath ->
+                                    navController.navigate("image_viewer/$imagePath")
+                                },
+                                onNavigateToVideoViewer = { videoPath ->
+                                    navController.navigate("video_viewer/$videoPath")
+                                }
+                            )
+                        }
+                        composable(
+                            route = NavRoutes.IMAGE_VIEWER,
+                            arguments = listOf(navArgument("imagePath") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val imagePath = backStackEntry.arguments?.getString("imagePath")
+                            if (imagePath != null) {
+                                ImageViewerScreen(
+                                    imagePath = imagePath,
+                                    allImagePaths = dashboardViewModel.uiState.value.vaultStats?.allFiles
+                                        ?.filter { it.category == FileManager.FileCategory.IMAGE }
+                                        ?.map { it.file.absolutePath } ?: emptyList()
+                                )
+                            }
+                        }
+                        composable(
+                            route = NavRoutes.VIDEO_VIEWER,
+                            arguments = listOf(navArgument("videoPath") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val videoPath = backStackEntry.arguments?.getString("videoPath")
+                            if (videoPath != null) {
+                                VideoViewerScreen(videoPath = videoPath)
+                            }
                         }
                         // Add other composable destinations here
                     }
@@ -144,14 +202,12 @@ class MainActivity : TrackedActivity() {
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.addCategory("android.intent.category.DEFAULT")
                     intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
-                    // manageStoragePermissionLauncher.launch(intent) // Use if launcher is active
-                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) // Fallback if launcher not used here
+                    requestPermissionLauncher.launch(intent)
                     Toast.makeText(this, "Requesting MANAGE_EXTERNAL_STORAGE permission.", Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
                     val intent = Intent()
                     intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                    // manageStoragePermissionLauncher.launch(intent) // Use if launcher is active
-                    startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) // Fallback
+                    requestPermissionLauncher.launch(intent)
                     Toast.makeText(this, "Requesting MANAGE_EXTERNAL_STORAGE permission (generic).", Toast.LENGTH_LONG).show()
                 }
             } else {
@@ -167,36 +223,6 @@ class MainActivity : TrackedActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == FileManager.REQUEST_STORAGE_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                Toast.makeText(this, "Storage permissions granted.", Toast.LENGTH_SHORT).show()
-                loadVaultContentInitial()
-            } else {
-                Toast.makeText(this, "Storage permissions are required.", Toast.LENGTH_LONG).show()
-                // Handle permission denial - ViewModel/UI should ideally reflect this state
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
-                    loadVaultContentInitial()
-                } else {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required.", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
 
     private fun loadVaultContentInitial() {
         // This function is a placeholder. The actual loading of dashboard content (categories)

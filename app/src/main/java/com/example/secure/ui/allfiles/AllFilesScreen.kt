@@ -16,14 +16,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DropdownMenu // For Context Menu
 import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -73,6 +73,8 @@ import java.io.File // Still needed for File objects within VaultFile/VaultFolde
 @Composable
 fun AllFilesScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToImageViewer: (String) -> Unit,
+    onNavigateToVideoViewer: (String) -> Unit,
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -114,7 +116,7 @@ fun AllFilesScreen(
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
                         )
                     }
@@ -125,7 +127,7 @@ fun AllFilesScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
+                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
                         )
                     }
@@ -278,7 +280,11 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                when (item.category) {
+                                                    FileManager.FileCategory.PHOTO -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
+                                                    else -> viewModel.shareFile(item)
+                                                }
                                             },
                                             isGridView = isGridView,
                                             onShareClick = {
@@ -349,7 +355,11 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                when (item.category) {
+                                                    FileManager.FileCategory.PHOTO -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
+                                                    else -> viewModel.shareFile(item)
+                                                }
                                             },
                                             onShareClick = {
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
@@ -360,7 +370,7 @@ fun AllFilesScreen(
                                         )
                                     }
                                 }
-                                Divider()
+                                HorizontalDivider()
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                         }
@@ -525,6 +535,11 @@ fun AllFilesScreenPreview() {
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
 
-        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview)
+        AllFilesScreen(
+            onNavigateBack = {},
+            onNavigateToImageViewer = {},
+            onNavigateToVideoViewer = {},
+            viewModel = viewModelForPreview
+        )
     }
 }

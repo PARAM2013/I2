@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -50,7 +51,7 @@ fun FileListItem(
                         FileType.IMAGE -> Icons.Default.Image
                         FileType.VIDEO -> Icons.Default.Videocam
                         FileType.DOCUMENT -> Icons.Default.Description
-                        FileType.OTHER -> Icons.Default.InsertDriveFile
+                        FileType.OTHER -> Icons.AutoMirrored.Filled.InsertDriveFile
                     },
                     contentDescription = null,
                     modifier = Modifier.size(48.dp)
@@ -76,7 +77,7 @@ fun FileListItem(
                         FileType.IMAGE -> Icons.Default.Image
                         FileType.VIDEO -> Icons.Default.Videocam
                         FileType.DOCUMENT -> Icons.Default.Description
-                        FileType.OTHER -> Icons.Default.InsertDriveFile
+                        FileType.OTHER -> Icons.AutoMirrored.Filled.InsertDriveFile
                     },
                     contentDescription = null,
                     modifier = Modifier.size(24.dp)

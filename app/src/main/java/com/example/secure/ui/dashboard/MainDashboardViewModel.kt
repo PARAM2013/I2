@@ -6,9 +6,10 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
@@ -55,9 +56,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
         DashboardCategoryItem("all_files", "All Files", "", Icons.Filled.Folder),
+        DashboardCategoryItem("gallery", "Gallery", "", Icons.Filled.PhotoLibrary),
         DashboardCategoryItem("images", "Images", "", Icons.Filled.Image),
         DashboardCategoryItem("videos", "Videos", "", Icons.Filled.Videocam),
-        DashboardCategoryItem("documents", "Documents", "", Icons.Filled.Article)
+        DashboardCategoryItem("documents", "Documents", "", Icons.AutoMirrored.Filled.Article)
     )
 
     init {
@@ -83,6 +85,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 val updatedGlobalCategories = globalCategoriesTemplate.map { category ->
                     when (category.id) {
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
+                        "gallery" -> category.copy(subtitle = "View all media")
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
                         "videos" -> category.copy(subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize))
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
@@ -314,7 +317,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun requestUnhideItem(item: Any) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
-            val success: Boolean
             val itemName: String
             var operationMessage: String
 
@@ -323,34 +325,31 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     itemName = item.file.name
                     Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
                     val unhiddenFile = fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory())
-                    success = unhiddenFile != null
-                    operationMessage = if (success) {
+                    operationMessage = if (unhiddenFile != null) {
                         appContext.getString(R.string.file_restored_success) + " ${unhiddenFile?.name}"
                     } else {
                         "Failed to unhide file: $itemName"
                     }
+                    if (unhiddenFile != null) navigateToPath(_currentPath.value)
                 }
                 is FileManager.VaultFolder -> {
                     itemName = item.folder.name
                     Log.d("MainDashboardVM", "Requesting unhide for folder: $itemName")
-                    success = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
+                    val success = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
                     operationMessage = if (success) {
                         appContext.getString(R.string.file_restored_success) + " Folder: $itemName" // Consider a more folder-specific string
                     } else {
                         "Failed to unhide folder: $itemName"
                     }
+                    if (success) navigateToPath(_currentPath.value)
                 }
                 else -> {
                     Log.w("MainDashboardVM", "requestUnhideItem: Unknown item type")
-                    success = false
                     operationMessage = "Unhide failed: Unknown item type."
                 }
             }
 
-            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
-            if (success) {
-                navigateToPath(_currentPath.value) // Refresh content
-            }
+            _uiState.update { it.copy(isLoading = false, fileOperationMessage) }
         }
     }
 
@@ -364,25 +363,22 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             }
 
             var operationMessage: String
-            var success = false
 
             if (fileToDelete != null) {
                 Log.d("MainDashboardVM", "Requesting delete for: ${fileToDelete.name}")
-                success = fileManager.deleteFileFromVault(fileToDelete)
+                val success = fileManager.deleteFileFromVault(fileToDelete)
                 operationMessage = if (success) {
                     appContext.getString(R.string.file_delete_success) + " ${fileToDelete.name}"
                 } else {
                     "Failed to delete: ${fileToDelete.name}"
                 }
+                if (success) navigateToPath(_currentPath.value)
             } else {
                 Log.w("MainDashboardVM", "requestDeleteItem: Unknown item type")
                 operationMessage = "Delete failed: Unknown item type."
             }
 
             _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
-            if (success) {
-                navigateToPath(_currentPath.value) // Refresh content
-            }
         }
     }
 
@@ -397,7 +393,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             val oldName: String = fileToRename?.name ?: "Item"
 
             var operationMessage: String
-            var success = false
 
             if (fileToRename == null) {
                 operationMessage = "Rename failed: Unknown item type."
@@ -406,12 +401,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
             } else if (newName == oldName) {
                 operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
-                success = true // Considered a "success" as no change was needed and no error occurred.
             }
             else {
                 val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
                 if (renamedFile != null) {
-                    success = true
                     operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
                 } else {
                     // FileManager.renameItemInVault logs specific errors and returns null for various reasons.
