@@ -85,6 +85,10 @@
 
     <!-- All Files Screen -->
     <string name="title_all_files">All Files</string>
+    <string name="title_gallery">Gallery</string>
+    <string name="filter_all">All</string>
+    <string name="filter_images">Images</string>
+    <string name="filter_videos">Videos</string>
     <string name="action_back">Back</string>
     <string name="fab_options_toggle">Toggle FAB options</string> <!-- Added for FAB in MainDashboardScreen -->
     <string name="create_folder_dialog_title">Create New Folder</string> <!-- Added for Dialog in MainDashboardScreen -->

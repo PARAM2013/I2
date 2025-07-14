@@ -90,4 +90,11 @@ dependencies {
 
     // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Accompanist for pager
+    implementation("com.google.accompanist:accompanist-pager:0.28.0")
+
+    // ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
 }

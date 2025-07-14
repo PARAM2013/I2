@@ -73,6 +73,8 @@ import java.io.File // Still needed for File objects within VaultFile/VaultFolde
 @Composable
 fun AllFilesScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToImageViewer: (String) -> Unit,
+    onNavigateToVideoViewer: (String) -> Unit,
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -278,7 +280,11 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                when (item.category) {
+                                                    FileManager.FileCategory.IMAGE -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
+                                                    else -> viewModel.shareFile(item)
+                                                }
                                             },
                                             isGridView = isGridView,
                                             onShareClick = {
@@ -349,7 +355,11 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                android.widget.Toast.makeText(context, "File clicked: ${item.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                                when (item.category) {
+                                                    FileManager.FileCategory.IMAGE -> onNavigateToImageViewer(item.file.absolutePath)
+                                                    FileManager.FileCategory.VIDEO -> onNavigateToVideoViewer(item.file.absolutePath)
+                                                    else -> viewModel.shareFile(item)
+                                                }
                                             },
                                             onShareClick = {
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
@@ -525,6 +535,11 @@ fun AllFilesScreenPreview() {
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
 
-        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview)
+        AllFilesScreen(
+            onNavigateBack = {},
+            onNavigateToImageViewer = {},
+            onNavigateToVideoViewer = {},
+            viewModel = viewModelForPreview
+        )
     }
 }
