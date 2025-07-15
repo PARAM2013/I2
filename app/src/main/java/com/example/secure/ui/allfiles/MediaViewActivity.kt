@@ -1,16 +1,17 @@
 package com.example.secure.ui.allfiles
 
-import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageView
-import android.widget.MediaController
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.example.secure.R
 import java.io.File
 
 class MediaViewActivity : AppCompatActivity() {
+
+    private lateinit var viewPager: ViewPager2
+    private lateinit var mediaAdapter: MediaAdapter
+    private var currentPosition: Int = 0
+    private lateinit var fileList: List<File>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,29 +22,19 @@ class MediaViewActivity : AppCompatActivity() {
             finish()
             return
         }
-        val file = File(filePath)
-
-        val imageView = findViewById<ImageView>(R.id.image_view)
-        val videoView = findViewById<VideoView>(R.id.video_view)
-
-        if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif")) {
-            imageView.visibility = View.VISIBLE
-            videoView.visibility = View.GONE
-            imageView.setImageURI(Uri.fromFile(file))
-        } else if (file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp")) {
-            imageView.visibility = View.GONE
-            videoView.visibility = View.VISIBLE
-            val mediaController = MediaController(this)
-            mediaController.setAnchorView(videoView)
-            videoView.setMediaController(mediaController)
-            videoView.setVideoURI(Uri.fromFile(file))
-            videoView.start()
+        val currentFile = File(filePath)
+        val parentDir = currentFile.parentFile
+        if (parentDir != null) {
+            fileList = parentDir.listFiles()?.filter { it.isFile && (it.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) }?.sorted() ?: emptyList()
+            currentPosition = fileList.indexOf(currentFile)
+        } else {
+            fileList = listOf(currentFile)
+            currentPosition = 0
         }
 
-        // Finish activity on click
-        val layout = findViewById<View>(android.R.id.content)
-        layout.setOnClickListener {
-            finish()
-        }
+        viewPager = findViewById(R.id.view_pager)
+        mediaAdapter = MediaAdapter(this, fileList)
+        viewPager.adapter = mediaAdapter
+        viewPager.setCurrentItem(currentPosition, false)
     }
 }

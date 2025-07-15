@@ -56,13 +56,15 @@ import androidx.compose.material.icons.filled.UploadFile // For FAB
 import androidx.compose.material3.FloatingActionButton // For FAB
 import androidx.compose.material3.SmallFloatingActionButton // For FAB
 import androidx.compose.runtime.mutableStateOf // For FAB state
-import androidx.compose.runtime.remember // For FAB state
-import androidx.compose.runtime.setValue // For FAB state
+import android.net.Uri
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.secure.R
-import com.example.secure.file.FileManager // Required for VaultStats, VaultFile, VaultFolder
-import com.example.secure.file.FileManager.VaultFile // Explicit import
-import com.example.secure.file.FileManager.VaultFolder // Explicit import
-import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
+import com.example.secure.file.FileManager
+import com.example.secure.file.FileManager.VaultFile
+import com.example.secure.file.FileManager.VaultFolder
+import com.example.secure.ui.composables.CreateFolderDialog
 import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
@@ -278,9 +280,22 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                intent.putExtra("file_path", item.file.absolutePath)
-                                                context.startActivity(intent)
+                                                val file = item.file
+                                                if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
+                                                    val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
+                                                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+                                                    intent.setDataAndType(uri, context.contentResolver.getType(uri))
+                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                    try {
+                                                        context.startActivity(intent)
+                                                    } catch (e: android.content.ActivityNotFoundException) {
+                                                        android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
+                                                    }
+                                                } else {
+                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                                    intent.putExtra("file_path", item.file.absolutePath)
+                                                    context.startActivity(intent)
+                                                }
                                             },
                                             isGridView = isGridView,
                                             onShareClick = {
@@ -351,9 +366,22 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                intent.putExtra("file_path", item.file.absolutePath)
-                                                context.startActivity(intent)
+                                                val file = item.file
+                                                if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
+                                                    val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
+                                                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+                                                    intent.setDataAndType(uri, context.contentResolver.getType(uri))
+                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                    try {
+                                                        context.startActivity(intent)
+                                                    } catch (e: android.content.ActivityNotFoundException) {
+                                                        android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
+                                                    }
+                                                } else {
+                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                                    intent.putExtra("file_path", item.file.absolutePath)
+                                                    context.startActivity(intent)
+                                                }
                                             },
                                             onShareClick = {
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
@@ -474,15 +502,38 @@ fun FileItem(
         headlineContent = { Text(vaultFile.file.name) },
         supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
         leadingContent = {
-            if (vaultFile.file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif")) {
+            val file = vaultFile.file
+            val context = LocalContext.current
+            val thumbnail = remember(file) {
+                when (file.extension.lowercase()) {
+                    in listOf("jpg", "jpeg", "png", "gif") -> {
+                        Uri.fromFile(file)
+                    }
+                    in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
+                        val thumbnailBitmap = android.media.ThumbnailUtils.createVideoThumbnail(
+                            file.absolutePath,
+                            android.provider.MediaStore.Video.Thumbnails.MINI_KIND
+                        )
+                        thumbnailBitmap
+                    }
+                    else -> {
+                        null
+                    }
+                }
+            }
+
+            if (thumbnail != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(vaultFile.file),
+                    painter = rememberAsyncImagePainter(thumbnail),
                     contentDescription = stringResource(R.string.file_icon_desc),
                     modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
             } else {
                 Icon(
-                    Icons.Filled.Description, // Generic file icon
+                    when (file.extension.lowercase()) {
+                        in listOf("mp4", "mkv", "webm", "avi", "3gp") -> Icons.Filled.Videocam
+                        else -> Icons.Filled.Description
+                    },
                     contentDescription = stringResource(R.string.file_icon_desc),
                     modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )

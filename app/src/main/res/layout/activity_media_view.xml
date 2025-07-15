@@ -4,18 +4,9 @@
     android:layout_height="match_parent"
     android.background="@android:color/black">
 
-    <ImageView
-        android:id="@+id/image_view"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <VideoView
-        android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
