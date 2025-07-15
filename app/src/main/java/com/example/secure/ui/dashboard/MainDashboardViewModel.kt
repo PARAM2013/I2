@@ -319,6 +319,17 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var operationMessage: String
 
             when (item) {
+                is File -> {
+                    itemName = item.name
+                    Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
+                    val unhiddenFile = fileManager.unhideFile(item, appContext, FileManager.getUnhideDirectory())
+                    success = unhiddenFile != null
+                    operationMessage = if (success) {
+                        appContext.getString(R.string.file_restored_success) + " ${unhiddenFile?.name}"
+                    } else {
+                        "Failed to unhide file: $itemName"
+                    }
+                }
                 is FileManager.VaultFile -> {
                     itemName = item.file.name
                     Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
@@ -358,6 +369,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
             val fileToDelete: File? = when (item) {
+                is File -> item
                 is FileManager.VaultFile -> item.file
                 is FileManager.VaultFolder -> item.folder
                 else -> null

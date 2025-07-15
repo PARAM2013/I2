@@ -291,10 +291,6 @@ fun AllFilesScreen(
                                                     } catch (e: android.content.ActivityNotFoundException) {
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
-                                                } else {
-                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_path", item.file.absolutePath)
-                                                    context.startActivity(intent)
                                                 }
                                             },
                                             isGridView = isGridView,
@@ -377,10 +373,6 @@ fun AllFilesScreen(
                                                     } catch (e: android.content.ActivityNotFoundException) {
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
-                                                } else {
-                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_path", item.file.absolutePath)
-                                                    context.startActivity(intent)
                                                 }
                                             },
                                             onShareClick = {

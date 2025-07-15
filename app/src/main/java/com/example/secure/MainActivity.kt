@@ -27,6 +27,10 @@ import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
+import com.example.secure.ui.allfiles.VaultMediaViewer
+import com.example.secure.file.FileManager.VaultFile
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class MainActivity : TrackedActivity() {
 
@@ -39,7 +43,7 @@ class MainActivity : TrackedActivity() {
         const val IMAGES = "images"
         const val VIDEOS = "videos"
         const val DOCUMENTS = "documents"
-        // Add other routes here if needed
+        const val MEDIA_VIEWER = "media_viewer"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +91,8 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                }
+                                },
+                                navController = navController
                             )
                         }
                         composable(NavRoutes.VIDEOS) {
@@ -95,7 +100,8 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel,
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                }
+                                },
+                                navController = navController
                             )
                         }
                         composable(NavRoutes.DOCUMENTS) {
@@ -106,7 +112,29 @@ class MainActivity : TrackedActivity() {
                                 }
                             )
                         }
-                        // Add other composable destinations here
+                        composable("${NavRoutes.MEDIA_VIEWER}/{mediaType}/{initialIndex}") { backStackEntry ->
+                            val mediaType = backStackEntry.arguments?.getString("mediaType")
+                            val initialIndex = backStackEntry.arguments?.getString("initialIndex")?.toInt() ?: 0
+                            val uiState by dashboardViewModel.uiState.collectAsState()
+                            val vaultFiles = when (mediaType) {
+                                "images" -> uiState.imageFiles
+                                "videos" -> uiState.videoFiles
+                                else -> emptyList()
+                            }
+                            VaultMediaViewer(
+                                mediaFiles = vaultFiles,
+                                initialIndex = initialIndex,
+                                onClose = { navController.popBackStack() },
+                                onDelete = { vaultFile ->
+                                    dashboardViewModel.requestDeleteItem(vaultFile)
+                                    navController.popBackStack()
+                                },
+                                onUnhide = { vaultFile ->
+                                    dashboardViewModel.requestUnhideItem(vaultFile)
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
                     }
                 }
             }
