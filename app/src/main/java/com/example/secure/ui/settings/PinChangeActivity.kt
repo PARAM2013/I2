@@ -58,15 +58,15 @@ class PinChangeActivity : AppCompatActivity() {
         when (currentStage) {
             PinChangeStage.VERIFY_CURRENT_PIN -> {
                 textPinPrompt.text = getString(R.string.prompt_enter_current_pin) // Add this string
-                buttonPinNext.text = "Verify"
+                buttonPinNext.text = getString(R.string.verify)
             }
             PinChangeStage.ENTER_NEW_PIN -> {
                 textPinPrompt.text = getString(R.string.prompt_enter_new_pin) // Add this string
-                buttonPinNext.text = "Next"
+                buttonPinNext.text = getString(R.string.next)
             }
             PinChangeStage.CONFIRM_NEW_PIN -> {
                 textPinPrompt.text = getString(R.string.prompt_confirm_pin)
-                buttonPinNext.text = "Save PIN"
+                buttonPinNext.text = getString(R.string.save_pin)
             }
         }
     }

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"> <!-- Added app namespace for potential future use -->
-
-    <!-- This menu is currently not used by a BottomNavigationView. -->
-    <!-- It can be repurposed for an OptionsMenu (e.g., in a Toolbar) if needed. -->
-</menu>
