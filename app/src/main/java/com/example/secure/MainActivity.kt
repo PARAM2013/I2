@@ -21,17 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
 import com.example.secure.ui.allfiles.AllFilesScreen
+import com.example.secure.ui.allfiles.ImagesScreen
+import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
-import com.example.secure.ui.allfiles.MediaGridScreen
-import com.example.secure.ui.allfiles.MediaType
-import com.example.secure.ui.allfiles.VaultMediaViewer
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
+import com.example.secure.ui.allfiles.VaultMediaViewer
+import com.example.secure.file.FileManager.VaultFile
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 
 class MainActivity : TrackedActivity() {
 
@@ -44,7 +43,7 @@ class MainActivity : TrackedActivity() {
         const val IMAGES = "images"
         const val VIDEOS = "videos"
         const val DOCUMENTS = "documents"
-        const val MEDIA_VIEWER = "media_viewer/{mediaType}/{initialIndex}"
+        const val MEDIA_VIEWER = "media_viewer"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,22 +87,20 @@ class MainActivity : TrackedActivity() {
                             )
                         }
                         composable(NavRoutes.IMAGES) {
-                            MediaGridScreen(
-                                mediaType = MediaType.IMAGE,
+                            ImagesScreen(
+                                viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 },
-                                viewModel = dashboardViewModel,
                                 navController = navController
                             )
                         }
                         composable(NavRoutes.VIDEOS) {
-                            MediaGridScreen(
-                                mediaType = MediaType.VIDEO,
+                            VideosScreen(
+                                viewModel = dashboardViewModel,
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 },
-                                viewModel = dashboardViewModel,
                                 navController = navController
                             )
                         }
@@ -115,19 +112,13 @@ class MainActivity : TrackedActivity() {
                                 }
                             )
                         }
-                        composable(
-                            route = NavRoutes.MEDIA_VIEWER,
-                            arguments = listOf(
-                                navArgument("mediaType") { type = NavType.StringType },
-                                navArgument("initialIndex") { type = NavType.IntType }
-                            )
-                        ) { backStackEntry ->
-                            val mediaType = backStackEntry.arguments?.getString("mediaType")?.let { MediaType.valueOf(it) }
-                            val initialIndex = backStackEntry.arguments?.getInt("initialIndex") ?: 0
+                        composable("${NavRoutes.MEDIA_VIEWER}/{mediaType}/{initialIndex}") { backStackEntry ->
+                            val mediaType = backStackEntry.arguments?.getString("mediaType")
+                            val initialIndex = backStackEntry.arguments?.getString("initialIndex")?.toInt() ?: 0
                             val uiState by dashboardViewModel.uiState.collectAsState()
                             val vaultFiles = when (mediaType) {
-                                MediaType.IMAGE -> uiState.imageFiles
-                                MediaType.VIDEO -> uiState.videoFiles
+                                "images" -> uiState.imageFiles
+                                "videos" -> uiState.videoFiles
                                 else -> emptyList()
                             }
                             VaultMediaViewer(
