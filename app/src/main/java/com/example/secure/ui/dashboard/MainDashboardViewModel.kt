@@ -6,7 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Videocam
@@ -57,7 +57,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         DashboardCategoryItem("all_files", "All Files", "", Icons.Filled.Folder),
         DashboardCategoryItem("images", "Images", "", Icons.Filled.Image),
         DashboardCategoryItem("videos", "Videos", "", Icons.Filled.Videocam),
-        DashboardCategoryItem("documents", "Documents", "", Icons.Filled.Article)
+        DashboardCategoryItem("documents", "Documents", "", Icons.AutoMirrored.Filled.Article)
     )
 
     init {
@@ -409,7 +409,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             val oldName: String = fileToRename?.name ?: "Item"
 
             var operationMessage: String
-            var success = false
 
             if (fileToRename == null) {
                 operationMessage = "Rename failed: Unknown item type."
@@ -418,12 +417,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
             } else if (newName == oldName) {
                 operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
-                success = true // Considered a "success" as no change was needed and no error occurred.
             }
             else {
                 val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
                 if (renamedFile != null) {
-                    success = true
                     operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
                 } else {
                     // FileManager.renameItemInVault logs specific errors and returns null for various reasons.

@@ -25,7 +25,6 @@ class SettingsActivity : AppCompatActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SettingsScreen(
-                        onNavigateUp = { finish() },
                         activityContext = this
                     )
                 }

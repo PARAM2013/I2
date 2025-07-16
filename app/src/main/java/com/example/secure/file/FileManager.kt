@@ -384,18 +384,13 @@ object FileManager {
     fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null, deleteOriginal: Boolean = true): File? {
         val contentResolver = context.contentResolver
         var fileName: String? = null
-        var fileSize: Long = 0
 
-        // Get file name and size from URI
+        // Get file name from URI
         contentResolver.query(sourceFileUri, null, null, null, null)?.use { cursor ->
             if (cursor.moveToFirst()) {
                 val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
                 if (nameIndex != -1) {
                     fileName = cursor.getString(nameIndex)
-                }
-                val sizeIndex = cursor.getColumnIndex(android.provider.OpenableColumns.SIZE)
-                if (sizeIndex != -1) {
-                    fileSize = cursor.getLong(sizeIndex)
                 }
             }
         }
@@ -448,7 +443,7 @@ object FileManager {
             Log.d("FileManager", "importFile: Importing file from $sourceFileUri to ${destinationFile.absolutePath}")
 
             var tempFileToProcess: File? = null
-            var streamToDelete: InputStream? = null // Keep track of stream if temp file is used
+            var streamToProcess: InputStream?
 
             if (PinManager.isMetadataRemovalEnabled(context) && (extension.equals("jpg", true) || extension.equals("jpeg", true) || extension.equals("png", true))) {
                 Log.d("FileManager", "Metadata removal enabled for $fileName")
@@ -483,7 +478,7 @@ object FileManager {
                         exifInterface.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, null)
                         exifInterface.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, null)
                         exifInterface.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, null)
-                        exifInterface.setAttribute(ExifInterface.TAG_ISO_SPEED_RATINGS, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_ISO_SPEED, null)
                         exifInterface.setAttribute(ExifInterface.TAG_MAKE, null)
                         exifInterface.setAttribute(ExifInterface.TAG_MODEL, null)
                         exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, null)
@@ -494,25 +489,25 @@ object FileManager {
 
                         exifInterface.saveAttributes() // This saves changes to the tempFileToProcess
                         Log.d("FileManager", "Metadata stripped from temp file.")
-                        streamToDelete = tempFileToProcess.inputStream()
+                        streamToProcess = tempFileToProcess.inputStream()
                     } else {
                         Log.w("FileManager", "Temp file for metadata stripping is empty or does not exist.")
                         // Fallback to original stream if temp file creation failed
-                        streamToDelete = contentResolver.openInputStream(sourceFileUri)
+                        streamToProcess = contentResolver.openInputStream(sourceFileUri)
                     }
                 } catch (e: Exception) {
                     Log.e("FileManager", "Error during metadata stripping for $fileName, falling back to original.", e)
                     // Fallback to original stream on error
-                    streamToDelete = contentResolver.openInputStream(sourceFileUri)
+                    streamToProcess = contentResolver.openInputStream(sourceFileUri)
                     tempFileToProcess?.delete() // Clean up if partially created
                     tempFileToProcess = null
                 }
             } else {
                 // No metadata stripping, use original stream
-                streamToDelete = contentResolver.openInputStream(sourceFileUri)
+                streamToProcess = contentResolver.openInputStream(sourceFileUri)
             }
 
-            streamToDelete?.use { inputStream ->
+            streamToProcess?.use { inputStream ->
                 destinationFile.outputStream().use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
