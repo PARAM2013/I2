@@ -38,6 +38,8 @@ import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.zoom.rememberZoomState
+import com.google.accompanist.zoom.zoomable
 import java.io.File
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
@@ -90,12 +92,25 @@ fun VaultMediaViewer(
         ) { page ->
             val vaultFile = mediaFiles[page]
             if (vaultFile.file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif")) {
-                ZoomableImage(file = vaultFile.file)
+                ImageViewer(file = vaultFile.file)
             } else {
                 VideoPlayer(file = vaultFile.file)
             }
         }
     }
+}
+
+@Composable
+fun ImageViewer(file: File) {
+    val zoomState = rememberZoomState()
+    AsyncImage(
+        model = file,
+        contentDescription = "Image",
+        contentScale = ContentScale.Fit,
+        modifier = Modifier
+            .fillMaxSize()
+            .zoomable(zoomState)
+    )
 }
 
 @Composable
