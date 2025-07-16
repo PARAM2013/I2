@@ -94,8 +94,7 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel, // Pass the ViewModel
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                },
-                                navController = navController
+                                }
                             )
                         }
                         composable(NavRoutes.IMAGES) {
