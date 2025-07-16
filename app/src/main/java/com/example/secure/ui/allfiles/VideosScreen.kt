@@ -74,8 +74,7 @@ import java.io.File // Still needed for File objects within VaultFile/VaultFolde
 @Composable
 fun VideosScreen(
     onNavigateBack: () -> Unit,
-    viewModel: MainDashboardViewModel = viewModel(),
-    navController: androidx.navigation.NavController
+    viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -196,8 +195,9 @@ fun VideosScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        val index = videoFiles.indexOf(file)
-                                        navController.navigate("media_viewer/videos/$index")
+                                        val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                        intent.putExtra("file_path", file.file.absolutePath)
+                                        context.startActivity(intent)
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}
@@ -227,8 +227,9 @@ fun VideosScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        val index = videoFiles.indexOf(file)
-                                        navController.navigate("media_viewer/videos/$index")
+                                        val intent = android.content.Intent(context, MediaViewActivity::class.java)
+                                        intent.putExtra("file_path", file.file.absolutePath)
+                                        context.startActivity(intent)
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}
