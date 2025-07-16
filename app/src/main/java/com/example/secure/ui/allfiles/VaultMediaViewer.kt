@@ -2,12 +2,11 @@ package com.example.secure.ui.allfiles
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -15,9 +14,11 @@ import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -34,11 +35,14 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.zoom.rememberZoomState
+import com.google.accompanist.zoom.zoomable
 import java.io.File
-import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.ui.graphics.graphicsLayer
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun VaultMediaViewer(
     mediaFiles: List<com.example.secure.file.FileManager.VaultFile>,
@@ -47,27 +51,30 @@ fun VaultMediaViewer(
     onDelete: (com.example.secure.file.FileManager.VaultFile) -> Unit,
     onUnhide: (com.example.secure.file.FileManager.VaultFile) -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = initialIndex, pageCount = { mediaFiles.size })
+    val pagerState = rememberPagerState(initialPage = initialIndex)
     var controlsVisible by remember { mutableStateOf(true) }
 
     Scaffold(
         topBar = {
             AnimatedVisibility(visible = controlsVisible) {
                 TopAppBar(
-                    title = { Text(text = mediaFiles[pagerState.currentPage].file.name, color = Color.White) },
+                    title = { Text(text = mediaFiles[pagerState.currentPage].file.name) },
                     navigationIcon = {
                         IconButton(onClick = onClose) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Close", tint = Color.White)
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Close")
                         }
                     },
                     actions = {
                         IconButton(onClick = { onDelete(mediaFiles[pagerState.currentPage]) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
                         IconButton(onClick = { onUnhide(mediaFiles[pagerState.currentPage]) }) {
-                            Icon(Icons.Default.LockOpen, contentDescription = "Unhide", tint = Color.White)
+                            Icon(Icons.Default.LockOpen, contentDescription = "Unhide")
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
                 )
             }
         },
@@ -76,10 +83,12 @@ fun VaultMediaViewer(
         }
     ) { paddingValues ->
         HorizontalPager(
+            count = mediaFiles.size,
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(Color.Black)
         ) { page ->
             val vaultFile = mediaFiles[page]
             if (vaultFile.file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif")) {
@@ -93,35 +102,15 @@ fun VaultMediaViewer(
 
 @Composable
 fun ImageViewer(file: File) {
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-
-    Box(
+    val zoomState = rememberZoomState()
+    AsyncImage(
+        model = file,
+        contentDescription = "Image",
+        contentScale = ContentScale.Fit,
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scale *= zoom
-                    offsetX += pan.x
-                    offsetY += pan.y
-                }
-            }
-    ) {
-        AsyncImage(
-            model = file,
-            contentDescription = "Image",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offsetX,
-                    translationY = offsetY
-                )
-        )
-    }
+            .zoomable(zoomState)
+    )
 }
 
 @Composable
