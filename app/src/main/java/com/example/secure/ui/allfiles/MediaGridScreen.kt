@@ -160,8 +160,7 @@ fun MediaGridScreen(
                                     },
                                     onClick = {
                                         val index = mediaFiles.indexOf(file)
-                                        val route = "media_viewer/${mediaType.name}/$index"
-                                        navController.navigate(route)
+                                        navController.navigate("media_viewer/${mediaType.name}/$index")
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}
@@ -191,8 +190,7 @@ fun MediaGridScreen(
                                     },
                                     onClick = {
                                         val index = mediaFiles.indexOf(file)
-                                        val route = "media_viewer/${mediaType.name}/$index"
-                                        navController.navigate(route)
+                                        navController.navigate("media_viewer/${mediaType.name}/$index")
                                     },
                                     isGridView = isGridView,
                                     onShareClick = {}

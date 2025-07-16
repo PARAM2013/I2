@@ -60,6 +60,7 @@ import android.net.Uri
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavController
 import com.example.secure.R
 import com.example.secure.file.FileManager
 import com.example.secure.file.FileManager.VaultFile
@@ -75,7 +76,8 @@ import java.io.File // Still needed for File objects within VaultFile/VaultFolde
 @Composable
 fun AllFilesScreen(
     onNavigateBack: () -> Unit,
-    viewModel: MainDashboardViewModel = viewModel()
+    viewModel: MainDashboardViewModel = viewModel(),
+    navController: NavController
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -281,7 +283,14 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 val file = item.file
-                                                if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
+                                                if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
+                                                    val mediaFiles = uiState.vaultStats?.allFiles?.filter { it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO }
+                                                    val index = mediaFiles?.indexOf(item)
+                                                    if (index != null && index != -1) {
+                                                        val mediaType = if (item.category == FileManager.FileCategory.PHOTO) MediaType.IMAGE else MediaType.VIDEO
+                                                        navController.navigate("media_viewer/${mediaType.name}/$index")
+                                                    }
+                                                } else if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
                                                     val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
                                                     intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -569,6 +578,6 @@ fun AllFilesScreenPreview() {
         // you would typically pass a manually constructed MainDashboardUiState to a modified AllFilesScreen
         // that can accept UiState directly for preview purposes, or use a testing library for ViewModel mocking.
 
-        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview)
+        AllFilesScreen(onNavigateBack = {}, viewModel = viewModelForPreview, navController = NavController(LocalContext.current))
     }
 }
