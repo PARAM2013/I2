@@ -13,11 +13,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ViewList
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -82,7 +82,7 @@ fun MediaGridScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
                         )
                     }
@@ -93,7 +93,7 @@ fun MediaGridScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
+                            imageVector = if (isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
                         )
                     }
@@ -197,7 +197,7 @@ fun MediaGridScreen(
                                     isGridView = isGridView,
                                     onShareClick = {}
                                 )
-                                HorizontalDivider()
+                                Divider()
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) }
                         }

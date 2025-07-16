@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,7 +59,7 @@ fun VaultMediaViewer(
                     title = { Text(text = mediaFiles[pagerState.currentPage].file.name) },
                     navigationIcon = {
                         IconButton(onClick = onClose) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close")
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Close")
                         }
                     },
                     actions = {
