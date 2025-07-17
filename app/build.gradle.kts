@@ -92,6 +92,14 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.3.1")
-    implementation("androidx.media3:media3-ui:1.3.1")
+    implementation("androidx.media3:media3-exoplayer:1.1.1")
+    implementation("androidx.media3:media3-ui:1.1.1")
+
+    // Accompanist for zoom and gestures
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+
+    // Foundation for Pager and gestures
+    implementation("androidx.compose.foundation:foundation:1.6.4")
 }
