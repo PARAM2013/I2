@@ -19,13 +19,13 @@ import com.github.chrisbanes.photoview.PhotoView
 import java.io.File
 
 interface MediaAdapterListener {
-    fun onDeleteFile(file: File, position: Int)
-    fun onUnhideFile(file: File, position: Int)
+    fun onDeleteFile(uri: Uri, position: Int)
+    fun onUnhideFile(uri: Uri, position: Int)
 }
 
 class MediaAdapter(
     private val context: Context,
-    private val fileList: List<File>,
+    private val fileList: List<Uri>,
     private val listener: MediaAdapterListener? = null
 ) : RecyclerView.Adapter<MediaAdapter.MediaViewHolder>() {
 
@@ -38,25 +38,28 @@ class MediaAdapter(
     }
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
-        val file = fileList[position]
+        val uri = fileList[position]
         
-        setupLongPressMenu(holder.rootLayout, file, position)
+        setupLongPressMenu(holder.rootLayout, uri, position)
         setupFullscreenToggle(holder.rootLayout)
 
-        if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif")) {
-            setupImageView(holder, file)
+        // Determine if it's an image or video based on URI extension or type if possible
+        // For simplicity, we'll assume based on common extensions for now.
+        val extension = uri.lastPathSegment?.substringAfterLast('.', "")?.lowercase()
+        if (extension in listOf("jpg", "jpeg", "png", "gif")) {
+            setupImageView(holder, uri)
         } else {
-            setupVideoView(holder, file, position)
+            setupVideoView(holder, uri, position)
         }
     }
 
-    private fun setupImageView(holder: MediaViewHolder, file: File) {
+    private fun setupImageView(holder: MediaViewHolder, uri: Uri) {
         holder.imageView.visibility = View.VISIBLE
         holder.videoView.visibility = View.GONE
-        holder.imageView.setImageURI(Uri.fromFile(file))
+        holder.imageView.setImageURI(uri)
     }
 
-    private fun setupVideoView(holder: MediaViewHolder, file: File, position: Int) {
+    private fun setupVideoView(holder: MediaViewHolder, uri: Uri, position: Int) {
         holder.imageView.visibility = View.GONE
         holder.videoView.visibility = View.VISIBLE
 
@@ -68,27 +71,27 @@ class MediaAdapter(
         }
 
         holder.videoView.player = player
-        val mediaItem = MediaItem.fromUri(Uri.fromFile(file))
+        val mediaItem = MediaItem.fromUri(uri)
         player.setMediaItem(mediaItem)
         player.prepare()
     }
 
-    private fun setupLongPressMenu(view: View, file: File, position: Int) {
+    private fun setupLongPressMenu(view: View, uri: Uri, position: Int) {
         view.setOnLongClickListener {
-            showOptionsMenu(view, file, position)
+            showOptionsMenu(view, uri, position)
             true
         }
     }
 
-    private fun showOptionsMenu(view: View, file: File, position: Int) {
+    private fun showOptionsMenu(view: View, uri: Uri, position: Int) {
         PopupMenu(context, view).apply {
             menu.add("Delete")
             menu.add("Unhide")
             
             setOnMenuItemClickListener { item ->
                 when (item.title.toString()) {
-                    "Delete" -> listener?.onDeleteFile(file, position)
-                    "Unhide" -> listener?.onUnhideFile(file, position)
+                    "Delete" -> listener?.onDeleteFile(uri, position)
+                    "Unhide" -> listener?.onUnhideFile(uri, position)
                 }
                 true
             }

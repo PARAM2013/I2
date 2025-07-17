@@ -111,6 +111,10 @@ class MainActivity : TrackedActivity() {
                 }
             }
         }
+        }
+
+    override fun onResume() {
+        super.onResume()
         checkAndRequestPermissions()
     }
 
@@ -175,11 +179,12 @@ class MainActivity : TrackedActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == FileManager.REQUEST_STORAGE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                Toast.makeText(this, "Storage permissions granted.", Toast.LENGTH_SHORT).show()
+                // Clear cache to ensure fresh check
+                FileManager.clearPermissionCache()
                 loadVaultContentInitial()
             } else {
-                Toast.makeText(this, "Storage permissions are required.", Toast.LENGTH_LONG).show()
-                // Handle permission denial - ViewModel/UI should ideally reflect this state
+                Toast.makeText(this, "Storage permissions are required for the app to function properly", Toast.LENGTH_LONG).show()
+                finish()
             }
         }
     }
@@ -187,13 +192,13 @@ class MainActivity : TrackedActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
-                    loadVaultContentInitial()
-                } else {
-                    Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required.", Toast.LENGTH_LONG).show()
-                }
+            // Clear cache to ensure fresh check after MANAGE_EXTERNAL_STORAGE result
+            FileManager.clearPermissionCache()
+            if (FileManager.checkStoragePermissions(this)) {
+                loadVaultContentInitial()
+            } else {
+                Toast.makeText(this, "Storage permissions are required for the app to function properly", Toast.LENGTH_LONG).show()
+                finish()
             }
         }
     }

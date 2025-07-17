@@ -24,6 +24,9 @@ object FileManager {
     const val REQUEST_STORAGE_PERMISSION_CODE = 101
     const val REQUEST_MANAGE_STORAGE_PERMISSION_CODE = 102 // For Android 11+
 
+    private var permissionsCached = false
+    private var hasPermissions = false
+
     /**
      * Gets the root directory for the iSecure vault.
      * This will be in public external storage to persist after uninstall.
@@ -62,18 +65,27 @@ object FileManager {
 
 
     fun checkStoragePermissions(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Android 11 (API 30) and above
+        if (permissionsCached) {
+            return hasPermissions
+        }
+
+        hasPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Android 6 (API 23) to Android 10 (API 29)
             val readPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
             val writePermission = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             readPermission == PackageManager.PERMISSION_GRANTED && writePermission == PackageManager.PERMISSION_GRANTED
         } else {
-            // Below Android 6 (API 23), permissions are granted at install time
-            true
+            true // Below Android M, permissions are granted at install time
         }
+
+        permissionsCached = true
+        return hasPermissions
+    }
+
+    fun clearPermissionCache() {
+        permissionsCached = false
+        hasPermissions = false
     }
 
     fun requestStoragePermissions(activity: Activity) {
@@ -83,7 +95,7 @@ object FileManager {
                 try {
                     val intent = android.content.Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.data = android.net.Uri.parse("package:${activity.packageName}")
-                    activity.startActivity(intent)
+                    activity.startActivityForResult(intent, REQUEST_MANAGE_STORAGE_PERMISSION_CODE)
                 } catch (e: Exception) {
                     // Fallback or error handling if the intent fails (e.g., on some custom ROMs or emulators)
                     android.util.Log.e("FileManager", "Failed to launch MANAGE_EXTERNAL_STORAGE settings", e)

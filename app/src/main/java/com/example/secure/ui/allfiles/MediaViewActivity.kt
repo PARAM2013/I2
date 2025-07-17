@@ -1,5 +1,6 @@
 package com.example.secure.ui.allfiles
 
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -14,7 +15,7 @@ class MediaViewActivity : AppCompatActivity(), MediaAdapterListener {
     private lateinit var viewPager: ViewPager2
     private lateinit var mediaAdapter: MediaAdapter
     private var currentPosition: Int = 0
-    private lateinit var fileList: MutableList<File>
+    private lateinit var fileList: MutableList<Uri>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,35 +25,19 @@ class MediaViewActivity : AppCompatActivity(), MediaAdapterListener {
         
         setContentView(R.layout.activity_media_view)
 
-        val filePath = intent.getStringExtra("file_path")
-        if (filePath == null) {
+        val fileUriString = intent.getStringExtra("file_uri")
+        if (fileUriString == null) {
             finish()
             return
         }
         
-        setupMediaViewer(filePath)
+        val fileUri = Uri.parse(fileUriString)
+        setupMediaViewer(fileUri)
     }
 
-    private fun setupMediaViewer(filePath: String) {
-        val currentFile = File(filePath)
-        val parentDir = currentFile.parentFile
-        
-        if (parentDir != null) {
-            fileList = parentDir.listFiles()
-                ?.filter { 
-                    it.isFile && (it.extension.lowercase() in listOf(
-                        "jpg", "jpeg", "png", "gif", 
-                        "mp4", "mkv", "webm", "avi", "3gp"
-                    ))
-                }
-                ?.sorted()
-                ?.toMutableList() ?: mutableListOf()
-            
-            currentPosition = fileList.indexOf(currentFile)
-        } else {
-            fileList = mutableListOf(currentFile)
-            currentPosition = 0
-        }
+    private fun setupMediaViewer(fileUri: Uri) {
+        fileList = mutableListOf(fileUri) // Only display the single URI passed
+        currentPosition = 0 // Always the first item since it's a single item list
 
         viewPager = findViewById(R.id.view_pager)
         mediaAdapter = MediaAdapter(this, fileList, this)
@@ -60,12 +45,14 @@ class MediaViewActivity : AppCompatActivity(), MediaAdapterListener {
         viewPager.setCurrentItem(currentPosition, false)
     }
 
-    override fun onDeleteFile(file: File, position: Int) {
+    override fun onDeleteFile(uri: Uri, position: Int) {
         AlertDialog.Builder(this)
             .setTitle("Delete File")
             .setMessage("Are you sure you want to delete this file?")
             .setPositiveButton("Delete") { _, _ ->
-                if (file.delete()) {
+                // Convert Uri back to File for deletion if it's a file URI
+                val fileToDelete = uri.path?.let { File(it) }
+                if (fileToDelete != null && fileToDelete.delete()) {
                     fileList.removeAt(position)
                     mediaAdapter.notifyItemRemoved(position)
                     if (fileList.isEmpty()) {
@@ -80,7 +67,7 @@ class MediaViewActivity : AppCompatActivity(), MediaAdapterListener {
             .show()
     }
 
-    override fun onUnhideFile(file: File, position: Int) {
+    override fun onUnhideFile(uri: Uri, position: Int) {
         // Implement unhide logic based on your app's requirements
         Toast.makeText(this, "Unhide not implemented yet", Toast.LENGTH_SHORT).show()
     }

@@ -292,8 +292,10 @@ fun AllFilesScreen(
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
                                                 } else {
+                                                    val mediaUri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_path", item.file.absolutePath)
+                                                    intent.putExtra("file_uri", mediaUri.toString()) // Pass URI as string
+                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant temporary read permission
                                                     context.startActivity(intent)
                                                 }
                                             },
@@ -378,8 +380,10 @@ fun AllFilesScreen(
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
                                                 } else {
+                                                    val mediaUri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_path", item.file.absolutePath)
+                                                    intent.putExtra("file_uri", mediaUri.toString()) // Pass URI as string
+                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant temporary read permission
                                                     context.startActivity(intent)
                                                 }
                                             },

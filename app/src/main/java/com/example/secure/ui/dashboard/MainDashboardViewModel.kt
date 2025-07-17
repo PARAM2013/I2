@@ -151,6 +151,14 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     // Loads contents for a specific path (for AllFilesScreen)
     private fun loadPathContents(relativePath: String?) {
+        if (!fileManager.checkStoragePermissions(appContext)) {
+            _uiState.update { it.copy(
+                error = "Storage permissions are required to view files. Please grant permissions in Settings.",
+                isLoading = false
+            ) }
+            return
+        }
+
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
@@ -248,6 +256,15 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     fun importFiles(uris: List<Uri>) {
         if (uris.isEmpty()) return
+        
+        if (!fileManager.checkStoragePermissions(appContext)) {
+            _uiState.update { it.copy(
+                error = "Storage permissions are required to import files. Please grant permissions in Settings.",
+                isLoading = false
+            ) }
+            return
+        }
+
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
             var successfulImports = 0
