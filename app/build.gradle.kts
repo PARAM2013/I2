@@ -40,6 +40,10 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.10"
     }
+    
+    lint {
+        disable += "UnsafeOptInUsageError"
+    }
 }
 
 dependencies {
@@ -92,8 +96,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     // ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.1.1")
-    implementation("androidx.media3:media3-ui:1.1.1")
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-common:1.2.0")
+
+    // PhotoView for zoomable images
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
     // Accompanist for zoom and gestures
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")

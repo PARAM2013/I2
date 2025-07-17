@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -47,7 +50,6 @@ fun MediaViewerScreen(
     var showControls by remember { mutableStateOf(true) }
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
-    val context = LocalContext.current
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -109,7 +111,7 @@ fun MediaViewerScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Default.ArrowBack, "Close", tint = Color.White)
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close", tint = Color.White)
                     }
                     Text(
                         text = currentFile.name,
@@ -118,10 +120,10 @@ fun MediaViewerScreen(
                     )
                     Row {
                         IconButton(onClick = { onUnhide(currentFile) }) {
-                            Icon(Icons.Default.Visibility, "Unhide", tint = Color.White)
+                            Icon(Icons.Filled.Visibility, "Unhide", tint = Color.White)
                         }
                         IconButton(onClick = { onDelete(currentFile) }) {
-                            Icon(Icons.Default.Delete, "Delete", tint = Color.White)
+                            Icon(Icons.Filled.Delete, "Delete", tint = Color.White)
                         }
                     }
                 }
@@ -195,6 +197,7 @@ private fun ZoomableImage(
     }
 }
 
+@OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 private fun VideoPlayer(
     file: File,
@@ -202,27 +205,18 @@ private fun VideoPlayer(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(android.net.Uri.fromFile(file)))
-            prepare()
-        }
-    }
+    val playerManager = remember { PlayerManager(context) }
 
     DisposableEffect(Unit) {
         onDispose {
-            exoPlayer.release()
+            playerManager.release()
         }
     }
 
     AndroidView(
-        factory = { context ->
-            PlayerView(context).apply {
-                player = exoPlayer
-                useController = true
-                controllerShowTimeoutMs = if (showControls) 3000 else 0
-                controllerHideOnTouch = true
-                setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+        factory = { ctx ->
+            PlayerView(ctx).also { playerView ->
+                playerManager.setupPlayerView(playerView, file, showControls)
             }
         },
         modifier = modifier
