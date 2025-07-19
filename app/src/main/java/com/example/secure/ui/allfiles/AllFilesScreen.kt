@@ -113,11 +113,11 @@ fun AllFilesScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        val parentPath = currentPath?.let { File(it).parent }
-                        if (parentPath != null || currentPath != null) { // If currentPath is not null, parentPath could be null (at root)
+                        if (currentPath != null) {
+                            val parentPath = File(currentPath!!).parent
                             viewModel.navigateToPath(parentPath)
                         } else {
-                            onNavigateBack() // Original popBackStack behavior if already at root
+                            onNavigateBack()
                         }
                     }) {
                         Icon(

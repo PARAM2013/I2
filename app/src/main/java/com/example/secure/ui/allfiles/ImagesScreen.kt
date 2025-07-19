@@ -43,6 +43,12 @@ fun ImagesScreen(
     var showRenameDialog by remember { mutableStateOf(false) }
     var isGridView by remember { mutableStateOf(true) }
     val context = LocalContext.current
+
+    // Launch a coroutine to load all images when the screen is first displayed
+    LaunchedEffect(Unit) {
+        viewModel.loadAllImages()
+    }
+
     val imageFiles = uiState.imageFiles.sortedByDescending { it.file.lastModified() }
 
     Scaffold(
