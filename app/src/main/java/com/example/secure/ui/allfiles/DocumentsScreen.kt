@@ -195,7 +195,21 @@ fun DocumentsScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        try {
+                                            val uri = androidx.core.content.FileProvider.getUriForFile(
+                                                context,
+                                                "com.example.secure.provider",
+                                                file.file
+                                            )
+                                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                                                setDataAndType(uri, context.contentResolver.getType(uri) ?: "application/octet-stream")
+                                                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            }
+                                            context.startActivity(intent)
+                                        } catch (e: Exception) {
+                                            android.widget.Toast.makeText(context, "Error opening file: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                                            android.util.Log.e("DocumentsScreen", "Error opening file", e)
+                                        }
                                     },
                                     isGridView = isGridView,
                                     onShareClick = { viewModel.shareFile(file) }
@@ -225,7 +239,21 @@ fun DocumentsScreen(
                                         expandedMenuForItemPath = null // Close menu
                                     },
                                     onClick = {
-                                        android.widget.Toast.makeText(context, "File clicked: ${file.file.name}", android.widget.Toast.LENGTH_SHORT).show()
+                                        try {
+                                            val uri = androidx.core.content.FileProvider.getUriForFile(
+                                                context,
+                                                "com.example.secure.provider",
+                                                file.file
+                                            )
+                                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                                                setDataAndType(uri, context.contentResolver.getType(uri) ?: "application/octet-stream")
+                                                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            }
+                                            context.startActivity(intent)
+                                        } catch (e: Exception) {
+                                            android.widget.Toast.makeText(context, "Error opening file: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                                            android.util.Log.e("DocumentsScreen", "Error opening file", e)
+                                        }
                                     },
                                     isGridView = isGridView,
                                     onShareClick = { viewModel.shareFile(file) }

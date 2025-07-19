@@ -69,7 +69,10 @@ import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialo
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
+import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +89,8 @@ fun AllFilesScreen(
     var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
     var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
     var isGridView by remember { mutableStateOf(false) }
+    var selectedMediaIndex by remember { mutableStateOf<Int?>(null) }
+    val mediaFiles = uiState.vaultStats?.allFiles?.filter { it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO } ?: emptyList()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -281,7 +286,7 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 val file = item.file
-                                                if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
                                                     val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
                                                     intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -291,12 +296,8 @@ fun AllFilesScreen(
                                                     } catch (e: android.content.ActivityNotFoundException) {
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
-                                                } else {
-                                                    val mediaUri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
-                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_uri", mediaUri.toString()) // Pass URI as string
-                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant temporary read permission
-                                                    context.startActivity(intent)
+                                                } else if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
+                                                    selectedMediaIndex = mediaFiles.indexOf(item)
                                                 }
                                             },
                                             isGridView = isGridView,
@@ -400,6 +401,31 @@ fun AllFilesScreen(
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                         }
+                    }
+                }
+
+                if (selectedMediaIndex != null) {
+                    Dialog(
+                        onDismissRequest = { selectedMediaIndex = null },
+                        properties = DialogProperties(
+                            dismissOnBackPress = true,
+                            dismissOnClickOutside = false,
+                            usePlatformDefaultWidth = false
+                        )
+                    ) {
+                        MediaViewerScreen(
+                            files = mediaFiles.map { it.file },
+                            initialIndex = selectedMediaIndex!!,
+                            onClose = { selectedMediaIndex = null },
+                            onDelete = { file ->
+                                viewModel.requestDeleteItem(mediaFiles.find { it.file == file }!!)
+                                selectedMediaIndex = null
+                            },
+                            onUnhide = { file ->
+                                viewModel.requestUnhideItem(mediaFiles.find { it.file == file }!!)
+                                selectedMediaIndex = null
+                            }
+                        )
                     }
                 }
             }

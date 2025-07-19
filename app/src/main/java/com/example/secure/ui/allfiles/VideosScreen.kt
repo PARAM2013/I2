@@ -29,6 +29,7 @@ import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +45,10 @@ fun VideosScreen(
     var isGridView by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val videoFiles = uiState.videoFiles.sortedByDescending { it.file.lastModified() }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadAllVideos()
+    }
 
     Scaffold(
         topBar = {

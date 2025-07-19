@@ -45,6 +45,13 @@ import coil.compose.AsyncImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import kotlinx.coroutines.launch
+import androidx.compose.animation.core.animate
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,6 +66,8 @@ fun MediaViewerScreen(
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
     val scope = rememberCoroutineScope()
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var scale by remember { mutableFloatStateOf(1f) }
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -72,6 +81,29 @@ fun MediaViewerScreen(
                 detectTapGestures(
                     onTap = { showControls = !showControls }
                 )
+                detectVerticalDragGestures(
+                    onDragStart = { offsetY = 0f; scale = 1f },
+                    onDragEnd = {
+                        if (offsetY.absoluteValue > 200) {
+                            onClose()
+                        } else {
+                            scope.launch {
+                                animate(offsetY, 0f) { value, _ -> offsetY = value }
+                                animate(scale, 1f) { value, _ -> scale = value }
+                            }
+                        }
+                    },
+                    onVerticalDrag = { change, dragAmount ->
+                        change.consume()
+                        offsetY += dragAmount
+                        scale = 1f - (offsetY.absoluteValue / 1000f).coerceIn(0f, 0.5f)
+                    }
+                )
+            }
+            .graphicsLayer {
+                translationY = offsetY
+                scaleX = scale
+                scaleY = scale
             }
     ) {
         HorizontalPager(
@@ -110,6 +142,7 @@ fun MediaViewerScreen(
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                
                 if (pagerState.currentPage > 0) {
                     IconButton(
                         onClick = { 
