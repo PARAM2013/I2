@@ -370,7 +370,7 @@ fun AllFilesScreen(
                                             },
                                             onClick = {
                                                 val file = item.file
-                                                if (file.extension.lowercase() in listOf("pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx")) {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
                                                     val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
                                                     intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -380,12 +380,8 @@ fun AllFilesScreen(
                                                     } catch (e: android.content.ActivityNotFoundException) {
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
-                                                } else {
-                                                    val mediaUri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
-                                                    val intent = android.content.Intent(context, MediaViewActivity::class.java)
-                                                    intent.putExtra("file_uri", mediaUri.toString()) // Pass URI as string
-                                                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant temporary read permission
-                                                    context.startActivity(intent)
+                                                } else if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
+                                                    selectedMediaIndex = mediaFiles.indexOf(item)
                                                 }
                                             },
                                             onShareClick = {
