@@ -1,133 +1,128 @@
-## UI Breakdown
+# Gallery UI/UX Feedback & Suggestions
 
-# Lock & PIN Screens
-Lock & PIN Screens 
-This screen serves as the secure gateway to the application, combining a welcoming feel with robust authentication.
+## 1. Gallery-like Navigation
 
-Layout:
+**Current:**
+- Navigation between images works with arrow click.
+- There are three dots (`⋮`) per image for Rename/Delete/Unhide.
 
-A Column centered vertically, occupying the full screen.
+**Requested/Recommended:**
+- **Swipe Left/Right:** Instead of requiring arrow click, users should be able to swipe left or right on the image preview to move between images (like a standard gallery app).
+- **Implementation:** Use `HorizontalPager` from Jetpack Compose, or Accompanist Pager, inside your image viewer dialog/overlay. This should allow full-screen swiping between images/videos.
+  - On image tap, open a `MediaViewerScreen` that enables horizontal swiping.
+  - Support pinch-to-zoom and pan for images.
 
-Welcome Text (Top Section):
+---
 
-animation already added in current, use same.
+## 2. Long Press for Options
 
-Authentication Area (Bottom Section):
+**Current:**
+- Three-dot menu (`⋮`) is always shown for Rename, Delete, Unhide.
 
-Prompt Text: A Text composable with style = MaterialTheme.typography.headlineSmall. Text will be "Enter your PIN" or "Create your PIN".
+**Requested/Recommended:**
+- **Hide the 3-dot menu.**
+- **Show options (Rename, Delete, Unhide) only on long press** on the image (or file row in list view).
+  - On long press, show a bottom sheet or dialog with these actions.
+  - This reduces clutter and matches gallery UX expectations.
 
-PIN Indicator: A Row of four outlined Box composables that fill in as the user types.
+---
 
-Numeric Keypad: A LazyVerticalGrid with 3 columns for the number pad (1-9).
+## 3. Additional Suggestions for a Perfect Gallery/Vault UI
 
-Fingerprint & Backspace Row: Below the keypad, a Row will contain:
+### A. Full-Screen Media Viewer
 
-An IconButton on the left with a fingerprint icon (Icons.Default.Fingerprint). This button will trigger the biometric prompt. It should only be visible if fingerprint unlock is enabled and supported.
+- When a user taps an image/video, open it in a true full-screen viewer with:
+  - Swipe left/right to navigate (HorizontalPager)
+  - Tap to show/hide overlay controls (filename, date, size, delete, unhide, close)
+  - Long-press inside viewer to show actions (Rename, Delete, Unhide)
+  - Pinch-to-zoom and double-tap to zoom for images
+  - For videos: overlay play/pause, seek, mute, speed controls
 
-The "0" key in the center.
+### B. Grid & List Consistency
 
-An IconButton on the right for backspace.
+- Make sure both Grid and List view use the same logic for entering the media viewer, and always pass the correct, visible media set for navigation.
+- Swiping between files should work regardless of entry view.
 
-Component Usage:
+### C. Visual Polish
 
-Scaffold: For the basic screen structure.
+- Use rounded corners and subtle shadow for images and thumbnails.
+- When in list view, show a small preview thumbnail for images/videos at the start of the row (already looks good from your screenshot).
+- Add a subtle selection/highlight effect when an item is tapped or long-pressed.
 
-Column/Row: For vertical and horizontal arrangement.
+### D. Batch Actions (Optional)
 
-Text: For prompts.
+- Allow multi-select for delete/unhide by long-pressing and then tapping more items (like Google Photos).
 
-Icon/IconButton: For the fingerprint and backspace actions.
+### E. File Info Overlay
 
-TextButton: For the numeric keys.
+- In the full-screen viewer, show overlay info (filename, date, size) at the bottom/top with fade-in/out animation on tap.
 
-User Interaction:
+### F. Accessibility
 
-On app open, 
+- Ensure all images/thumbnails have content descriptions for TalkBack.
+- Overlay controls/buttons should have high contrast and be reachable with screen readers.
 
-The user can either tap the fingerprint icon to authenticate instantly or start typing their PIN.
+---
 
-PIN indicators update in real-time as the user types.
+## 4. Example User Flow
 
-Once four digits are entered, the app automatically processes the PIN.
+1. **Browse:** User sees grid or list of images/videos/folders.
+2. **Tap:** Tapping an image/video opens full-screen viewer.
+3. **Swipe:** User swipes left/right to view next/previous media.
+4. **Long Press:** While browsing or in full-screen, long-press shows Rename/Delete/Unhide actions.
+5. **Overlay Controls:** Tap to toggle overlay with file info and action buttons.
 
+---
 
+## 5. Summary Table
 
+| Feature                        | Status      | Recommendation                        |
+|--------------------------------|-------------|---------------------------------------|
+| Swipe navigation               | Only arrows | Enable swipe left/right everywhere    |
+| Three-dot menu                 | Always shown| Show only on long press               |
+| Full-screen viewer             | ?           | Use for all media, with overlays      |
+| Pinch/Double tap to zoom       | ?           | Support in full-screen for images     |
+| Video controls                 | Basic?      | Add overlay controls (seek, mute,...) |
+| Consistency grid/list          | Partial     | Same logic for both                   |
 
+---
 
-# Main Dashboard Screen
-Layout:
+## 6. Technical Notes
 
-Scaffold: The root component.
+- Use `Modifier.pointerInput` with `detectTapGestures` for long press.
+- For swipe: Jetpack Compose `HorizontalPager` (or Accompanist Pager).
+- For overlays: `AnimatedVisibility` or similar for fade-in/out.
+- For batch actions: Use a selectable state and checkbox overlays.
+- For accessibility: Compose's `contentDescription` and test with screen readers.
 
-TopAppBar:
+---
 
-Title: "iSecure".
+## 7. Example Pseudocode for Long-Press
 
-Actions: An IconButton using Icons.Default.MoreVert to open a menu leading to the Settings screen.
-
-Category Display Area:
-
-A LazyColumn containing four distinct, clickable Card composables, one for each category.
-
-Each card will contain a Row with:
-
-An Icon on the left representing the category (e.g., Icons.Default.Folder, Icons.Default.Image).
-
-A Column in the center with a main Text for the category title ("All Files", "Images", etc.) and a subtitle Text for details ("12 folders, 42 files" or "15 files, 75 MB").
-
-An Icon on the right (Icons.Default.ChevronRight) to indicate it's clickable.
-
-FloatingActionButton (FAB):
-
-A standard FloatingActionButton with a + icon (Icons.Default.Add) for importing new files or creating folders. This can be a Multi-Directional FAB as described in earlier versions if desired.
-
-User Interaction & Navigation:
-
-All Files Card: Navigates to a screen showing the root folder structure, allowing the user to browse through folders. This view will use the FileListItem.kt composable.
-
-Images Card: Navigates to a dedicated screen displaying a grid (LazyVerticalGrid) of all image files, sorted from newest to oldest.
-
-Videos Card: Navigates to a screen showing a list or grid of all video files, sorted from newest to oldest.
-
-Documents Card: Navigates to a screen showing a list (LazyColumn) of all other file types (PDFs, DOCX, TXT, etc.), sorted from newest to oldest.
-
-FileListItem.kt Composable (Used on subsequent file list/grid screens):
-
-Root: A Material 3 Card with a subtle elevation and Modifier.combinedClickable.
-
-Content (List View): A Row containing an Icon for the file type, a Text for the filename, and a three-dots IconButton for a context menu.
-
-Content (Grid View): A Column containing a large Icon for the file type and a Text for the filename below it.
-
-DropdownMenu (Context Menu): Triggered by the three-dots icon or a long press, containing DropdownMenuItems for "View", "Rename", "move", "Unhide", and "Delete".
-
-In below part
-add this app\src\main\res\raw\dashboard_animation.json (animation lottiefiles json)
-
-when file import , show like progress bar.
-
-# Settings Screen
-
-A LazyColumn to display the list of settings. This ensures the screen is scrollable if more options are added later.
-
-Setting Items (Composable Rows):
-
-Change PIN:
-
-A Row with an Icon (Icons.Default.Password), a Text ("Change PIN")
-
-Enable Fingerprint Unlock:
-
-A Row with an Icon (Icons.Default.Fingerprint) and a Text ("Use Fingerprint").
-
-On the far right, a Material 3 Switch component to toggle the feature on/off. The row itself will also be clickable to toggle the switch.
-
-Remove Metadata on Import:
-
-A Row with an Icon (Icons.Default.PhotoFilter) and a Text ("Strip file metadata").
-
-A Switch on the right to control this setting.
-
-A smaller Text composable below the main label explaining: "Removes location and other EXIF data from photos and videos upon import."
-
-After End of Screen(Footer) set text msg like this "This app is make by KING"
+```kotlin
+Box(
+    Modifier
+        .pointerInput(Unit) {
+            detectTapGestures(
+                onLongPress = { showActionSheet = true }
+            )
+        }
+) {
+    Image(...)
+    if (showActionSheet) {
+        // Show BottomSheet with Rename, Delete, Unhide
+    }
+}
+```
+
+---
+
+## 8. References
+
+- [Jetpack Compose: HorizontalPager](https://developer.android.com/jetpack/compose/libraries#foundation)
+- [Accompanist Pager](https://google.github.io/accompanist/pager/)
+- [Android Gallery UX inspiration](https://material.io/components/image-lists)
+
+---
+
+**These steps will make your app feel modern, smooth, and intuitive for users wanting a secure, gallery-like vault experience.**
