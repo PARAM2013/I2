@@ -26,6 +26,7 @@ import androidx.compose.material3.*
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
@@ -60,7 +61,8 @@ fun MediaViewerScreen(
     initialIndex: Int,
     onClose: () -> Unit,
     onDelete: (File) -> Unit,
-    onUnhide: (File) -> Unit
+    onUnhide: (File) -> Unit,
+    onRename: (File, String) -> Unit
 ) {
     var showControls by remember { mutableStateOf(true) }
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
@@ -68,6 +70,8 @@ fun MediaViewerScreen(
     val scope = rememberCoroutineScope()
     var offsetY by remember { mutableFloatStateOf(0f) }
     var scale by remember { mutableFloatStateOf(1f) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showRenameDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -79,6 +83,7 @@ fun MediaViewerScreen(
             .background(Color.Black)
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onLongPress = { showMenu = true },
                     onTap = { showControls = !showControls }
                 )
                 detectVerticalDragGestures(
@@ -128,7 +133,7 @@ fun MediaViewerScreen(
                 }
             }
         }
-        
+
         // Navigation Controls
         AnimatedVisibility(
             visible = showControls,
@@ -142,12 +147,12 @@ fun MediaViewerScreen(
                     .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                
+
                 if (pagerState.currentPage > 0) {
                     IconButton(
-                        onClick = { 
-                            scope.launch { 
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1) 
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
                             }
                         }
                     ) {
@@ -156,12 +161,12 @@ fun MediaViewerScreen(
                 } else {
                     Spacer(modifier = Modifier.size(48.dp))
                 }
-                
+
                 if (pagerState.currentPage < files.size - 1) {
                     IconButton(
-                        onClick = { 
-                            scope.launch { 
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1) 
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
                             }
                         }
                     ) {
@@ -211,6 +216,18 @@ fun MediaViewerScreen(
                         IconButton(onClick = { onDelete(currentFile) }) {
                             Icon(Icons.Filled.Delete, "Delete", tint = Color.White)
                         }
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(Icons.Filled.MoreVert, "More", tint = Color.White)
+                        }
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(text = { Text("Rename") }, onClick = {
+                                showMenu = false
+                                showRenameDialog = true
+                            })
+                        }
                     }
                 }
             }
@@ -249,6 +266,17 @@ fun MediaViewerScreen(
                 }
             }
         }
+    }
+
+    if (showRenameDialog) {
+        com.example.secure.ui.composables.RenameItemDialog(
+            currentItemName = currentFile.name,
+            onDismissRequest = { showRenameDialog = false },
+            onConfirm = { newName ->
+                onRename(currentFile, newName)
+                showRenameDialog = false
+            }
+        )
     }
 }
 
