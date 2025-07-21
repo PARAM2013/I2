@@ -16,14 +16,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DropdownMenu // For Context Menu
 import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -285,8 +285,10 @@ fun AllFilesScreen(
                                                 expandedMenuForItemPath = null // Close menu
                                             },
                                             onClick = {
-                                                val file = item.file
-                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
+                                                    selectedMediaIndex = mediaFiles.indexOf(item)
+                                                } else if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                    val file = item.file
                                                     val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
                                                     val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
                                                     intent.setDataAndType(uri, context.contentResolver.getType(uri))
@@ -296,8 +298,6 @@ fun AllFilesScreen(
                                                     } catch (e: android.content.ActivityNotFoundException) {
                                                         android.widget.Toast.makeText(context, "No app found to open this file type.", android.widget.Toast.LENGTH_SHORT).show()
                                                     }
-                                                } else if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
-                                                    selectedMediaIndex = mediaFiles.indexOf(item)
                                                 }
                                             },
                                             isGridView = isGridView,
@@ -393,7 +393,7 @@ fun AllFilesScreen(
                                         )
                                     }
                                 }
-                                Divider()
+                                HorizontalDivider()
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                         }
@@ -529,37 +529,23 @@ fun FileItem(
         supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
         leadingContent = {
             val file = vaultFile.file
-            val context = LocalContext.current
-            val thumbnail = remember(file) {
-                when (file.extension.lowercase()) {
-                    in listOf("jpg", "jpeg", "png", "gif") -> {
-                        Uri.fromFile(file)
-                    }
-                    in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
-                        val thumbnailBitmap = android.media.ThumbnailUtils.createVideoThumbnail(
-                            file.absolutePath,
-                            android.provider.MediaStore.Video.Thumbnails.MINI_KIND
-                        )
-                        thumbnailBitmap
-                    }
-                    else -> {
-                        null
-                    }
+            val model = remember(file) {
+                if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
+                    Uri.fromFile(file)
+                } else {
+                    null
                 }
             }
 
-            if (thumbnail != null) {
+            if (model != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(thumbnail),
+                    painter = rememberAsyncImagePainter(model),
                     contentDescription = stringResource(R.string.file_icon_desc),
                     modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
             } else {
                 Icon(
-                    when (file.extension.lowercase()) {
-                        in listOf("mp4", "mkv", "webm", "avi", "3gp") -> Icons.Filled.Videocam
-                        else -> Icons.Filled.Description
-                    },
+                    Icons.Filled.Description,
                     contentDescription = stringResource(R.string.file_icon_desc),
                     modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
