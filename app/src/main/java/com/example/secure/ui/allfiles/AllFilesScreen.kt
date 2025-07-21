@@ -30,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -61,7 +60,6 @@ import android.net.Uri
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.input.pointer.pointerInput
 import com.example.secure.R
 import com.example.secure.file.FileManager
 import com.example.secure.file.FileManager.VaultFile
@@ -422,9 +420,6 @@ fun AllFilesScreen(
                             onUnhide = { file ->
                                 viewModel.requestUnhideItem(mediaFiles.find { it.file == file }!!)
                                 selectedMediaIndex = null
-                            },
-                            onRename = { file, newName ->
-                                viewModel.requestRenameItem(mediaFiles.find { it.file == file }!!, newName)
                             }
                         )
                     }
@@ -487,33 +482,33 @@ fun FolderItem(
     onRenameClick: () -> Unit, // New callback
     onClick: () -> Unit
 ) {
-    Box {
-        ListItem(
-            headlineContent = { Text(vaultFolder.folder.name) },
-            leadingContent = {
-                Icon(
-                    Icons.Filled.Folder,
-                    contentDescription = stringResource(R.string.folder_icon_desc),
-                    modifier = Modifier.size(40.dp)
-                )
-            },
-            modifier = Modifier.pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = { onExpandMenu() },
-                    onTap = { onClick() }
-                )
+    ListItem(
+        headlineContent = { Text(vaultFolder.folder.name) },
+        leadingContent = {
+            Icon(
+                Icons.Filled.Folder,
+                contentDescription = stringResource(R.string.folder_icon_desc),
+                modifier = Modifier.size(40.dp)
+            )
+        },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
+                }
             }
-        )
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            onDismissRequest = onDismissMenu
-        ) {
-            DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-            DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
-            DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
-            // Add other items later
-        }
-    }
+        },
+        modifier = Modifier.clickable(onClick = onClick)
+    )
 }
 
 @Composable
@@ -529,54 +524,54 @@ fun FileItem(
     onShareClick: () -> Unit,
     isGridView: Boolean = false
 ) {
-    Box {
-        ListItem(
-            headlineContent = { Text(vaultFile.file.name) },
-            supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
-            leadingContent = {
-                val file = vaultFile.file
-                val model = remember(file) {
-                    if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
-                        Uri.fromFile(file)
-                    } else {
-                        null
-                    }
-                }
-
-                if (model != null) {
-                    Image(
-                        painter = rememberAsyncImagePainter(model),
-                        contentDescription = stringResource(R.string.file_icon_desc),
-                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
-                    )
+    ListItem(
+        headlineContent = { Text(vaultFile.file.name) },
+        supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
+        leadingContent = {
+            val file = vaultFile.file
+            val model = remember(file) {
+                if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
+                    Uri.fromFile(file)
                 } else {
-                    Icon(
-                        Icons.Filled.Description,
-                        contentDescription = stringResource(R.string.file_icon_desc),
-                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
-                    )
+                    null
                 }
-            },
-            modifier = Modifier.pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = { onExpandMenu() },
-                    onTap = { onClick() }
+            }
+
+            if (model != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(model),
+                    contentDescription = stringResource(R.string.file_icon_desc),
+                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
+                )
+            } else {
+                Icon(
+                    Icons.Filled.Description,
+                    contentDescription = stringResource(R.string.file_icon_desc),
+                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                 )
             }
-        )
-        DropdownMenu(
-            expanded = isMenuExpanded,
-            onDismissRequest = onDismissMenu
-        ) {
-            DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-            DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
-            if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
-                DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
+        },
+        trailingContent = {
+            Box {
+                IconButton(onClick = onExpandMenu) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // Same string
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = onDismissMenu
+                ) {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
+                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
+                    if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
+                        DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
+                    }
+                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
+                    // Add other items later
+                }
             }
-            DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
-            // Add other items later
-        }
-    }
+        },
+        modifier = Modifier.clickable(onClick = onClick)
+    )
 }
 
 @Preview(showBackground = true)
