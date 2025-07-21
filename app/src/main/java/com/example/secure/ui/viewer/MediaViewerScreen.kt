@@ -37,21 +37,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import com.example.secure.ui.viewer.VideoPlayer
+import com.example.secure.ui.viewer.ZoomableImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import kotlinx.coroutines.launch
-import androidx.compose.animation.core.animate
 import kotlin.math.absoluteValue
+import androidx.compose.animation.core.animate
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -79,8 +73,13 @@ fun MediaViewerScreen(
             .background(Color.Black)
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onTap = { showControls = !showControls }
+                    onTap = { showControls = !showControls },
+                    onLongPress = {
+                        // Show context menu with options
+                    }
                 )
+            }
+            .pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onDragStart = { offsetY = 0f; scale = 1f },
                     onDragEnd = {
@@ -122,53 +121,18 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
                     VideoPlayer(
                         file = file,
-                        showControls = showControls,
+                        onPrevious = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                            }
+                        },
+                        onNext = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            }
+                        },
                         modifier = Modifier.fillMaxSize()
                     )
-                }
-            }
-        }
-        
-        // Navigation Controls
-        AnimatedVisibility(
-            visible = showControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                
-                if (pagerState.currentPage > 0) {
-                    IconButton(
-                        onClick = { 
-                            scope.launch { 
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1) 
-                            }
-                        }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.NavigateBefore, "Previous", tint = Color.White, modifier = Modifier.size(48.dp))
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(48.dp))
-                }
-                
-                if (pagerState.currentPage < files.size - 1) {
-                    IconButton(
-                        onClick = { 
-                            scope.launch { 
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1) 
-                            }
-                        }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.NavigateNext, "Next", tint = Color.White, modifier = Modifier.size(48.dp))
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(48.dp))
                 }
             }
         }
@@ -197,7 +161,7 @@ fun MediaViewerScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onClose) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close", tint = Color.White)
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close viewer", tint = Color.White)
                     }
                     Text(
                         text = currentFile.name,
@@ -206,10 +170,10 @@ fun MediaViewerScreen(
                     )
                     Row {
                         IconButton(onClick = { onUnhide(currentFile) }) {
-                            Icon(Icons.Filled.Visibility, "Unhide", tint = Color.White)
+                            Icon(Icons.Filled.Visibility, "Unhide file", tint = Color.White)
                         }
                         IconButton(onClick = { onDelete(currentFile) }) {
-                            Icon(Icons.Filled.Delete, "Delete", tint = Color.White)
+                            Icon(Icons.Filled.Delete, "Delete file", tint = Color.White)
                         }
                     }
                 }
@@ -246,153 +210,6 @@ fun MediaViewerScreen(
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ZoomableImage(
-    file: File,
-    modifier: Modifier = Modifier
-) {
-    var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
-    
-    Box(modifier = modifier) {
-        AsyncImage(
-            model = file,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .transformable(
-                    state = rememberTransformableState { zoomChange, offsetChange, _ ->
-                        scale = (scale * zoomChange).coerceIn(0.5f..5f)
-                        offset += offsetChange
-                    }
-                )
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
-                ),
-            contentScale = ContentScale.Fit
-        )
-    }
-}
-
-@OptIn(androidx.media3.common.util.UnstableApi::class)
-@Composable
-private fun VideoPlayer(
-    file: File,
-    showControls: Boolean,
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    val playerManager = remember { PlayerManager(context) }
-    var showSpeedControls by remember { mutableStateOf(false) }
-    var playbackSpeed by remember { mutableFloatStateOf(playerManager.getPlaybackSpeed()) }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            playerManager.release()
-        }
-    }
-
-    Box(modifier = modifier) {
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).also { playerView ->
-                    playerManager.setupPlayerView(playerView, file, showControls)
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
-        
-        // Playback Speed Controls
-        AnimatedVisibility(
-            visible = showControls && showSpeedControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black.copy(alpha = 0.7f))
-                    .padding(16.dp)
-            ) {
-                Text(
-                    "Playback Speed",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    listOf(0.5f, 1.0f, 1.5f, 2.0f).forEach { speed ->
-                        TextButton(
-                            onClick = {
-                                playbackSpeed = speed
-                                playerManager.setPlaybackSpeed(speed)
-                                showSpeedControls = false
-                            },
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = if (playbackSpeed == speed) MaterialTheme.colorScheme.primary else Color.White
-                            )
-                        ) {
-                            Text("${speed}x")
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Video Controls
-        AnimatedVisibility(
-            visible = showControls && !showSpeedControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black.copy(alpha = 0.7f))
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { /* Previous video functionality handled by parent */ }) {
-                    Icon(Icons.Default.SkipPrevious, "Previous", tint = Color.White)
-                }
-                
-                IconButton(onClick = { 
-                    playerManager.getOrCreatePlayer().let { player ->
-                        if (player.isPlaying) player.pause() else player.play()
-                    }
-                }) {
-                    Icon(
-                        if (playerManager.getOrCreatePlayer().isPlaying) 
-                            Icons.Default.Pause 
-                        else 
-                            Icons.Default.PlayArrow,
-                        "Play/Pause",
-                        tint = Color.White
-                    )
-                }
-                
-                IconButton(onClick = { /* Next video functionality handled by parent */ }) {
-                    Icon(Icons.Default.SkipNext, "Next", tint = Color.White)
-                }
-                
-                TextButton(onClick = { showSpeedControls = true }) {
-                    Text("${playbackSpeed}x", color = Color.White)
                 }
             }
         }

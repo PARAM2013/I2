@@ -77,10 +77,6 @@
                 android:value=".ui.settings.SettingsActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.allfiles.MediaViewActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Secure.NoActionBar" />
 
     </application>
 

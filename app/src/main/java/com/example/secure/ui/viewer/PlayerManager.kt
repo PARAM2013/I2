@@ -1,53 +1,42 @@
 package com.example.secure.ui.viewer
 
 import android.content.Context
-import android.net.Uri
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 
-@UnstableApi
-class PlayerManager(private val context: Context) {
-    private var exoPlayer: ExoPlayer? = null
-    private var currentPlaybackSpeed: Float = 1.0f
+object PlayerManager {
+    private var player: ExoPlayer? = null
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying = _isPlaying.asStateFlow()
 
-    fun getOrCreatePlayer(): ExoPlayer {
-        if (exoPlayer == null) {
-            exoPlayer = ExoPlayer.Builder(context).build().apply {
-                playWhenReady = true
-            }
+    fun getPlayer(context: Context): ExoPlayer {
+        if (player == null) {
+            player = ExoPlayer.Builder(context).build()
+            player?.addListener(object : androidx.media3.common.Player.Listener {
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    _isPlaying.value = isPlaying
+                }
+            })
         }
-        return exoPlayer!!
+        return player!!
     }
 
-    fun setupPlayerView(playerView: PlayerView, file: File, showControls: Boolean) {
-        val player = getOrCreatePlayer()
-        player.setMediaItem(MediaItem.fromUri(Uri.fromFile(file)))
-        player.prepare()
-        player.playbackParameters = androidx.media3.common.PlaybackParameters(currentPlaybackSpeed)
-        
-        playerView.player = player
-        playerView.useController = true
-        playerView.controllerShowTimeoutMs = if (showControls) 3000 else 0
-        playerView.controllerHideOnTouch = true
-        playerView.setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
+    fun play(file: File) {
+        val mediaItem = MediaItem.fromUri(file.absolutePath)
+        player?.setMediaItem(mediaItem)
+        player?.prepare()
+        player?.play()
     }
-    
+
     fun setPlaybackSpeed(speed: Float) {
-        currentPlaybackSpeed = speed
-        exoPlayer?.let { player ->
-            player.playbackParameters = androidx.media3.common.PlaybackParameters(speed)
-        }
-    }
-    
-    fun getPlaybackSpeed(): Float {
-        return currentPlaybackSpeed
+        player?.setPlaybackSpeed(speed)
     }
 
-    fun release() {
-        exoPlayer?.release()
-        exoPlayer = null
+    fun releasePlayer() {
+        player?.release()
+        player = null
     }
 }

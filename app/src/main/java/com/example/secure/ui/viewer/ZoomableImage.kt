@@ -1,4 +1,4 @@
-package com.example.secure.view
+package com.example.secure.ui.viewer
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.rememberTransformableState

@@ -1,7 +1,8 @@
 package com.example.secure.ui.allfiles
 
 import android.app.Application // For Preview ViewModel
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -471,6 +472,7 @@ fun AllFilesScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FolderItem(
     vaultFolder: VaultFolder,
@@ -482,35 +484,43 @@ fun FolderItem(
     onRenameClick: () -> Unit, // New callback
     onClick: () -> Unit
 ) {
-    ListItem(
-        headlineContent = { Text(vaultFolder.folder.name) },
-        leadingContent = {
-            Icon(
-                Icons.Filled.Folder,
-                contentDescription = stringResource(R.string.folder_icon_desc),
-                modifier = Modifier.size(40.dp)
+    Box {
+        ListItem(
+            headlineContent = { Text(vaultFolder.folder.name) },
+            leadingContent = {
+                Icon(
+                    Icons.Filled.Folder,
+                    contentDescription = stringResource(R.string.folder_icon_desc),
+                    modifier = Modifier.size(40.dp)
+                )
+            },
+            modifier = Modifier.combinedClickable(
+                onClick = onClick,
+                onLongClick = onExpandMenu
             )
-        },
-        trailingContent = {
-            Box {
-                IconButton(onClick = onExpandMenu) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // TODO: Add string R.string.context_menu_description
-                }
-                DropdownMenu(
-                    expanded = isMenuExpanded,
-                    onDismissRequest = onDismissMenu
-                ) {
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
-                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
-                    // Add other items later
-                }
-            }
-        },
-        modifier = Modifier.clickable(onClick = onClick)
-    )
+        )
+        DropdownMenu(
+            expanded = isMenuExpanded,
+            onDismissRequest = onDismissMenu
+        ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.context_menu_unhide)) },
+                        onClick = onUnhideClick
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.context_menu_rename)) },
+                        onClick = onRenameClick
+                    ) // New Item
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.button_delete)) },
+                        onClick = onDeleteClick
+                    )
+            // Add other items later
+        }
+    }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FileItem(
     vaultFile: VaultFile,
@@ -524,54 +534,64 @@ fun FileItem(
     onShareClick: () -> Unit,
     isGridView: Boolean = false
 ) {
-    ListItem(
-        headlineContent = { Text(vaultFile.file.name) },
-        supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
-        leadingContent = {
-            val file = vaultFile.file
-            val model = remember(file) {
-                if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
-                    Uri.fromFile(file)
-                } else {
-                    null
-                }
-            }
-
-            if (model != null) {
-                Image(
-                    painter = rememberAsyncImagePainter(model),
-                    contentDescription = stringResource(R.string.file_icon_desc),
-                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
-                )
-            } else {
-                Icon(
-                    Icons.Filled.Description,
-                    contentDescription = stringResource(R.string.file_icon_desc),
-                    modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
-                )
-            }
-        },
-        trailingContent = {
-            Box {
-                IconButton(onClick = onExpandMenu) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.context_menu_description)) // Same string
-                }
-                DropdownMenu(
-                    expanded = isMenuExpanded,
-                    onDismissRequest = onDismissMenu
-                ) {
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_unhide)) }, onClick = onUnhideClick)
-                    DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_rename)) }, onClick = onRenameClick) // New Item
-                    if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
-                        DropdownMenuItem(text = { Text(stringResource(R.string.context_menu_share)) }, onClick = onShareClick)
+    Box {
+        ListItem(
+            headlineContent = { Text(vaultFile.file.name) },
+            supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
+            leadingContent = {
+                val file = vaultFile.file
+                val model = remember(file) {
+                    if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
+                        Uri.fromFile(file)
+                    } else {
+                        null
                     }
-                    DropdownMenuItem(text = { Text(stringResource(R.string.button_delete)) }, onClick = onDeleteClick)
-                    // Add other items later
                 }
+
+                if (model != null) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model),
+                        contentDescription = stringResource(R.string.file_icon_desc),
+                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
+                    )
+                } else {
+                    Icon(
+                        Icons.Filled.Description,
+                        contentDescription = stringResource(R.string.file_icon_desc),
+                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
+                    )
+                }
+            },
+            modifier = Modifier.combinedClickable(
+                onClick = onClick,
+                onLongClick = onExpandMenu
+            )
+        )
+        DropdownMenu(
+            expanded = isMenuExpanded,
+            onDismissRequest = onDismissMenu
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.context_menu_unhide)) },
+                onClick = onUnhideClick
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.context_menu_rename)) },
+                onClick = onRenameClick
+            ) // New Item
+            if (vaultFile.category == FileManager.FileCategory.DOCUMENT) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.context_menu_share)) },
+                    onClick = onShareClick
+                )
             }
-        },
-        modifier = Modifier.clickable(onClick = onClick)
-    )
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.button_delete)) },
+                onClick = onDeleteClick
+            )
+            // Add other items later
+        }
+    }
 }
 
 @Preview(showBackground = true)
