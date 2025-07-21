@@ -47,7 +47,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.activity.compose.rememberLauncherForActivityResult // For FAB
 import androidx.activity.result.contract.ActivityResultContracts // For FAB
 import androidx.compose.material.icons.filled.Add // For FAB
@@ -540,17 +545,38 @@ fun FileItem(
             supportingContent = { Text(stringResource(R.string.file_size_kb, vaultFile.size / 1024)) },
             leadingContent = {
                 val file = vaultFile.file
-                val model = remember(file) {
-                    if (file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif", "mp4", "mkv", "webm", "avi", "3gp")) {
-                        Uri.fromFile(file)
+            if (vaultFile.category == FileManager.FileCategory.VIDEO) {
+                val thumbnail = remember(file) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        try {
+                            ThumbnailUtils.createVideoThumbnail(
+                                file,
+                                android.util.Size(128, 128),
+                                null
+                            )
+                        } catch (e: Exception) {
+                            null
+                        }
                     } else {
                         null
                     }
                 }
-
-                if (model != null) {
+                if (thumbnail != null) {
                     Image(
-                        painter = rememberAsyncImagePainter(model),
+                        bitmap = thumbnail.asImageBitmap(),
+                        contentDescription = stringResource(R.string.file_icon_desc),
+                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
+                    )
+                    } else {
+                    Icon(
+                        Icons.Filled.Videocam,
+                        contentDescription = stringResource(R.string.file_icon_desc),
+                        modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
+                    )
+                    }
+            } else if (vaultFile.category == FileManager.FileCategory.PHOTO) {
+                    Image(
+                    painter = rememberAsyncImagePainter(model = Uri.fromFile(file)),
                         contentDescription = stringResource(R.string.file_icon_desc),
                         modifier = Modifier.size(if (isGridView) 128.dp else 40.dp)
                     )

@@ -137,6 +137,50 @@ fun MediaViewerScreen(
             }
         }
 
+        // Navigation Controls
+        AnimatedVisibility(
+            visible = showControls,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+
+                if (pagerState.currentPage > 0) {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                            }
+                        }
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.NavigateBefore, "Previous", tint = Color.White, modifier = Modifier.size(48.dp))
+                    }
+                } else {
+                    Spacer(modifier = Modifier.size(48.dp))
+                }
+
+                if (pagerState.currentPage < files.size - 1) {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            }
+                        }
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.NavigateNext, "Next", tint = Color.White, modifier = Modifier.size(48.dp))
+                    }
+                } else {
+                    Spacer(modifier = Modifier.size(48.dp))
+                }
+            }
+        }
+
         // Top Controls
         AnimatedVisibility(
             visible = showControls,
