@@ -26,14 +26,9 @@ import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.lockscreen.LockScreenActivity
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 
 class MainActivity : TrackedActivity() {
-
-    private val lockTimeout = 10000L // 10 seconds
-    private var lastInteractionTime: Long = System.currentTimeMillis()
-    private var isAppLocked = false
 
     // Permission launchers are mostly for the initial permission check now.
     // File picking and specific actions will be handled within MainDashboardScreen or its ViewModel.
@@ -55,7 +50,7 @@ class MainActivity : TrackedActivity() {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
             val navController = rememberNavController()
 
-            VaultTheme {
+            ISecureTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     NavHost(navController = navController, startDestination = NavRoutes.DASHBOARD) {
                         composable(NavRoutes.DASHBOARD) {
@@ -120,36 +115,7 @@ class MainActivity : TrackedActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isAppLocked) {
-            navigateToLogin()
-        }
         checkAndRequestPermissions()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        startLockTimer()
-    }
-
-    private fun navigateToLogin() {
-        // Prevent multiple lock screens
-        if (this.isFinishing || this.isDestroyed) {
-            return
-        }
-
-        val intent = Intent(this, LockScreenActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
-        startActivity(intent)
-        finish() // Finish MainActivity to prevent returning to it with back button
-    }
-
-    private fun startLockTimer() {
-        // A simple timer logic, for a more robust solution use Handler or Coroutines
-        Thread {
-            Thread.sleep(lockTimeout)
-            isAppLocked = true
-        }.start()
     }
 
     private fun setupPermissionLaunchers() {

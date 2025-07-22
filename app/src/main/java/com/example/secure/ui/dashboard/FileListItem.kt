@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 fun FileListItem(
     file: VaultFile,
     isGridView: Boolean,
-    isSelected: Boolean,
     onFileClick: (VaultFile) -> Unit,
     onFileLongClick: (VaultFile) -> Unit,
     onView: (VaultFile) -> Unit,
@@ -35,8 +34,7 @@ fun FileListItem(
                 onClick = { onFileClick(file) },
                 onLongClick = { onFileLongClick(file) }
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         if (isGridView) {
             Column(
@@ -133,7 +131,6 @@ fun FileListItemPreview() {
             FileListItem(
                 file = VaultFile("My Secret Document.pdf", false, FileType.DOCUMENT),
                 isGridView = false,
-                isSelected = false,
                 onFileClick = {},
                 onFileLongClick = {},
                 onView = {},
@@ -143,7 +140,6 @@ fun FileListItemPreview() {
             FileListItem(
                 file = VaultFile("Vacation Photos", true, FileType.FOLDER),
                 isGridView = true,
-                isSelected = true,
                 onFileClick = {},
                 onFileLongClick = {},
                 onView = {},
@@ -153,7 +149,6 @@ fun FileListItemPreview() {
             FileListItem(
                 file = VaultFile("My_Awesome_Video_of_Cats_Playing_in_the_Garden.mp4", false, FileType.VIDEO),
                 isGridView = false,
-                isSelected = false,
                 onFileClick = {},
                 onFileLongClick = {},
                 onView = {},
