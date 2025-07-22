@@ -15,18 +15,14 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FileItem(
-    vaultFile: Any,
+fun FileListItem(
+    file: VaultFile,
     isGridView: Boolean,
-    isMenuExpanded: Boolean,
-    onExpandMenu: () -> Unit,
-    onDismissMenu: () -> Unit,
-    onUnhideClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRenameClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    onFileClick: (VaultFile) -> Unit,
+    onFileLongClick: (VaultFile) -> Unit,
+    onView: (VaultFile) -> Unit,
+    onUnhide: (VaultFile) -> Unit,
+    onDelete: (VaultFile) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -35,8 +31,8 @@ fun FileItem(
             .fillMaxWidth()
             .padding(4.dp)
             .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+                onClick = { onFileClick(file) },
+                onLongClick = { onFileLongClick(file) }
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
