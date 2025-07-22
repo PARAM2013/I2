@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.secure.R
-import com.example.secure.ui.theme.ISecureTheme
+import com.example.secure.ui.theme.VaultTheme
 
 @OptIn(ExperimentalMaterial3Api::class) // Ensure OptIn is here if AlertDialog or OutlinedTextField are experimental
 @Composable
@@ -66,7 +66,7 @@ fun CreateFolderDialog(
 @Preview(showBackground = true)
 @Composable
 fun CreateFolderDialogPreview() {
-    ISecureTheme {
+    VaultTheme {
         CreateFolderDialog(onDismissRequest = {}, onConfirm = {})
     }
 }

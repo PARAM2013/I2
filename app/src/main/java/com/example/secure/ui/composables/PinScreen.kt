@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.*
 import com.example.secure.R
 import com.example.secure.ui.pin.PinViewModel
-import com.example.secure.ui.theme.ISecureTheme // Assuming your theme is ISecureTheme
+import com.example.secure.ui.theme.VaultTheme // Assuming your theme is VaultTheme
 import androidx.biometric.BiometricPrompt
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContextCompat
@@ -86,7 +86,7 @@ fun PinScreen(
     }
 
 
-    ISecureTheme { // Apply the theme
+    VaultTheme { // Apply the theme
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier
@@ -256,7 +256,7 @@ fun KeypadButton(
 @Preview(showBackground = true)
 @Composable
 fun PinScreenPreview_Basic() {
-    ISecureTheme {
+    VaultTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -295,7 +295,7 @@ fun PinScreenPreview_Basic() {
 @Preview(showBackground = true, name = "Pin Indicator Preview (2/4)")
 @Composable
 fun PinIndicatorPreview() {
-    ISecureTheme {
+    VaultTheme {
         PinIndicator(currentLength = 2, maxLength = 4)
     }
 }
@@ -303,7 +303,7 @@ fun PinIndicatorPreview() {
 @Preview(showBackground = true, name = "Keypad Preview")
 @Composable
 fun KeypadPreview() {
-    ISecureTheme {
+    VaultTheme {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             NumericKeypad (onDigitClick = {})
             Spacer(modifier = Modifier.height(16.dp))

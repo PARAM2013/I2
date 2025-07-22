@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.secure.ui.theme.ISecureTheme // Corrected import
+import com.example.secure.ui.theme.VaultTheme // Corrected import
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -19,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.title = "Settings" // Set title for the ActionBar
 
         setContent {
-            ISecureTheme { // Corrected theme name
+            VaultTheme { // Corrected theme name
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

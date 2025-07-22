@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.secure.R
-import com.example.secure.ui.theme.ISecureTheme
+import com.example.secure.ui.theme.VaultTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +52,7 @@ fun ConfirmActionDialog(
 @Preview(showBackground = true)
 @Composable
 fun ConfirmActionDialogPreviewDelete() {
-    ISecureTheme {
+    VaultTheme {
         ConfirmActionDialog(
             onDismissRequest = {},
             onConfirm = {},
@@ -66,7 +66,7 @@ fun ConfirmActionDialogPreviewDelete() {
 @Preview(showBackground = true)
 @Composable
 fun ConfirmActionDialogPreviewGeneric() {
-    ISecureTheme {
+    VaultTheme {
         ConfirmActionDialog(
             onDismissRequest = {},
             onConfirm = {},
