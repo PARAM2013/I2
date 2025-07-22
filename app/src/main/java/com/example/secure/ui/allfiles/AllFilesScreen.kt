@@ -271,7 +271,7 @@ fun AllFilesScreen(
                                         )
                                     }
                                     is VaultFile -> {
-                                        FileListItem(
+                                        FileItem(
                                             file = item,
                                             onFileClick = {
                                                 if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
@@ -349,7 +349,7 @@ fun AllFilesScreen(
                                         )
                                     }
                                     is VaultFile -> {
-                                        FileListItem(
+                                        FileItem(
                                             file = item,
                                             onFileClick = {
                                                 val file = item.file
