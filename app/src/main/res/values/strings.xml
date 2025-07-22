@@ -139,6 +139,7 @@
     <string name="settings">Settings</string>
     <string name="verify">Verify</string>
     <string name="save_pin">Save PIN</string>
+    <string name="lock">Lock</string>
 
 
 </resources>

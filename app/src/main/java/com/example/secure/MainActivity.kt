@@ -26,9 +26,20 @@ import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
+import android.os.Handler
+import android.os.Looper
+import android.view.WindowManager
 import com.example.secure.ui.theme.ISecureTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import com.example.secure.ui.lockscreen.LockScreenActivity
 
 class MainActivity : TrackedActivity() {
+
+    private val lockHandler = Handler(Looper.getMainLooper())
+    private val lockRunnable = Runnable {
+        AppGlobalState.isLocked = true
+    }
 
     // Permission launchers are mostly for the initial permission check now.
     // File picking and specific actions will be handled within MainDashboardScreen or its ViewModel.
@@ -41,10 +52,10 @@ class MainActivity : TrackedActivity() {
         const val DOCUMENTS = "documents"
         // Add other routes here if needed
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         setContent {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
@@ -58,6 +69,13 @@ class MainActivity : TrackedActivity() {
                                 viewModel = dashboardViewModel,
                                 onSettingsClick = {
                                     startActivity(Intent(this@MainActivity, com.example.secure.ui.settings.SettingsActivity::class.java))
+                                },
+                                onLockClick = {
+                                    AppGlobalState.isLocked = true
+                                    val intent = Intent(this@MainActivity, LockScreenActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    startActivity(intent)
+                                    finish()
                                 },
                                 onCategoryClick = { categoryId ->
                                     Log.d("MainActivity", "Category clicked: $categoryId")
@@ -217,5 +235,21 @@ class MainActivity : TrackedActivity() {
     override fun onSupportNavigateUp(): Boolean {
         // Not used with current Compose setup in MainActivity
         return super.onSupportNavigateUp()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        lockHandler.postDelayed(lockRunnable, 10000) // 10 seconds
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lockHandler.removeCallbacks(lockRunnable)
+        if (AppGlobalState.isLocked) {
+            val intent = Intent(this, LockScreenActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 }

@@ -34,6 +34,7 @@ import com.example.secure.ui.theme.ISecureTheme
 fun MainDashboardScreen(
     viewModel: MainDashboardViewModel = viewModel(),
     onSettingsClick: () -> Unit,
+    onLockClick: () -> Unit,
     onCategoryClick: (String) -> Unit // Pass category ID or route
 ) {
     val context = LocalContext.current
@@ -222,6 +223,7 @@ fun MainDashboardScreenPreview() {
         MainDashboardScreen(
             // viewModel = fakeViewModel, // Use the fake ViewModel here
             onSettingsClick = {},
+            onLockClick = {},
             onCategoryClick = {}
         )
     }
