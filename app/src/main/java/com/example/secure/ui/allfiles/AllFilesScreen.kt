@@ -74,7 +74,7 @@ import com.example.secure.ui.composables.CreateFolderDialog
 import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import androidx.compose.ui.window.Dialog
@@ -311,10 +311,6 @@ fun AllFilesScreen(
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
                                                     viewModel.shareFile(item)
                                                 }
-                                            },
-                                            onLongClick = {
-                                                viewModel.enterSelectionMode()
-                                                viewModel.toggleSelection(item.file)
                                             }
                                         )
                                     }
@@ -399,11 +395,7 @@ fun AllFilesScreen(
                                                     viewModel.shareFile(item)
                                                 }
                                             },
-                                            isGridView = isGridView,
-                                            onLongClick = {
-                                                viewModel.enterSelectionMode()
-                                                viewModel.toggleSelection(item.file)
-                                            }
+                                            isGridView = isGridView
                                         )
                                     }
                                 }
@@ -631,7 +623,7 @@ fun FileItem(
 @Preview(showBackground = true)
 @Composable
 fun AllFilesScreenPreview() {
-    VaultTheme {
+    ISecureTheme {
         // To fix compilation errors related to anonymous subclassing a final class
         // and accessing private state, we directly instantiate MainDashboardViewModel.
         // The preview will show the ViewModel's state after its init block runs.

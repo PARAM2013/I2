@@ -27,7 +27,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.secure.R
 import com.example.secure.ui.composables.CreateFolderDialog // Import extracted dialog
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +67,7 @@ fun MainDashboardScreen(
         }
     }
 
-    VaultTheme {
+    ISecureTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
@@ -203,7 +203,7 @@ fun DashboardLottieAnimation(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun MainDashboardScreenPreview() {
-    VaultTheme {
+    ISecureTheme {
         // For a more useful preview, consider using a fake ViewModel that provides sample UiState
         // For instance:
         // val fakeViewModel = remember {
@@ -232,7 +232,7 @@ fun MainDashboardScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CategoryCardPreview() {
-    VaultTheme {
+    ISecureTheme {
         CategoryCard(
             title = "Images",
             subtitle = "123 files, 45.6 MB",

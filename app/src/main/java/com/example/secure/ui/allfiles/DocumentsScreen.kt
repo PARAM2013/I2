@@ -67,7 +67,7 @@ import com.example.secure.ui.composables.CreateFolderDialog // Import the extrac
 import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 
 @OptIn(ExperimentalMaterial3Api::class)

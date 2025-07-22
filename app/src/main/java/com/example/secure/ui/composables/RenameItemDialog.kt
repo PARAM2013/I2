@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.secure.R
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +94,7 @@ fun RenameItemDialog(
 @Preview(showBackground = true)
 @Composable
 fun RenameItemDialogPreview() {
-    VaultTheme {
+    ISecureTheme {
         RenameItemDialog(
             currentItemName = "MyOldFileName.txt",
             onDismissRequest = {},

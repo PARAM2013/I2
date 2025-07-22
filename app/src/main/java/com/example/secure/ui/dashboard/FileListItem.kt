@@ -13,20 +13,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun FileItem(
-    vaultFile: Any,
+fun FileListItem(
+    file: VaultFile,
     isGridView: Boolean,
-    isMenuExpanded: Boolean,
-    onExpandMenu: () -> Unit,
-    onDismissMenu: () -> Unit,
-    onUnhideClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onRenameClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    isSelected: Boolean,
+    onFileClick: (VaultFile) -> Unit,
+    onFileLongClick: (VaultFile) -> Unit,
+    onView: (VaultFile) -> Unit,
+    onUnhide: (VaultFile) -> Unit,
+    onDelete: (VaultFile) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -35,10 +32,11 @@ fun FileItem(
             .fillMaxWidth()
             .padding(4.dp)
             .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+                onClick = { onFileClick(file) },
+                onLongClick = { onFileLongClick(file) }
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         if (isGridView) {
             Column(
@@ -132,41 +130,35 @@ fun FileItem(
 fun FileListItemPreview() {
     MaterialTheme {
         Column {
-            FileItem(
-                vaultFile = VaultFile("My Secret Document.pdf", false, FileType.DOCUMENT),
+            FileListItem(
+                file = VaultFile("My Secret Document.pdf", false, FileType.DOCUMENT),
                 isGridView = false,
-                isMenuExpanded = false,
-                onExpandMenu = {},
-                onDismissMenu = {},
-                onUnhideClick = {},
-                onDeleteClick = {},
-                onRenameClick = {},
-                onShareClick = {},
-                onClick = {}
+                isSelected = false,
+                onFileClick = {},
+                onFileLongClick = {},
+                onView = {},
+                onUnhide = {},
+                onDelete = {}
             )
-            FileItem(
-                vaultFile = VaultFile("Vacation Photos", true, FileType.FOLDER),
+            FileListItem(
+                file = VaultFile("Vacation Photos", true, FileType.FOLDER),
                 isGridView = true,
-                isMenuExpanded = false,
-                onExpandMenu = {},
-                onDismissMenu = {},
-                onUnhideClick = {},
-                onDeleteClick = {},
-                onRenameClick = {},
-                onShareClick = {},
-                onClick = {}
+                isSelected = true,
+                onFileClick = {},
+                onFileLongClick = {},
+                onView = {},
+                onUnhide = {},
+                onDelete = {}
             )
-            FileItem(
-                vaultFile = VaultFile("My_Awesome_Video_of_Cats_Playing_in_the_Garden.mp4", false, FileType.VIDEO),
+            FileListItem(
+                file = VaultFile("My_Awesome_Video_of_Cats_Playing_in_the_Garden.mp4", false, FileType.VIDEO),
                 isGridView = false,
-                isMenuExpanded = false,
-                onExpandMenu = {},
-                onDismissMenu = {},
-                onUnhideClick = {},
-                onDeleteClick = {},
-                onRenameClick = {},
-                onShareClick = {},
-                onClick = {}
+                isSelected = false,
+                onFileClick = {},
+                onFileLongClick = {},
+                onView = {},
+                onUnhide = {},
+                onDelete = {}
             )
         }
     }

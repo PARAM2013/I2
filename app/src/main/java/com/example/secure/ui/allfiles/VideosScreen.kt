@@ -26,7 +26,7 @@ import com.example.secure.file.FileManager.VaultFile
 import com.example.secure.file.FileManager.VaultFolder
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import androidx.compose.runtime.LaunchedEffect
@@ -138,6 +138,7 @@ fun VideosScreen(
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -154,6 +155,10 @@ fun VideosScreen(
                                     itemToRename = file
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
+                                },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
                                 },
                                 onClick = {
                                     if (fileListState.isSelectionMode) {
@@ -172,6 +177,7 @@ fun VideosScreen(
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -188,6 +194,10 @@ fun VideosScreen(
                                     itemToRename = file
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
+                                },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
                                 },
                                 onClick = {
                                     if (fileListState.isSelectionMode) {

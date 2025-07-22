@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.fragment.app.FragmentActivity // Required for BiometricPrompt
 import com.example.secure.auth.PinManager
 import com.example.secure.ui.composables.PinScreen
-import com.example.secure.ui.theme.VaultTheme
+import com.example.secure.ui.theme.ISecureTheme
 
 class LauncherActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +18,7 @@ class LauncherActivity : FragmentActivity() {
         AppGlobalState.isLocked = PinManager.isPinSet(this)
 
         setContent {
-            VaultTheme {
+            ISecureTheme {
                 DetermineNextScreen()
             }
         }
@@ -69,7 +69,7 @@ class LauncherActivity : FragmentActivity() {
         }
         // Re-trigger composition.
         setContent {
-            VaultTheme {
+            ISecureTheme {
                 DetermineNextScreen()
             }
         }
