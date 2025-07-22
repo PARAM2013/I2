@@ -30,14 +30,18 @@ import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.LinearProgressIndicator
+import com.example.secure.ui.viewmodel.FileOperationsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VideosScreen(
     onNavigateBack: () -> Unit,
-    viewModel: MainDashboardViewModel = viewModel()
+    viewModel: MainDashboardViewModel = viewModel(),
+    fileOperationsViewModel: FileOperationsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val fileOpState = fileOperationsViewModel.state
     var selectedVideoIndex by remember { mutableStateOf<Int?>(null) }
     var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
     var itemToRename by remember { mutableStateOf<Any?>(null) }
@@ -45,6 +49,7 @@ fun VideosScreen(
     var isGridView by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val videoFiles = uiState.videoFiles.sortedByDescending { it.file.lastModified() }
+    val fileListState by viewModel.fileListState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadAllVideos()
@@ -88,6 +93,21 @@ fun VideosScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            if (fileOpState.isProcessing) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LinearProgressIndicator(
+                        progress = fileOpState.progress,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+                    Text(
+                        "${fileOpState.processedFiles}/${fileOpState.totalFiles} files processed",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (videoFiles.isEmpty()) {
@@ -118,6 +138,7 @@ fun VideosScreen(
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -135,8 +156,16 @@ fun VideosScreen(
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
                                 },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
+                                },
                                 onClick = {
-                                    selectedVideoIndex = videoFiles.indexOf(file)
+                                    if (fileListState.isSelectionMode) {
+                                        viewModel.toggleSelection(file.file)
+                                    } else {
+                                        selectedVideoIndex = videoFiles.indexOf(file)
+                                    }
                                 },
                                 isGridView = isGridView,
                                 onShareClick = {}
@@ -148,6 +177,7 @@ fun VideosScreen(
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -165,8 +195,16 @@ fun VideosScreen(
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
                                 },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
+                                },
                                 onClick = {
-                                    selectedVideoIndex = videoFiles.indexOf(file)
+                                    if (fileListState.isSelectionMode) {
+                                        viewModel.toggleSelection(file.file)
+                                    } else {
+                                        selectedVideoIndex = videoFiles.indexOf(file)
+                                    }
                                 },
                                 isGridView = isGridView,
                                 onShareClick = {}

@@ -29,20 +29,26 @@ import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
+import androidx.compose.material3.LinearProgressIndicator
+import com.example.secure.ui.viewmodel.FileOperationsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImagesScreen(
     onNavigateBack: () -> Unit,
-    viewModel: MainDashboardViewModel = viewModel()
+    viewModel: MainDashboardViewModel = viewModel(),
+    fileOperationsViewModel: FileOperationsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val fileOpState = fileOperationsViewModel.state
     var selectedImageIndex by remember { mutableStateOf<Int?>(null) }
     var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
     var itemToRename by remember { mutableStateOf<Any?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var isGridView by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    val fileListState by viewModel.fileListState.collectAsState()
+
 
     // Launch a coroutine to load all images when the screen is first displayed
     LaunchedEffect(Unit) {
@@ -89,6 +95,21 @@ fun ImagesScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            if (fileOpState.isProcessing) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    LinearProgressIndicator(
+                        progress = fileOpState.progress,
+                        modifier = Modifier.fillMaxWidth(0.8f)
+                    )
+                    Text(
+                        "${fileOpState.processedFiles}/${fileOpState.totalFiles} files processed",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (imageFiles.isEmpty()) {
@@ -119,6 +140,7 @@ fun ImagesScreen(
                         items(imageFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -136,8 +158,16 @@ fun ImagesScreen(
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
                                 },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
+                                },
                                 onClick = {
-                                    selectedImageIndex = imageFiles.indexOf(file)
+                                    if (fileListState.isSelectionMode) {
+                                        viewModel.toggleSelection(file.file)
+                                    } else {
+                                        selectedImageIndex = imageFiles.indexOf(file)
+                                    }
                                 },
                                 isGridView = isGridView,
                                 onShareClick = {}
@@ -149,6 +179,7 @@ fun ImagesScreen(
                         items(imageFiles, key = { it.file.absolutePath }) { file ->
                             FileItem(
                                 vaultFile = file,
+                                isSelected = file.file in fileListState.selectedFiles,
                                 isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
                                 onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
                                 onDismissMenu = { expandedMenuForItemPath = null },
@@ -166,8 +197,16 @@ fun ImagesScreen(
                                     showRenameDialog = true
                                     expandedMenuForItemPath = null // Close menu
                                 },
+                                onLongClick = {
+                                    viewModel.enterSelectionMode()
+                                    viewModel.toggleSelection(file.file)
+                                },
                                 onClick = {
-                                    selectedImageIndex = imageFiles.indexOf(file)
+                                    if (fileListState.isSelectionMode) {
+                                        viewModel.toggleSelection(file.file)
+                                    } else {
+                                        selectedImageIndex = imageFiles.indexOf(file)
+                                    }
                                 },
                                 isGridView = isGridView,
                                 onShareClick = {}

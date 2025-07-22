@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
+import com.example.secure.ui.viewmodel.FileListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +46,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     private val _uiState = MutableStateFlow(MainDashboardUiState())
     val uiState: StateFlow<MainDashboardUiState> = _uiState.asStateFlow()
+
+    private val _fileListState = MutableStateFlow(FileListState())
+    val fileListState: StateFlow<FileListState> = _fileListState.asStateFlow()
 
     private val _currentPath = MutableStateFlow<String?>(null) // null represents vault root
     val currentPath: StateFlow<String?> = _currentPath.asStateFlow()
@@ -243,15 +247,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     private fun formatSize(sizeBytes: Long): String {
-        val kb = sizeBytes / 1024.0
-        val mb = kb / 1024.0
-        val gb = mb / 1024.0
-        return when {
-            gb >= 1 -> String.format(Locale.getDefault(), "%.1f GB", gb)
-            mb >= 1 -> String.format(Locale.getDefault(), "%.1f MB", mb)
-            kb >= 1 -> String.format(Locale.getDefault(), "%.1f KB", kb)
-            else -> String.format(Locale.getDefault(), "%d Bytes", sizeBytes)
-        }
+        return com.example.secure.utils.formatFileSize(sizeBytes)
     }
 
     fun importFiles(uris: List<Uri>) {
@@ -477,6 +473,22 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     )
                 }
             }
+        }
+    }
+
+    fun enterSelectionMode() {
+        _fileListState.update { it.copy(isSelectionMode = true) }
+    }
+
+    fun toggleSelection(file: File) {
+        _fileListState.update { currentState ->
+            val newSelectedFiles = currentState.selectedFiles.toMutableSet()
+            if (file in newSelectedFiles) {
+                newSelectedFiles.remove(file)
+            } else {
+                newSelectedFiles.add(file)
+            }
+            currentState.copy(selectedFiles = newSelectedFiles)
         }
     }
 }
