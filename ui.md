@@ -1,103 +1,267 @@
-# UI/UX Improvements for Secure Media Vault Application
+## Implementation Plan for UI Application Enhancement
 
-## 1. Security & Privacy Enhancements
+### 1. Security Enhancements
 
-### A. App Lock Integration
-- Add lock/unlock icon in the top bar after app name. (apposite side)
-    - Show unlock icon by default
-    - Clicking lock icon redirects to login screen
-    - After PIN entry, redirect to last active screen
-    - No persistence of last location after app closure
+#### 1.1. App Lock Implementation
+```kotlin
+// Add to MainActivity.kt
+class MainActivity : ComponentActivity() {
+    private val lockTimeout = 10000L // 10 seconds
+    private var lastInteractionTime: Long = System.currentTimeMillis()
+    private var isAppLocked = false
+    
+    override fun onResume() {
+        super.onResume()
+        if (isAppLocked) {
+            navigateToLogin()
+        }
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        startLockTimer()
+    }
+}
+```
 
-### B. Privacy Protection
-- Implement screen blur when app moves to background
-- Auto-lock functionality:
-    - Trigger after 10 seconds in background
-    - Require PIN re-entry
-    - Return to last active screen after authentication
+#### 1.2. Top Bar Lock Icon
+```kotlin
+// Modify TopAppBar in VideosScreen.kt and ImagesScreen.kt
+TopAppBar(
+    title = { Text("App Name") },
+    actions = {
+        IconButton(onClick = { toggleLock() }) {
+            Icon(
+                imageVector = if (isLocked) 
+                    Icons.Filled.Lock 
+                else 
+                    Icons.Filled.LockOpen,
+                contentDescription = "Toggle Lock"
+            )
+        }
+        // Existing view toggle button
+    }
+)
+```
 
-## 2. Media Viewer Improvements
+#### 1.3. App Blur Implementation
+```kotlin
+// Add to base theme
+WindowCompat.setDecorFitsSystemWindows(window, false)
+window.setFlags(
+    WindowManager.LayoutParams.FLAG_SECURE,
+    WindowManager.LayoutParams.FLAG_SECURE
+)
+```
 
-### A. Full-Screen Media Viewer
-- Swipe gestures:
-    - Left/right for navigation
-    - Down to dismiss viewer
-- Tap to show/hide overlay controls
-- Long-press actions menu:
-    - Rename
-    - Delete
-    - Unhide
-    - Info (file details)
-- Remove persistent file info from bottom overlay
+### 2. UI Improvements
 
-### B. Enhanced Video Controls
-- Modern floating control panel
-- Auto-hiding controls after inactivity
-- Gesture-based playback control
-- Quality playback speed options
+#### 2.1. Progress Indicators
+```kotlin
+// Add to FileOperationsViewModel.kt
+data class FileOperationState(
+    val isProcessing: Boolean = false,
+    val progress: Float = 0f,
+    val totalFiles: Int = 0,
+    val processedFiles: Int = 0
+)
 
-## 3. File Management
+// Add to UI
+if (state.isProcessing) {
+    LinearProgressIndicator(
+        progress = state.progress,
+        modifier = Modifier.fillMaxWidth()
+    )
+    Text(
+        "${state.processedFiles}/${state.totalFiles} files processed",
+        style = MaterialTheme.typography.bodySmall
+    )
+}
+```
 
-### A. Bulk Operations
-- Multi-select functionality:
-    - Select multiple files/folders
-    - Batch unhide
-    - Batch delete
-- Progress indicators:
-    - File import operations
-    - Unhide operations
-    - Delete operations
+#### 2.2. Grid View Default
+```kotlin
+// Modify in SettingsDataStore.kt
+val DEFAULT_VIEW_MODE = ViewMode.GRID
 
-### B. View Settings
-- Set grid view as default
-- Maintain list view as alternative option
-- Improved file size display:
-    - Under 1 MB: Display in KB (e.g., "850 KB")
-    - Above 1 MB: Display with decimals (e.g., "1.25 MB", "2.39 MB")
+// Add migration if needed
+suspend fun migrateToGridDefault() {
+    dataStore.edit { preferences ->
+        preferences[VIEW_MODE_KEY] = ViewMode.GRID.name
+    }
+}
+```
 
-## 4. General UI/UX
+#### 2.3. Image Info Restructuring
+```kotlin
+// Modify MediaViewerScreen.kt
+@Composable
+fun MediaViewerActions(
+    file: File,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    onUnhide: () -> Unit,
+    onInfo: () -> Unit
+) {
+    var showMenu by remember { mutableStateOf(false) }
+    
+    DropdownMenu(
+        expanded = showMenu,
+        onDismissRequest = { showMenu = false }
+    ) {
+        DropdownMenuItem(
+            text = { Text("Rename") },
+            onClick = onRename
+        )
+        DropdownMenuItem(
+            text = { Text("Delete") },
+            onClick = onDelete
+        )
+        DropdownMenuItem(
+            text = { Text("Unhide") },
+            onClick = onUnhide
+        )
+        DropdownMenuItem(
+            text = { Text("Info") },
+            onClick = onInfo
+        )
+    }
+}
+```
 
-### A. Theme Support
-- Automatic theme detection:
-    - Sync with device theme (light/dark)
-    - Auto-switch when device theme changes
-- Consistent styling across both themes:
-    - Readable text
-    - Appropriate contrast
-    - Clear visual hierarchy
+#### 2.4. Multiple File Selection
+```kotlin
+// Add to FileListState.kt
+data class FileListState(
+    val selectedFiles: Set<File> = emptySet(),
+    val isSelectionMode: Boolean = false
+)
 
-### B. Navigation & Layout
-- Improved grid layout for media display
-- Smooth transitions between screens
-- Clear visual feedback for actions
-- Loading indicators for operations
+// Add to UI components
+LazyVerticalGrid(/*...*/) {
+    items(files) { file ->
+        FileItem(
+            file = file,
+            isSelected = file in state.selectedFiles,
+            onLongClick = { 
+                viewModel.enterSelectionMode()
+                viewModel.toggleSelection(file)
+            },
+            onClick = {
+                if (state.isSelectionMode) {
+                    viewModel.toggleSelection(file)
+                } else {
+                    // Normal file open action
+                }
+            }
+        )
+    }
+}
+```
 
-## 5. Performance Considerations
+#### 2.5. File Size Formatting
+```kotlin
+// Add to Utils.kt
+fun formatFileSize(bytes: Long): String {
+    return when {
+        bytes < 1024 * 1024 -> "${bytes / 1024} KB"
+        else -> String.format("%.2f MB", bytes / (1024.0 * 1024.0))
+    }
+}
+```
 
-### A. Media Loading
-- Efficient image/video loading
-- Smooth scrolling in grid view
-- Optimized thumbnail generation
-- Cache management for better performance
+### 3. Theme Implementation
 
-### B. Operation Feedback
-- Clear progress indicators
-- Operation success/failure notifications
-- Non-blocking UI during operations
-- Smooth animations for state changes
+#### 3.1. Auto Theme Detection
+```kotlin
+// Add to Theme.kt
+@Composable
+fun VaultTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
 
-## 6. Implementation Guidelines
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
+```
 
-### A. Design Principles
-- Maintain security focus
-- Prioritize privacy
-- Ensure consistent UI across devices
+### 4. Implementation Flow
+
+1. **Security Features**
+  - App lock implementation
+  - Blur functionality
+  - Lock icon integration
+
+2. **UI Basic Updates**
+  - Progress indicators
+  - Grid view default
+  - File size formatting
+
+3. **Advanced Features**
+  - Multiple file selection
+  - Image info restructuring
+  - Theme implementation
+
+4. **Testing and Refinement**
+  - UI testing across different devices
+  - Performance optimization
+  - Bug fixes
+
+### 5. Required Dependencies
+
+```gradle
+dependencies {
+    // Existing dependencies
+    
+    // For blur effect
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.32.0"
+    
+    // For UI components
+    implementation "androidx.compose.material3:material3:1.1.2"
+    
+    // For animations
+    implementation "androidx.compose.animation:animation:1.5.4"
+}
+```
+
+### 6. Testing Checklist
+
+- [ ] App lock functionality works after 10 seconds
+- [ ] Blur effect applies when app goes to background
+- [ ] Progress indicators show during file operations
+- [ ] Multiple file selection works correctly
+- [ ] File size formatting displays correctly
+- [ ] Theme changes based on system settings
+- [ ] All animations are smooth
+- [ ] Security features work as expected
+
+### 7. Accessibility Considerations
+
+- Ensure all icons have proper content descriptions
+- Maintain sufficient contrast ratios
+- Support different text sizes
+- Implement proper touch targets
+
+### 8. Performance Monitoring
+
+- Monitor memory usage during file operations
+- Track UI frame drops
+- Measure app start time
+- Monitor background blur performance
+
+---
+
+**Note to Developers:**
 - Follow Material Design 3 guidelines
-
-### B. Testing Requirements
-- Verify security features
-- Test theme switching
-- Validate file operations
-- Check multi-select functionality
-- Confirm progress indicators
-- Test size formatting
+- Implement proper error handling
+- Use coroutines for background operations
+- Follow MVVM architecture pattern
+- Add proper logging for debugging
