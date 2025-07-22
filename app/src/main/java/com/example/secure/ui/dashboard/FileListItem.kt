@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FileItem(
+fun FileListItem(
     file: VaultFile,
     isGridView: Boolean,
     onFileClick: (VaultFile) -> Unit,
@@ -125,35 +125,44 @@ fun FileItem(
 
 @Preview(showBackground = true)
 @Composable
-fun FileItemPreview() {
+fun FileListItemPreview() {
     MaterialTheme {
         Column {
             FileItem(
-                file = VaultFile("My Secret Document.pdf", false, FileType.DOCUMENT),
+                vaultFile = VaultFile("My Secret Document.pdf", false, FileType.DOCUMENT),
                 isGridView = false,
-                onFileClick = {},
-                onFileLongClick = {},
-                onView = {},
-                onUnhide = {},
-                onDelete = {}
+                isMenuExpanded = false,
+                onExpandMenu = {},
+                onDismissMenu = {},
+                onUnhideClick = {},
+                onDeleteClick = {},
+                onRenameClick = {},
+                onShareClick = {},
+                onClick = {}
             )
             FileItem(
-                file = VaultFile("Vacation Photos", true, FileType.FOLDER),
+                vaultFile = VaultFile("Vacation Photos", true, FileType.FOLDER),
                 isGridView = true,
-                onFileClick = {},
-                onFileLongClick = {},
-                onView = {},
-                onUnhide = {},
-                onDelete = {}
+                isMenuExpanded = false,
+                onExpandMenu = {},
+                onDismissMenu = {},
+                onUnhideClick = {},
+                onDeleteClick = {},
+                onRenameClick = {},
+                onShareClick = {},
+                onClick = {}
             )
             FileItem(
-                file = VaultFile("My_Awesome_Video_of_Cats_Playing_in_the_Garden.mp4", false, FileType.VIDEO),
+                vaultFile = VaultFile("My_Awesome_Video_of_Cats_Playing_in_the_Garden.mp4", false, FileType.VIDEO),
                 isGridView = false,
-                onFileClick = {},
-                onFileLongClick = {},
-                onView = {},
-                onUnhide = {},
-                onDelete = {}
+                isMenuExpanded = false,
+                onExpandMenu = {},
+                onDismissMenu = {},
+                onUnhideClick = {},
+                onDeleteClick = {},
+                onRenameClick = {},
+                onShareClick = {},
+                onClick = {}
             )
         }
     }
