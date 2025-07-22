@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.secure"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.secure"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -38,7 +38,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     
     lint {
@@ -102,6 +102,11 @@ dependencies {
 
     // PhotoView for zoomable images
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
+
+    // Accompanist for zoom and gestures
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
 
     // Foundation for Pager and gestures
     implementation("androidx.compose.foundation:foundation:1.6.4")
