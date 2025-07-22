@@ -271,9 +271,26 @@ fun AllFilesScreen(
                                         )
                                     }
                                     is VaultFile -> {
-                                        FileListItem(
-                                            file = item,
-                                            onFileClick = {
+                                        FileItem(
+                                            vaultFile = item,
+                                            isMenuExpanded = expandedMenuForItemPath == item.file.absolutePath,
+                                            onExpandMenu = { expandedMenuForItemPath = item.file.absolutePath },
+                                            onDismissMenu = { expandedMenuForItemPath = null },
+                                            onUnhideClick = {
+                                                viewModel.requestUnhideItem(item)
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onDeleteClick = {
+                                                // TODO: Show confirmation dialog here before calling delete
+                                                viewModel.requestDeleteItem(item)
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onRenameClick = {
+                                                itemToRename = item
+                                                showRenameDialog = true
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onClick = {
                                                 if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
                                                     selectedMediaIndex = mediaFiles.indexOf(item)
                                                 } else if (item.category == FileManager.FileCategory.DOCUMENT) {
@@ -289,22 +306,15 @@ fun AllFilesScreen(
                                                     }
                                                 }
                                             },
-                                            onFileLongClick = {
-                                                expandedMenuForItemPath = item.file.absolutePath
-                                            },
                                             isGridView = isGridView,
-                                            onView = {
-                                                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
-                                                    selectedMediaIndex = mediaFiles.indexOf(item)
+                                            onShareClick = {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                    viewModel.shareFile(item)
                                                 }
                                             },
-                                            onUnhide = {
-                                                viewModel.requestUnhideItem(item)
-                                                expandedMenuForItemPath = null // Close menu
-                                            },
-                                            onDelete = {
-                                                viewModel.requestDeleteItem(item)
-                                                expandedMenuForItemPath = null // Close menu
+                                            onLongClick = {
+                                                viewModel.enterSelectionMode()
+                                                viewModel.toggleSelection(item.file)
                                             }
                                         )
                                     }
@@ -349,9 +359,26 @@ fun AllFilesScreen(
                                         )
                                     }
                                     is VaultFile -> {
-                                        FileListItem(
-                                            file = item,
-                                            onFileClick = {
+                                        FileItem(
+                                            vaultFile = item,
+                                            isMenuExpanded = expandedMenuForItemPath == item.file.absolutePath,
+                                            onExpandMenu = { expandedMenuForItemPath = item.file.absolutePath },
+                                            onDismissMenu = { expandedMenuForItemPath = null },
+                                            onUnhideClick = {
+                                                viewModel.requestUnhideItem(item)
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onDeleteClick = {
+                                                // TODO: Show confirmation dialog here before calling delete
+                                                viewModel.requestDeleteItem(item)
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onRenameClick = {
+                                                itemToRename = item
+                                                showRenameDialog = true
+                                                expandedMenuForItemPath = null // Close menu
+                                            },
+                                            onClick = {
                                                 val file = item.file
                                                 if (item.category == FileManager.FileCategory.DOCUMENT) {
                                                     val uri = androidx.core.content.FileProvider.getUriForFile(context, "com.example.secure.provider", file)
@@ -367,22 +394,15 @@ fun AllFilesScreen(
                                                     selectedMediaIndex = mediaFiles.indexOf(item)
                                                 }
                                             },
-                                            onFileLongClick = {
-                                                expandedMenuForItemPath = item.file.absolutePath
-                                            },
-                                            isGridView = isGridView,
-                                            onView = {
-                                                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
-                                                    selectedMediaIndex = mediaFiles.indexOf(item)
+                                            onShareClick = {
+                                                if (item.category == FileManager.FileCategory.DOCUMENT) {
+                                                    viewModel.shareFile(item)
                                                 }
                                             },
-                                            onUnhide = {
-                                                viewModel.requestUnhideItem(item)
-                                                expandedMenuForItemPath = null // Close menu
-                                            },
-                                            onDelete = {
-                                                viewModel.requestDeleteItem(item)
-                                                expandedMenuForItemPath = null // Close menu
+                                            isGridView = isGridView,
+                                            onLongClick = {
+                                                viewModel.enterSelectionMode()
+                                                viewModel.toggleSelection(item.file)
                                             }
                                         )
                                     }
