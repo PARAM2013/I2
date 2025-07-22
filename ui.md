@@ -1,128 +1,103 @@
-# Gallery UI/UX Feedback & Suggestions
+# UI/UX Improvements for Secure Media Vault Application
 
-## 1. Gallery-like Navigation
+## 1. Security & Privacy Enhancements
 
-**Current:**
-- Navigation between images works with arrow click.
-- There are three dots (`⋮`) per image for Rename/Delete/Unhide.
+### A. App Lock Integration
+- Add lock/unlock icon in the top bar after app name. (apposite side)
+    - Show unlock icon by default
+    - Clicking lock icon redirects to login screen
+    - After PIN entry, redirect to last active screen
+    - No persistence of last location after app closure
 
-**Requested/Recommended:**
-- **Swipe Left/Right:** Instead of requiring arrow click, users should be able to swipe left or right on the image preview to move between images (like a standard gallery app).
-- **Implementation:** Use `HorizontalPager` from Jetpack Compose, or Accompanist Pager, inside your image viewer dialog/overlay. This should allow full-screen swiping between images/videos.
-  - On image tap, open a `MediaViewerScreen` that enables horizontal swiping.
-  - Support pinch-to-zoom and pan for images.
+### B. Privacy Protection
+- Implement screen blur when app moves to background
+- Auto-lock functionality:
+    - Trigger after 10 seconds in background
+    - Require PIN re-entry
+    - Return to last active screen after authentication
 
----
-
-## 2. Long Press for Options
-
-**Current:**
-- Three-dot menu (`⋮`) is always shown for Rename, Delete, Unhide.
-
-**Requested/Recommended:**
-- **Hide the 3-dot menu.**
-- **Show options (Rename, Delete, Unhide) only on long press** on the image (or file row in list view).
-  - On long press, show a bottom sheet or dialog with these actions.
-  - This reduces clutter and matches gallery UX expectations.
-
----
-
-## 3. Additional Suggestions for a Perfect Gallery/Vault UI
+## 2. Media Viewer Improvements
 
 ### A. Full-Screen Media Viewer
+- Swipe gestures:
+    - Left/right for navigation
+    - Down to dismiss viewer
+- Tap to show/hide overlay controls
+- Long-press actions menu:
+    - Rename
+    - Delete
+    - Unhide
+    - Info (file details)
+- Remove persistent file info from bottom overlay
 
-- When a user taps an image/video, open it in a true full-screen viewer with:
-  - Swipe left/right to navigate (HorizontalPager)
-  - Tap to show/hide overlay controls (filename, date, size, delete, unhide, close)
-  - Long-press inside viewer to show actions (Rename, Delete, Unhide)
-  - Pinch-to-zoom and double-tap to zoom for images
-  - For videos: overlay play/pause, seek, mute, speed controls
+### B. Enhanced Video Controls
+- Modern floating control panel
+- Auto-hiding controls after inactivity
+- Gesture-based playback control
+- Quality playback speed options
 
-### B. Grid & List Consistency
+## 3. File Management
 
-- Make sure both Grid and List view use the same logic for entering the media viewer, and always pass the correct, visible media set for navigation.
-- Swiping between files should work regardless of entry view.
+### A. Bulk Operations
+- Multi-select functionality:
+    - Select multiple files/folders
+    - Batch unhide
+    - Batch delete
+- Progress indicators:
+    - File import operations
+    - Unhide operations
+    - Delete operations
 
-### C. Visual Polish
+### B. View Settings
+- Set grid view as default
+- Maintain list view as alternative option
+- Improved file size display:
+    - Under 1 MB: Display in KB (e.g., "850 KB")
+    - Above 1 MB: Display with decimals (e.g., "1.25 MB", "2.39 MB")
 
-- Use rounded corners and subtle shadow for images and thumbnails.
-- When in list view, show a small preview thumbnail for images/videos at the start of the row (already looks good from your screenshot).
-- Add a subtle selection/highlight effect when an item is tapped or long-pressed.
+## 4. General UI/UX
 
-### D. Batch Actions (Optional)
+### A. Theme Support
+- Automatic theme detection:
+    - Sync with device theme (light/dark)
+    - Auto-switch when device theme changes
+- Consistent styling across both themes:
+    - Readable text
+    - Appropriate contrast
+    - Clear visual hierarchy
 
-- Allow multi-select for delete/unhide by long-pressing and then tapping more items (like Google Photos).
+### B. Navigation & Layout
+- Improved grid layout for media display
+- Smooth transitions between screens
+- Clear visual feedback for actions
+- Loading indicators for operations
 
-### E. File Info Overlay
+## 5. Performance Considerations
 
-- In the full-screen viewer, show overlay info (filename, date, size) at the bottom/top with fade-in/out animation on tap.
+### A. Media Loading
+- Efficient image/video loading
+- Smooth scrolling in grid view
+- Optimized thumbnail generation
+- Cache management for better performance
 
-### F. Accessibility
+### B. Operation Feedback
+- Clear progress indicators
+- Operation success/failure notifications
+- Non-blocking UI during operations
+- Smooth animations for state changes
 
-- Ensure all images/thumbnails have content descriptions for TalkBack.
-- Overlay controls/buttons should have high contrast and be reachable with screen readers.
+## 6. Implementation Guidelines
 
----
+### A. Design Principles
+- Maintain security focus
+- Prioritize privacy
+- Ensure consistent UI across devices
+- Follow Material Design 3 guidelines
 
-## 4. Example User Flow
-
-1. **Browse:** User sees grid or list of images/videos/folders.
-2. **Tap:** Tapping an image/video opens full-screen viewer.
-3. **Swipe:** User swipes left/right to view next/previous media.
-4. **Long Press:** While browsing or in full-screen, long-press shows Rename/Delete/Unhide actions.
-5. **Overlay Controls:** Tap to toggle overlay with file info and action buttons.
-
----
-
-## 5. Summary Table
-
-| Feature                        | Status      | Recommendation                        |
-|--------------------------------|-------------|---------------------------------------|
-| Swipe navigation               | Only arrows | Enable swipe left/right everywhere    |
-| Three-dot menu                 | Always shown| Show only on long press               |
-| Full-screen viewer             | ?           | Use for all media, with overlays      |
-| Pinch/Double tap to zoom       | ?           | Support in full-screen for images     |
-| Video controls                 | Basic?      | Add overlay controls (seek, mute,...) |
-| Consistency grid/list          | Partial     | Same logic for both                   |
-
----
-
-## 6. Technical Notes
-
-- Use `Modifier.pointerInput` with `detectTapGestures` for long press.
-- For swipe: Jetpack Compose `HorizontalPager` (or Accompanist Pager).
-- For overlays: `AnimatedVisibility` or similar for fade-in/out.
-- For batch actions: Use a selectable state and checkbox overlays.
-- For accessibility: Compose's `contentDescription` and test with screen readers.
-
----
-
-## 7. Example Pseudocode for Long-Press
-
-```kotlin
-Box(
-    Modifier
-        .pointerInput(Unit) {
-            detectTapGestures(
-                onLongPress = { showActionSheet = true }
-            )
-        }
-) {
-    Image(...)
-    if (showActionSheet) {
-        // Show BottomSheet with Rename, Delete, Unhide
-    }
-}
-```
-
----
-
-## 8. References
-
-- [Jetpack Compose: HorizontalPager](https://developer.android.com/jetpack/compose/libraries#foundation)
-- [Accompanist Pager](https://google.github.io/accompanist/pager/)
-- [Android Gallery UX inspiration](https://material.io/components/image-lists)
-
----
-
-**These steps will make your app feel modern, smooth, and intuitive for users wanting a secure, gallery-like vault experience.**
+### B. Testing Requirements
+- Verify security features
+- Test theme switching
+- Validate file operations
+- Check multi-select functionality
+- Confirm progress indicators
+- Test size formatting
