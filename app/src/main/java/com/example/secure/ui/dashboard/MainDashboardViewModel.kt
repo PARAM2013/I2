@@ -108,11 +108,24 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         viewModelScope.launch {
             try {
                 val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
-                val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                val videoFilesWithThumbnails = allFiles
+                    .filter { it.category == FileManager.FileCategory.VIDEO }
+                    .map { vaultFile ->
+                        val thumbnail = try {
+                            android.media.ThumbnailUtils.createVideoThumbnail(
+                                vaultFile.file.path,
+                                android.provider.MediaStore.Video.Thumbnails.MINI_KIND
+                            )
+                        } catch (e: Exception) {
+                            Log.e("MainDashboardVM", "Error creating thumbnail for ${vaultFile.file.name}", e)
+                            null
+                        }
+                        vaultFile.copy(thumbnail = thumbnail)
+                    }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        videoFiles = videoFiles,
+                        videoFiles = videoFilesWithThumbnails,
                         error = null
                     )
                 }
