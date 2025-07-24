@@ -43,8 +43,6 @@ import java.io.File
 @Composable
 fun VideoPlayer(
     file: File,
-    onPrevious: () -> Unit,
-    onNext: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -111,18 +109,12 @@ fun VideoPlayer(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = onPrevious) {
-                        Icon(Icons.Default.SkipPrevious, "Previous", tint = Color.White)
-                    }
                     IconButton(onClick = { if (isPlaying) player.pause() else player.play() }) {
                         Icon(
                             if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                             if (isPlaying) "Pause" else "Play",
                             tint = Color.White
                         )
-                    }
-                    IconButton(onClick = onNext) {
-                        Icon(Icons.Default.SkipNext, "Next", tint = Color.White)
                     }
                     IconButton(onClick = { showSpeedControls = !showSpeedControls }) {
                         Icon(Icons.Default.Settings, "Settings", tint = Color.White)

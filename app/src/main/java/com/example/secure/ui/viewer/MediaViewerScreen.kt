@@ -121,16 +121,6 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
                     VideoPlayer(
                         file = file,
-                        onPrevious = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
-                        },
-                        onNext = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        },
                         modifier = Modifier.fillMaxSize()
                     )
                 }

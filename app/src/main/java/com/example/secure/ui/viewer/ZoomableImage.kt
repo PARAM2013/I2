@@ -1,7 +1,7 @@
 package com.example.secure.ui.viewer
 
 import androidx.compose.foundation.Image
-import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import coil.compose.rememberAsyncImagePainter
 import java.io.File
 
@@ -26,27 +28,50 @@ fun ZoomableImage(
     file: File,
     modifier: Modifier = Modifier
 ) {
-    var scale by remember { mutableStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
+    val scale = remember { Animatable(1f) }
+    val offsetX = remember { Animatable(0f) }
+    val offsetY = remember { Animatable(0f) }
+    var size by remember { mutableStateOf(IntSize.Zero) }
 
     val scope = rememberCoroutineScope()
     val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        scale *= zoomChange
-        offset += offsetChange
+        scope.launch {
+            scale.snapTo(scale.value * zoomChange)
+            val newOffsetX = offsetX.value + offsetChange.x
+            val newOffsetY = offsetY.value + offsetChange.y
+            val maxX = (scale.value - 1) * size.width / 2
+            val maxY = (scale.value - 1) * size.height / 2
+            offsetX.snapTo(newOffsetX.coerceIn(-maxX, maxX))
+            offsetY.snapTo(newOffsetY.coerceIn(-maxY, maxY))
+        }
     }
 
     Box(
         modifier = modifier
+            .onSizeChanged { size = it }
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onDoubleTap = {
+                    onTap = {
                         scope.launch {
-                            if (scale > 1f) {
-                                animate(scale, 1f) { value, _ -> scale = value }
-                                animate(offset.x, 0f) { value, _ -> offset = Offset(value, offset.y) }
-                                animate(offset.y, 0f) { value, _ -> offset = Offset(offset.x, value) }
+                            if (scale.value > 1f) {
+                                scale.animateTo(1f)
+                                offsetX.animateTo(0f)
+                                offsetY.animateTo(0f)
+                            }
+                        }
+                    },
+                    onDoubleTap = { tapOffset ->
+                        scope.launch {
+                            if (scale.value > 1f) {
+                                scale.animateTo(1f)
+                                offsetX.animateTo(0f)
+                                offsetY.animateTo(0f)
                             } else {
-                                animate(scale, 3f) { value, _ -> scale = value }
+                                scale.animateTo(3f)
+                                val newOffsetX = (tapOffset.x - size.width / 2) * 2
+                                val newOffsetY = (tapOffset.y - size.height / 2) * 2
+                                offsetX.animateTo(-newOffsetX)
+                                offsetY.animateTo(-newOffsetY)
                             }
                         }
                     }
@@ -60,10 +85,10 @@ fun ZoomableImage(
             modifier = Modifier
                 .fillMaxSize()
                 .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
+                    scaleX = scale.value,
+                    scaleY = scale.value,
+                    translationX = offsetX.value,
+                    translationY = offsetY.value
                 )
         )
     }
