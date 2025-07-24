@@ -26,7 +26,8 @@ data class DashboardCategoryItem(
     val id: String,
     val title: String,
     var subtitle: String, // Made var to be updatable
-    val icon: ImageVector
+    val iconResId: Int, // For drawable resources
+    val thumbnail: android.graphics.Bitmap? = null // For video thumbnails
 )
 
 data class MainDashboardUiState(
@@ -54,10 +55,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
-        DashboardCategoryItem("all_files", "All Files", "", Icons.Filled.Folder),
-        DashboardCategoryItem("images", "Images", "", Icons.Filled.Image),
-        DashboardCategoryItem("videos", "Videos", "", Icons.Filled.Videocam),
-        DashboardCategoryItem("documents", "Documents", "", Icons.Filled.Article)
+        DashboardCategoryItem("all_files", "All Files", "", R.drawable.ic_folder),
+        DashboardCategoryItem("images", "Images", "", R.drawable.ic_image),
+        DashboardCategoryItem("videos", "Videos", "", R.drawable.ic_video),
+        DashboardCategoryItem("documents", "Documents", "", R.drawable.ic_document)
     )
 
     init {
@@ -84,7 +85,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     when (category.id) {
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
-                        "videos" -> category.copy(subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize))
+                        "videos" -> category.copy(
+                            subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
+                            thumbnail = videoFiles.firstOrNull()?.thumbnail // Get thumbnail from first video
+                        )
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
                         else -> category
                     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,8 +27,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.secure.R
+import com.example.secure.file.FileManager
 import com.example.secure.ui.composables.CreateFolderDialog // Import extracted dialog
 import com.example.secure.ui.theme.ISecureTheme
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.foundation.Image
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,8 +111,24 @@ fun MainDashboardScreen(
                             CategoryCard(
                                 title = category.title,
                                 subtitle = category.subtitle,
-                                icon = category.icon,
-                                onClick = { onCategoryClick(category.id) }
+                                iconResId = category.iconResId,
+                                onClick = { onCategoryClick(category.id) },
+                                thumbnail = {
+                                    if (category.thumbnail != null) {
+                                        Image(
+                                            bitmap = category.thumbnail.asImageBitmap(),
+                                            contentDescription = category.title,
+                                            modifier = Modifier.size(40.dp)
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = category.iconResId),
+                                            contentDescription = category.title,
+                                            modifier = Modifier.size(40.dp),
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                }
                             )
                         }
                     }
@@ -138,8 +158,9 @@ fun MainDashboardScreen(
 fun CategoryCard(
     title: String,
     subtitle: String,
-    icon: ImageVector,
-    onClick: () -> Unit
+    iconResId: Int,
+    onClick: () -> Unit,
+    thumbnail: @Composable (() -> Unit)? = null
 ) {
     Card(
         modifier = Modifier
@@ -156,12 +177,16 @@ fun CategoryCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = title, // Content description for accessibility
-                    modifier = Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (thumbnail != null) {
+                    thumbnail()
+                } else {
+                    Icon(
+                        painter = painterResource(id = iconResId),
+                        contentDescription = title, // Content description for accessibility
+                        modifier = Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(text = title, style = MaterialTheme.typography.titleLarge)
@@ -236,7 +261,7 @@ fun CategoryCardPreview() {
         CategoryCard(
             title = "Images",
             subtitle = "123 files, 45.6 MB",
-            icon = Icons.Filled.Image,
+            iconResId = R.drawable.ic_image,
             onClick = {}
         )
     }

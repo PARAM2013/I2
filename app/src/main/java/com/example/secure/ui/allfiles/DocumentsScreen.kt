@@ -16,14 +16,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.ViewList
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.DropdownMenu // For Context Menu
 import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.activity.compose.rememberLauncherForActivityResult // For FAB
 import androidx.activity.result.contract.ActivityResultContracts // For FAB
@@ -103,7 +104,7 @@ fun DocumentsScreen(
                         onNavigateBack() // Original popBackStack behavior if already at root
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
                         )
                     }
@@ -114,7 +115,7 @@ fun DocumentsScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
+                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
                         )
                     }
@@ -212,7 +213,8 @@ fun DocumentsScreen(
                                         }
                                     },
                                     isGridView = isGridView,
-                                    onShareClick = { viewModel.shareFile(file) }
+                                    onShareClick = { viewModel.shareFile(file) },
+                                    iconResId = FileManager.getIconForFile(file.file.name)
                                 )
                             }
                         }
@@ -256,9 +258,10 @@ fun DocumentsScreen(
                                         }
                                     },
                                     isGridView = isGridView,
-                                    onShareClick = { viewModel.shareFile(file) }
+                                    onShareClick = { viewModel.shareFile(file) },
+                                    iconResId = FileManager.getIconForFile(file.file.name)
                                 )
-                                Divider()
+                                HorizontalDivider()
                             }
                             item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                         }

@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +46,6 @@ fun VideosScreen(
     var itemToRename by remember { mutableStateOf<Any?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var isGridView by remember { mutableStateOf(true) }
-    val context = LocalContext.current
     val videoFiles = uiState.videoFiles.sortedByDescending { it.file.lastModified() }
 
     LaunchedEffect(Unit) {
@@ -64,7 +66,7 @@ fun VideosScreen(
                         onNavigateBack() // Original popBackStack behavior if already at root
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.action_back)
                         )
                     }
@@ -75,7 +77,7 @@ fun VideosScreen(
                 actions = {
                     IconButton(onClick = { isGridView = !isGridView }) {
                         Icon(
-                            imageVector = if (isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
+                            imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
                         )
                     }
@@ -171,7 +173,7 @@ fun VideosScreen(
                                 isGridView = isGridView,
                                 onShareClick = {}
                             )
-                            Divider()
+                            HorizontalDivider()
                         }
                         item { Spacer(modifier = Modifier.height(80.dp)) } // Padding for FAB
                     }

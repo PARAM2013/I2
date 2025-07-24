@@ -14,6 +14,10 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import androidx.exifinterface.media.ExifInterface
 import com.example.secure.auth.PinManager
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
+import android.provider.MediaStore
+import com.example.secure.R
 
 object FileManager {
 
@@ -234,7 +238,8 @@ object FileManager {
     data class VaultFile(
         val file: File,
         val category: FileCategory,
-        val size: Long
+        val size: Long,
+        val thumbnail: Bitmap? = null // Add this line
     )
 
     // Data class to hold folder details
@@ -268,8 +273,21 @@ object FileManager {
         return when (extension) {
             "jpg", "jpeg", "png", "gif", "bmp", "webp" -> FileCategory.PHOTO
             "mp4", "mkv", "avi", "mov", "wmv", "flv" -> FileCategory.VIDEO
-            "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf" -> FileCategory.DOCUMENT
+            "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "txt", "rtf", "zip", "rar" -> FileCategory.DOCUMENT // Add zip and rar
             else -> FileCategory.OTHER
+        }
+    }
+
+    fun getIconForFile(fileName: String): Int {
+        val extension = fileName.substringAfterLast('.', "").lowercase()
+        return when (extension) {
+            "pdf" -> R.drawable.ic_pdf
+            "doc", "docx" -> R.drawable.ic_doc
+            "xls", "xlsx" -> R.drawable.ic_xls
+            "ppt", "pptx" -> R.drawable.ic_ppt
+            "zip", "rar" -> R.drawable.ic_zip
+            "txt" -> R.drawable.ic_txt
+            else -> R.drawable.ic_file
         }
     }
 
@@ -287,7 +305,12 @@ object FileManager {
             } else { // It's a file
                 val category = getFileCategory(item.name)
                 val size = item.length()
-                val vaultFile = VaultFile(item, category, size)
+                val thumbnail = if (category == FileCategory.VIDEO) {
+                    ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                } else {
+                    null
+                }
+                val vaultFile = VaultFile(item, category, size, thumbnail)
 
                 stats.allFiles.add(vaultFile) // Add to list of files in current directory
                 stats.grandTotalFiles++
