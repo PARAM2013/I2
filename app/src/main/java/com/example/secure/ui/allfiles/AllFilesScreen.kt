@@ -73,6 +73,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.secure.R
 import com.example.secure.file.FileManager
@@ -604,7 +605,8 @@ fun FileItem(
                             Icon(
                                 painter = painterResource(id = iconResId),
                                 contentDescription = stringResource(R.string.file_icon_desc),
-                                modifier = Modifier.size(80.dp)
+                                modifier = Modifier.size(80.dp),
+                                tint = Color.Unspecified
                             )
                         }
                     }
@@ -648,7 +650,8 @@ fun FileItem(
                             Icon(
                                 painter = painterResource(id = iconResId),
                                 contentDescription = stringResource(R.string.file_icon_desc),
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier.size(40.dp),
+                                tint = Color.Unspecified
                             )
                         }
                     }
