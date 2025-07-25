@@ -26,12 +26,10 @@ import java.io.File
 fun ZoomableImage(
     file: File,
     modifier: Modifier = Modifier,
-    enableGestures: Boolean = true,
     pagerState: PagerState? = null // Optional PagerState for integration
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
-    val state = rememberZoomableState()
 
     LaunchedEffect(pagerState?.currentPage) {
         // Reset zoom and offset when page changes
@@ -42,13 +40,9 @@ fun ZoomableImage(
     Box(
         modifier = modifier
             .pointerInput(Unit) {
-                if (enableGestures) {
-                    detectTransformGestures { centroid, pan, zoom, _ ->
-                        scale = (scale * zoom).coerceIn(1f, 5f)
-                        val newOffset = offset + pan * scale
-                        // Optional: Add bounds checking for offset to prevent image from going off-screen
-                        offset = newOffset
-                    }
+                detectTransformGestures { _, pan, zoom, _ ->
+                    scale = (scale * zoom).coerceIn(1f, 5f)
+                    offset += pan
                 }
             }
             .graphicsLayer {
@@ -56,7 +50,27 @@ fun ZoomableImage(
                 translationY = offset.y
                 scaleX = scale
                 scaleY = scale
-            },
+            }
+            .scrollable(
+                state = rememberScrollableState { delta ->
+                    // Consume the scroll event if the image is zoomed in
+                    if (scale > 1f) {
+                        offset = Offset(
+                            x = (offset.x + delta).coerceIn(
+                                -((scale - 1) * size.width / 2),
+                                ((scale - 1) * size.width / 2)
+                            ),
+                            y = (offset.y).coerceIn(
+                                -((scale - 1) * size.height / 2),
+                                ((scale - 1) * size.height / 2)
+                            )
+                        )
+                    }
+                    delta
+                },
+                orientation = Orientation.Horizontal,
+                enabled = pagerState != null && scale > 1f
+            ),
         contentAlignment = Alignment.Center
     ) {
         SubcomposeAsyncImage(
