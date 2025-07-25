@@ -102,7 +102,8 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif") -> {
                     ZoomableImage(
                         file = file,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        enableGestures = false // Disable gestures for images in pager
                     )
                 }
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
