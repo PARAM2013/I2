@@ -30,8 +30,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
-import androidx.compose.animation.core.animate
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -46,8 +44,6 @@ fun MediaViewerScreen(
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
     val scope = rememberCoroutineScope()
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var scale by remember { mutableFloatStateOf(1f) }
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -65,31 +61,6 @@ fun MediaViewerScreen(
                     }
                 )
             }
-            .pointerInput(Unit) {
-                detectVerticalDragGestures(
-                    onDragStart = { offsetY = 0f; scale = 1f },
-                    onDragEnd = {
-                        if (offsetY.absoluteValue > 200) {
-                            onClose()
-                        } else {
-                            scope.launch {
-                                animate(offsetY, 0f) { value, _ -> offsetY = value }
-                                animate(scale, 1f) { value, _ -> scale = value }
-                            }
-                        }
-                    },
-                    onVerticalDrag = { change, dragAmount ->
-                        change.consume()
-                        offsetY += dragAmount
-                        scale = 1f - (offsetY.absoluteValue / 1000f).coerceIn(0f, 0.5f)
-                    }
-                )
-            }
-            .graphicsLayer {
-                translationY = offsetY
-                scaleX = scale
-                scaleY = scale
-            }
     ) {
         HorizontalPager(
             state = pagerState,
@@ -103,7 +74,7 @@ fun MediaViewerScreen(
                     ZoomableImage(
                         file = file,
                         modifier = Modifier.fillMaxSize(),
-                        enableGestures = false // Disable gestures for images in pager
+                        enableGestures = true // Disable gestures for images in pager
                     )
                 }
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
