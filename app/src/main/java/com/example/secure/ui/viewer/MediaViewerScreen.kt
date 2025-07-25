@@ -6,40 +6,26 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.NavigateBefore
-import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.secure.ui.viewer.VideoPlayer
-import com.example.secure.ui.viewer.ZoomableImage
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,7 +61,7 @@ fun MediaViewerScreen(
                 detectTapGestures(
                     onTap = { showControls = !showControls },
                     onLongPress = {
-                        // Show context menu with options
+                        // Show context menu with options (Optional)
                     }
                 )
             }
@@ -109,7 +95,8 @@ fun MediaViewerScreen(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
             key = { files[it].absolutePath } // Add key for state management
-        ) { page ->
+        ) {
+            page ->
             val file = files[page]
             when {
                 file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif") -> {
@@ -124,49 +111,8 @@ fun MediaViewerScreen(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-            }
-        }
-
-        // Navigation Controls
-        AnimatedVisibility(
-            visible = showControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                if (pagerState.currentPage > 0) {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
-                        }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.NavigateBefore, "Previous", tint = Color.White, modifier = Modifier.size(48.dp))
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(48.dp))
-                }
-
-                if (pagerState.currentPage < files.size - 1) {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.NavigateNext, "Next", tint = Color.White, modifier = Modifier.size(48.dp))
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(48.dp))
+                 else -> {
+                    // Handle other file types or show a placeholder
                 }
             }
         }

@@ -56,12 +56,14 @@ fun FileListItem(
                     modifier = Modifier.size(48.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = file.name,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                if (file.type == FileType.DOCUMENT || file.type == FileType.FOLDER || file.type == FileType.OTHER) {
+                    Text(
+                        text = file.name,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
         } else {
             Row(
