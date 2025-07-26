@@ -14,6 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
@@ -44,6 +46,7 @@ fun MediaViewerScreen(
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
     val scope = rememberCoroutineScope()
+    var currentImageScale by remember { mutableFloatStateOf(1f) }
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -65,16 +68,20 @@ fun MediaViewerScreen(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = currentImageScale == 1f, // Disable swipe when zoomed
             key = { files[it].absolutePath } // Add key for state management
         ) {
             page ->
             val file = files[page]
+            // currentImageScale is now declared at a higher scope
+
             when {
                 file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif") -> {
                     ZoomableImage(
                         file = file,
                         modifier = Modifier.fillMaxSize(),
                         pagerState = pagerState,
+                        onScaleChange = { scale -> currentImageScale = scale }
                     )
                 }
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
@@ -85,6 +92,53 @@ fun MediaViewerScreen(
                 }
                  else -> {
                     // Handle other file types or show a placeholder
+                }
+            }
+        }
+
+        // Navigation Arrows
+        AnimatedVisibility(
+            visible = showControls && currentImageScale == 1f, // Only show arrows when not zoomed
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Previous Button
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage((pagerState.currentPage - 1).coerceAtLeast(0))
+                        }
+                    },
+                    enabled = pagerState.currentPage > 0
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = "Previous",
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
+
+                // Next Button
+                IconButton(
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage((pagerState.currentPage + 1).coerceAtMost(files.size - 1))
+                        }
+                    },
+                    enabled = pagerState.currentPage < files.size - 1
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Next",
+                        tint = Color.White,
+                        modifier = Modifier.size(48.dp)
+                    )
                 }
             }
         }

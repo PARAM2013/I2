@@ -56,6 +56,8 @@ The application follows a structured approach, leveraging standard Android compo
 *   **`PinActivity.kt`**: An activity for setting up and entering the user's PIN.
 *   **`MainDashboardScreen.kt`**: A Jetpack Compose screen that displays the main dashboard UI.
 *   **`PinViewModel.kt`**: A ViewModel that manages the state for the PIN entry screen.
+*   **`MediaViewerScreen.kt`**: Displays media files (images, videos) with support for horizontal swiping between files.
+*   **`ZoomableImage.kt`**: A composable used within `MediaViewerScreen.kt` to provide zoom and pan functionality for images, designed to work in conjunction with `HorizontalPager` for swipe gestures.
 
 ## Run build command after code update
 ## Update this file after major changes in project , code etc

@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import coil.compose.SubcomposeAsyncImage
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -28,11 +28,17 @@ import java.io.File
 fun ZoomableImage(
     file: File,
     modifier: Modifier = Modifier,
-    pagerState: PagerState? = null // Optional PagerState for integration
+    pagerState: PagerState? = null, // Optional PagerState for integration
+    onScaleChange: (Float) -> Unit // Callback to report scale changes
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
+
+    // Report scale changes
+    LaunchedEffect(scale) {
+        onScaleChange(scale)
+    }
 
     LaunchedEffect(pagerState?.currentPage) {
         // Reset zoom and offset when page changes
@@ -40,41 +46,21 @@ fun ZoomableImage(
         offset = Offset.Zero
     }
 
+    val state = rememberTransformableState { zoomChange, panChange, _ ->
+        scale = (scale * zoomChange).coerceIn(1f, 5f)
+        offset += panChange
+    }
+
     Box(
         modifier = modifier
             .onSizeChanged { size = it }
-            .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, _ ->
-                    scale = (scale * zoom).coerceIn(1f, 5f)
-                    offset += pan
-                }
-            }
+            .transformable(state = state)
             .graphicsLayer {
                 translationX = offset.x
                 translationY = offset.y
                 scaleX = scale
                 scaleY = scale
-            }
-            .scrollable(
-                state = rememberScrollableState { delta ->
-                    // Consume the scroll event if the image is zoomed in
-                    if (scale > 1f) {
-                        offset = Offset(
-                            x = (offset.x + delta).coerceIn(
-                                -((scale - 1) * size.width / 2),
-                                ((scale - 1) * size.width / 2)
-                            ),
-                            y = (offset.y).coerceIn(
-                                -((scale - 1) * size.height / 2),
-                                ((scale - 1) * size.height / 2)
-                            )
-                        )
-                    }
-                    delta
-                },
-                orientation = Orientation.Horizontal,
-                enabled = pagerState != null && scale > 1f
-            ),
+            },
         contentAlignment = Alignment.Center
     ) {
         SubcomposeAsyncImage(
