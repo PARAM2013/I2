@@ -19,6 +19,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -30,6 +32,7 @@ fun ZoomableImage(
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+    var size by remember { mutableStateOf(IntSize.Zero) }
 
     LaunchedEffect(pagerState?.currentPage) {
         // Reset zoom and offset when page changes
@@ -39,6 +42,7 @@ fun ZoomableImage(
 
     Box(
         modifier = modifier
+            .onSizeChanged { size = it }
             .pointerInput(Unit) {
                 detectTransformGestures { _, pan, zoom, _ ->
                     scale = (scale * zoom).coerceIn(1f, 5f)
@@ -81,18 +85,3 @@ fun ZoomableImage(
         )
     }
 }
-
-class ZoomableState {
-    var scale: Float by mutableFloatStateOf(1f)
-    var offsetX: Float by mutableFloatStateOf(0f)
-    var offsetY: Float by mutableFloatStateOf(0f)
-
-    fun reset() {
-        scale = 1f
-        offsetX = 0f
-        offsetY = 0f
-    }
-}
-
-@Composable
-fun rememberZoomableState() = remember { ZoomableState() }
