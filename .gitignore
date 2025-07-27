@@ -4,3 +4,5 @@
 /android-sdk
 /.gradle
 >>>>>>> REPLACE
+local.properties
+/app/local.properties

@@ -98,7 +98,7 @@ fun MediaViewerScreen(
 
         // Navigation Arrows
         AnimatedVisibility(
-            visible = showControls && currentImageScale == 1f, // Only show arrows when not zoomed
+            visible = currentImageScale == 1f, // Only show arrows when not zoomed
             enter = fadeIn(),
             exit = fadeOut()
         ) {
