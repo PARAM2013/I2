@@ -18,6 +18,8 @@ import android.graphics.Bitmap
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import com.example.secure.R
+import android.app.PendingIntent
+import android.content.IntentSender
 
 object FileManager {
 
@@ -416,7 +418,12 @@ object FileManager {
         }
     }
 
-    fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null, deleteOriginal: Boolean = true): File? {
+    data class ImportResult(
+        val importedFile: File,
+        val deletePendingIntent: PendingIntent?
+    )
+
+    fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null, deleteOriginal: Boolean = true): ImportResult? {
         val contentResolver = context.contentResolver
         var fileName: String? = null
         var fileSize: Long = 0
@@ -557,36 +564,46 @@ object FileManager {
 
             Log.d("FileManager", "importFile: File copied successfully to ${destinationFile.absolutePath}")
 
-            // Optionally delete original file
+            var deleteIntent: PendingIntent? = null
             if (deleteOriginal) {
-                if ("file" == sourceFileUri.scheme) {
-                    sourceFileUri.path?.let { path ->
-                        val originalFile = File(path)
-                        if (originalFile.exists() && originalFile.delete()) {
-                            Log.d("FileManager", "importFile: Successfully deleted original file (file:// scheme): $sourceFileUri")
-                        } else {
-                            Log.w("FileManager", "importFile: Failed to delete original file (file:// scheme) or file did not exist: $sourceFileUri")
-                        }
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-                           android.provider.DocumentsContract.isDocumentUri(context, sourceFileUri)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val urisToDelete = listOf(sourceFileUri)
                     try {
-                        if (android.provider.DocumentsContract.deleteDocument(context.contentResolver, sourceFileUri)) {
-                            Log.i("FileManager", "importFile: Original document deleted successfully: $sourceFileUri")
-                        } else {
-                            Log.w("FileManager", "importFile: Failed to delete original document (deleteDocument returned false): $sourceFileUri")
-                        }
-                    } catch (e: SecurityException) {
-                        Log.e("FileManager", "importFile: SecurityException when trying to delete original document: $sourceFileUri", e)
+                        deleteIntent = MediaStore.createDeleteRequest(contentResolver, urisToDelete)
+                        Log.d("FileManager", "importFile: Created delete request for $sourceFileUri")
                     } catch (e: Exception) {
-                        Log.e("FileManager", "importFile: Exception when trying to delete original document: $sourceFileUri", e)
+                        Log.e("FileManager", "importFile: Could not create delete request for $sourceFileUri", e)
                     }
                 } else {
-                     Log.w("FileManager", "importFile: Original file at $sourceFileUri was not a file:// URI or a deletable Document URI. Manual deletion might be required by user.")
+                    // Fallback for older APIs
+                    if ("file" == sourceFileUri.scheme) {
+                        sourceFileUri.path?.let { path ->
+                            val originalFile = File(path)
+                            if (originalFile.exists() && originalFile.delete()) {
+                                Log.d("FileManager", "importFile: Successfully deleted original file (file:// scheme): $sourceFileUri")
+                            } else {
+                                Log.w("FileManager", "importFile: Failed to delete original file (file:// scheme) or file did not exist: $sourceFileUri")
+                            }
+                        }
+                    } else if (android.provider.DocumentsContract.isDocumentUri(context, sourceFileUri)) {
+                        try {
+                            if (android.provider.DocumentsContract.deleteDocument(context.contentResolver, sourceFileUri)) {
+                                Log.i("FileManager", "importFile: Original document deleted successfully: $sourceFileUri")
+                            } else {
+                                Log.w("FileManager", "importFile: Failed to delete original document (deleteDocument returned false): $sourceFileUri")
+                            }
+                        } catch (e: SecurityException) {
+                            Log.e("FileManager", "importFile: SecurityException when trying to delete original document: $sourceFileUri", e)
+                        } catch (e: Exception) {
+                            Log.e("FileManager", "importFile: Exception when trying to delete original document: $sourceFileUri", e)
+                        }
+                    } else {
+                        Log.w("FileManager", "importFile: Original file at $sourceFileUri was not a file:// URI or a deletable Document URI. Manual deletion might be required by user.")
+                    }
                 }
             }
 
-            return destinationFile
+            return ImportResult(destinationFile, deleteIntent)
         } catch (e: Exception) {
             Log.e("FileManager", "importFile: Error importing file from URI: $sourceFileUri", e)
             e.printStackTrace()
