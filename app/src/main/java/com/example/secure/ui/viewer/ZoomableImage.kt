@@ -77,7 +77,7 @@ fun ZoomableImage(
             .transformable(state = state)
             .pointerInput(Unit) {
                 detectTapGestures(onDoubleTap = {
-                    scale = if (scale == 1f) 2f else 1f
+                    scale = if (scale == 1f) 3f else 1f
                     offset = Offset.Zero
                 })
             }
