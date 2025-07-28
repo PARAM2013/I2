@@ -603,12 +603,14 @@ fun FileItem(
                             )
                         }
                     }
-                    Text(
-                        text = vaultFile.file.name,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    if (vaultFile.category != FileManager.FileCategory.PHOTO && vaultFile.category != FileManager.FileCategory.VIDEO) {
+                        Text(
+                            text = vaultFile.file.name,
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
             }
         } else {
