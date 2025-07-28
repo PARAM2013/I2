@@ -2,6 +2,7 @@ package com.example.secure.ui.viewer
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
@@ -74,6 +75,12 @@ fun ZoomableImage(
             .fillMaxSize()
             .onSizeChanged { size = it }
             .transformable(state = state)
+            .pointerInput(Unit) {
+                detectTapGestures(onDoubleTap = {
+                    scale = if (scale == 1f) 2f else 1f
+                    offset = Offset.Zero
+                })
+            }
             .pointerInput(Unit) {
                 detectDragGestures {
                     change, dragAmount ->
