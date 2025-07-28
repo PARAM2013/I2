@@ -196,14 +196,7 @@ fun VideosScreen(
                 files = videoFiles.map { it.file },
                 initialIndex = selectedVideoIndex!!,
                 onClose = { selectedVideoIndex = null },
-                onDelete = { file ->
-                    viewModel.requestDeleteItem(videoFiles.find { it.file == file }!!)
-                    selectedVideoIndex = null
-                },
-                onUnhide = { file ->
-                    viewModel.requestUnhideItem(videoFiles.find { it.file == file }!!)
-                    selectedVideoIndex = null
-                }
+                
             )
         }
     }

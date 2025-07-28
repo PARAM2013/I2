@@ -422,14 +422,7 @@ fun AllFilesScreen(
                             files = mediaFiles.map { it.file },
                             initialIndex = selectedMediaIndex!!,
                             onClose = { selectedMediaIndex = null },
-                            onDelete = { file ->
-                                viewModel.requestDeleteItem(mediaFiles.find { it.file == file }!!)
-                                selectedMediaIndex = null
-                            },
-                            onUnhide = { file ->
-                                viewModel.requestUnhideItem(mediaFiles.find { it.file == file }!!)
-                                selectedMediaIndex = null
-                            }
+                            
                         )
                     }
                 }

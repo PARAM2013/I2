@@ -197,14 +197,7 @@ fun ImagesScreen(
                 files = imageFiles.map { it.file },
                 initialIndex = selectedImageIndex!!,
                 onClose = { selectedImageIndex = null },
-                onDelete = { file ->
-                    viewModel.requestDeleteItem(imageFiles.find { it.file == file }!!)
-                    selectedImageIndex = null
-                },
-                onUnhide = { file ->
-                    viewModel.requestUnhideItem(imageFiles.find { it.file == file }!!)
-                    selectedImageIndex = null
-                }
+                
             )
         }
     }

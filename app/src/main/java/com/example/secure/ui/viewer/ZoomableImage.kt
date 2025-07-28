@@ -33,7 +33,8 @@ fun ZoomableImage(
     file: File,
     modifier: Modifier = Modifier,
     pagerState: PagerState? = null, // Optional PagerState for integration
-    onScaleChange: (Float) -> Unit // Callback to report scale changes
+    onScaleChange: (Float) -> Unit, // Callback to report scale changes
+    onSingleTap: () -> Unit // Callback for single tap to toggle controls
 ) {
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -76,10 +77,13 @@ fun ZoomableImage(
             .onSizeChanged { size = it }
             .transformable(state = state)
             .pointerInput(Unit) {
-                detectTapGestures(onDoubleTap = {
-                    scale = if (scale == 1f) 3f else 1f
-                    offset = Offset.Zero
-                })
+                detectTapGestures(
+                    onDoubleTap = {
+                        scale = if (scale == 1f) 3f else 1f
+                        offset = Offset.Zero
+                    },
+                    onTap = { onSingleTap() }
+                )
             }
             .pointerInput(Unit) {
                 detectDragGestures {

@@ -17,8 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Visibility
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,9 +44,7 @@ import java.util.Locale
 fun MediaViewerScreen(
     files: List<File>,
     initialIndex: Int,
-    onClose: () -> Unit,
-    onDelete: (File) -> Unit,
-    onUnhide: (File) -> Unit
+    onClose: () -> Unit
 ) {
     var showControls by remember { mutableStateOf(true) }
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
@@ -62,14 +59,7 @@ fun MediaViewerScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { showControls = !showControls },
-                    onLongPress = {
-                        // Show context menu with options (Optional)
-                    }
-                )
-            }
+            
     ) {
         HorizontalPager(
             state = pagerState,
@@ -85,7 +75,8 @@ fun MediaViewerScreen(
                         file = file,
                         modifier = Modifier.fillMaxSize(),
                         pagerState = pagerState,
-                        onScaleChange = { scale -> currentImageScale = scale }
+                        onScaleChange = { scale -> currentImageScale = scale },
+                        onSingleTap = { showControls = !showControls }
                     )
                 }
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
@@ -131,14 +122,7 @@ fun MediaViewerScreen(
                         color = Color.White,
                         style = MaterialTheme.typography.titleLarge
                     )
-                    Row {
-                        IconButton(onClick = { onUnhide(currentFile) }) {
-                            Icon(Icons.Filled.Visibility, "Unhide file", tint = Color.White)
-                        }
-                        IconButton(onClick = { onDelete(currentFile) }) {
-                            Icon(Icons.Filled.Delete, "Delete file", tint = Color.White)
-                        }
-                    }
+                    
                 }
             }
         }
