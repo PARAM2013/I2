@@ -33,6 +33,9 @@ import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
 import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import androidx.compose.runtime.LaunchedEffect
+import com.example.secure.AppGlobalState
+import androidx.compose.material.icons.filled.Lock
+import android.app.Activity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +44,8 @@ fun VideosScreen(
     viewModel: MainDashboardViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val activity = context as? Activity
     var selectedVideoIndex by remember { mutableStateOf<Int?>(null) }
     var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
     var itemToRename by remember { mutableStateOf<Any?>(null) }
@@ -79,6 +84,15 @@ fun VideosScreen(
                         Icon(
                             imageVector = if (isGridView) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView,
                             contentDescription = stringResource(R.string.action_toggle_view)
+                        )
+                    }
+                    IconButton(onClick = {
+                        AppGlobalState.isLocked = true
+                        activity?.finish()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Lock,
+                            contentDescription = "Lock App"
                         )
                     }
                 }

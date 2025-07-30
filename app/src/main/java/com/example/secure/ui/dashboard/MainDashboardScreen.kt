@@ -32,6 +32,9 @@ import com.example.secure.ui.composables.CreateFolderDialog // Import extracted 
 import com.example.secure.ui.theme.ISecureTheme
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.Image
+import com.example.secure.AppGlobalState
+import androidx.compose.material.icons.filled.Lock
+import android.app.Activity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +44,7 @@ fun MainDashboardScreen(
     onCategoryClick: (String) -> Unit // Pass category ID or route
 ) {
     val context = LocalContext.current
+    val activity = context as? Activity
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -78,6 +82,15 @@ fun MainDashboardScreen(
                 TopAppBar(
                     title = { Text(stringResource(id = R.string.app_name)) },
                     actions = {
+                        IconButton(onClick = {
+                            AppGlobalState.isLocked = true
+                            activity?.finish()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Lock App"
+                            )
+                        }
                         IconButton(onClick = onSettingsClick) {
                             Icon(
                                 imageVector = Icons.Filled.Settings,
