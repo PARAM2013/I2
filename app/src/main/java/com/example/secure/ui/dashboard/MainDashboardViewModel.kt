@@ -21,8 +21,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File // Added missing import
 import java.util.Locale
-import android.app.PendingIntent
-import android.content.IntentSender
 
 data class DashboardCategoryItem(
     val id: String,
@@ -41,8 +39,7 @@ data class MainDashboardUiState(
     val vaultStats: FileManager.VaultStats? = null, // To hold all stats
     val imageFiles: List<FileManager.VaultFile> = emptyList(),
     val videoFiles: List<FileManager.VaultFile> = emptyList(),
-    val documentFiles: List<FileManager.VaultFile> = emptyList(),
-    val pendingDeleteIntent: PendingIntent? = null
+    val documentFiles: List<FileManager.VaultFile> = emptyList()
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -276,7 +273,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     fun importFiles(uris: List<Uri>) {
         if (uris.isEmpty()) return
-
+        
         if (!fileManager.checkStoragePermissions(appContext)) {
             _uiState.update { it.copy(
                 error = "Storage permissions are required to import files. Please grant permissions in Settings.",
@@ -289,15 +286,13 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         viewModelScope.launch {
             var successfulImports = 0
             var failedImports = 0
-            val deleteIntents = mutableListOf<PendingIntent>()
-
             uris.forEach { uri ->
                 try {
                     Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
-                    val importResult = fileManager.importFile(uri, appContext, _currentPath.value, true)
-                    if (importResult != null) {
+                    // Assuming deleteOriginal = true by default, adjust if needed
+                    val importedFile = fileManager.importFile(uri, appContext, _currentPath.value, true)
+                    if (importedFile != null) {
                         successfulImports++
-                        importResult.deletePendingIntent?.let { deleteIntents.add(it) }
                     } else {
                         failedImports++
                     }
@@ -306,21 +301,14 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     failedImports++
                 }
             }
-
             val message = when {
                 successfulImports > 0 && failedImports == 0 -> "$successfulImports file(s) imported successfully."
                 successfulImports > 0 && failedImports > 0 -> "$successfulImports file(s) imported, $failedImports failed."
-                else -> "No files were imported, or all failed. Check logs if files were selected."
+                // failedImports > 0 -> "Failed to import $failedImports file(s)." // Covered by 'else' if successfulImports is 0
+                else -> "No files were imported, or all failed. Check logs if files were selected." // Adjusted message
             }
-
-            if (deleteIntents.isNotEmpty()) {
-                // For simplicity, we'll just use the first intent. A more robust solution might chain them.
-                _uiState.update { it.copy(isLoading = false, fileOperationResult = message, pendingDeleteIntent = deleteIntents.first()) }
-            } else {
-                _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
-            }
-
-            navigateToPath(_currentPath.value)
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
+            navigateToPath(_currentPath.value) // Refresh current path and global categories
         }
     }
 
@@ -355,10 +343,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     fun clearError() {
         _uiState.update { it.copy(error = null) }
-    }
-
-    fun clearPendingDeleteIntent() {
-        _uiState.update { it.copy(pendingDeleteIntent = null) }
     }
 
     fun requestUnhideItem(item: Any) {

@@ -17,9 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
@@ -30,20 +27,8 @@ import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : TrackedActivity() {
-
-    private val deleteRequestLauncher = registerForActivityResult(
-        ActivityResultContracts.StartIntentSenderForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            Toast.makeText(this, "File deleted successfully.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Failed to delete file.", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     // Permission launchers are mostly for the initial permission check now.
     // File picking and specific actions will be handled within MainDashboardScreen or its ViewModel.
@@ -64,15 +49,6 @@ class MainActivity : TrackedActivity() {
         setContent {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
             val navController = rememberNavController()
-
-            val uiState by dashboardViewModel.uiState.collectAsState()
-
-            LaunchedEffect(uiState.pendingDeleteIntent) {
-                uiState.pendingDeleteIntent?.let {
-                    deleteRequestLauncher.launch(IntentSenderRequest.Builder(it).build())
-                    dashboardViewModel.clearPendingDeleteIntent()
-                }
-            }
 
             ISecureTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {

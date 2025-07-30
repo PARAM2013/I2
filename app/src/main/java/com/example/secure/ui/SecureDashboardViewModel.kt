@@ -47,9 +47,9 @@ class SecureDashboardViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch {
             try {
                 Log.d("SecureDashboardVM", "Importing file: $uri")
-                val importResult = fileManager.importFile(uri, appContext, null, deleteOriginal)
-                if (importResult != null) {
-                    _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "File imported: ${importResult.importedFile.name}", pendingDeleteIntent = importResult.deletePendingIntent))
+                val importedFile = fileManager.importFile(uri, appContext, null, deleteOriginal)
+                if (importedFile != null) {
+                    _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "File imported: ${importedFile.name}"))
                     loadDashboardData() // Refresh data
                 } else {
                     _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "Failed to import file. Check logs."))
@@ -89,9 +89,5 @@ class SecureDashboardViewModel(application: Application) : AndroidViewModel(appl
 
     fun clearError() {
         _uiState.value = _uiState.value?.copy(error = null)
-    }
-
-    fun clearPendingDeleteIntent() {
-        _uiState.value = _uiState.value?.copy(pendingDeleteIntent = null)
     }
 }
