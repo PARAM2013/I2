@@ -39,7 +39,11 @@ data class MainDashboardUiState(
     val vaultStats: FileManager.VaultStats? = null, // To hold all stats
     val imageFiles: List<FileManager.VaultFile> = emptyList(),
     val videoFiles: List<FileManager.VaultFile> = emptyList(),
-    val documentFiles: List<FileManager.VaultFile> = emptyList()
+    val documentFiles: List<FileManager.VaultFile> = emptyList(),
+    val isSelectionModeActive: Boolean = false,
+    val selectedItems: Set<Any> = emptySet(),
+    val showDeleteConfirmation: Boolean = false,
+    val showUnhideConfirmation: Boolean = false
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -494,6 +498,100 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     )
                 }
             }
+        }
+    }
+
+    // Selection Mode and Multi-Action Functions
+    fun toggleSelection(item: Any) {
+        val currentSelection = _uiState.value.selectedItems.toMutableSet()
+        if (currentSelection.contains(item)) {
+            currentSelection.remove(item)
+        } else {
+            currentSelection.add(item)
+        }
+        _uiState.update {
+            it.copy(
+                selectedItems = currentSelection,
+                isSelectionModeActive = currentSelection.isNotEmpty()
+            )
+        }
+    }
+
+    fun enterSelectionMode(item: Any) {
+        _uiState.update {
+            it.copy(
+                isSelectionModeActive = true,
+                selectedItems = setOf(item)
+            )
+        }
+    }
+
+    fun clearSelection() {
+        _uiState.update {
+            it.copy(
+                isSelectionModeActive = false,
+                selectedItems = emptySet()
+            )
+        }
+    }
+
+    fun requestDeleteSelectedItems() {
+        if (_uiState.value.selectedItems.isNotEmpty()) {
+            _uiState.update { it.copy(showDeleteConfirmation = true) }
+        }
+    }
+
+    fun requestUnhideSelectedItems() {
+        if (_uiState.value.selectedItems.isNotEmpty()) {
+            _uiState.update { it.copy(showUnhideConfirmation = true) }
+        }
+    }
+
+    fun dismissConfirmationDialogs() {
+        _uiState.update { it.copy(showDeleteConfirmation = false, showUnhideConfirmation = false) }
+    }
+
+    fun confirmDeleteSelectedItems() {
+        val itemsToDelete = _uiState.value.selectedItems
+        _uiState.update { it.copy(isLoading = true, showDeleteConfirmation = false) }
+        viewModelScope.launch {
+            var successCount = 0
+            itemsToDelete.forEach { item ->
+                val fileToDelete: File? = when (item) {
+                    is FileManager.VaultFile -> item.file
+                    is FileManager.VaultFolder -> item.folder
+                    else -> null
+                }
+                if (fileToDelete != null && fileManager.deleteFileFromVault(fileToDelete)) {
+                    successCount++
+                }
+            }
+            val message = "$successCount/${itemsToDelete.size} items deleted."
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
+            clearSelection()
+            navigateToPath(_currentPath.value)
+        }
+    }
+
+    fun confirmUnhideSelectedItems() {
+        val itemsToUnhide = _uiState.value.selectedItems
+        _uiState.update { it.copy(isLoading = true, showUnhideConfirmation = false) }
+        viewModelScope.launch {
+            var successCount = 0
+            itemsToUnhide.forEach { item ->
+                val success = when (item) {
+                    is FileManager.VaultFile -> fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory()) != null
+                    is FileManager.VaultFolder -> fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
+                    else -> false
+                }
+                if (success) {
+                    successCount++
+                }
+            }
+            val message = "$successCount/${itemsToUnhide.size} items unhidden."
+            _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
+            clearSelection()
+            navigateToPath(_currentPath.value)
         }
     }
 }

@@ -65,7 +65,8 @@ import com.example.secure.file.FileManager // Required for VaultStats, VaultFile
 import com.example.secure.file.FileManager.VaultFile // Explicit import
 import com.example.secure.file.FileManager.VaultFolder // Explicit import
 import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
-import com.example.secure.ui.composables.RenameItemDialog // Import Rename dialog
+import com.example.secure.ui.composables.RenameItemDialog
+import com.example.secure.ui.allfiles.FileListItem
 import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -88,7 +89,7 @@ fun DocumentsScreen(
         viewModel.loadAllDocuments()
     }
 
-    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    
     var itemToRename by remember { mutableStateOf<Any?>(null) } // For Rename Dialog
     var showRenameDialog by remember { mutableStateOf(false) } // For Rename Dialog
     var isGridView by remember { mutableStateOf(true) }
@@ -189,90 +190,34 @@ fun DocumentsScreen(
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(documentFiles, key = { it.file.absolutePath }) { file ->
-                                FileItem(
-                                    vaultFile = file,
-                                    isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
-                                    onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
-                                    onDismissMenu = { expandedMenuForItemPath = null },
-                                    onUnhideClick = {
-                                        viewModel.requestUnhideItem(file)
-                                        expandedMenuForItemPath = null // Close menu
-                                    },
-                                    onDeleteClick = {
-                                        // TODO: Show confirmation dialog here before calling delete
-                                        viewModel.requestDeleteItem(file)
-                                        expandedMenuForItemPath = null // Close menu
-                                    },
-                                    onRenameClick = {
+                                FileListItem(
+                                    item = file,
+                                    viewModel = viewModel,
+                                    isGridView = isGridView,
+                                    onRename = {
                                         itemToRename = file
                                         showRenameDialog = true
-                                        expandedMenuForItemPath = null // Close menu
                                     },
-                                    onClick = {
-                                        try {
-                                            val uri = androidx.core.content.FileProvider.getUriForFile(
-                                                context,
-                                                "com.example.secure.provider",
-                                                file.file
-                                            )
-                                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-                                                setDataAndType(uri, context.contentResolver.getType(uri) ?: "application/octet-stream")
-                                                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                            }
-                                            context.startActivity(intent)
-                                        } catch (e: Exception) {
-                                            android.widget.Toast.makeText(context, "Error opening file: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
-                                            android.util.Log.e("DocumentsScreen", "Error opening file", e)
-                                        }
-                                    },
-                                    isGridView = isGridView,
-                                    onShareClick = { viewModel.shareFile(file) },
-                                    iconResId = FileManager.getIconForFile(file.file.name)
+                                    onMediaClick = { 
+                                        // Not applicable for documents
+                                    }
                                 )
                             }
                         }
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
                             items(documentFiles, key = { it.file.absolutePath }) { file ->
-                                FileItem(
-                                    vaultFile = file,
-                                    isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
-                                    onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
-                                    onDismissMenu = { expandedMenuForItemPath = null },
-                                    onUnhideClick = {
-                                        viewModel.requestUnhideItem(file)
-                                        expandedMenuForItemPath = null // Close menu
-                                    },
-                                    onDeleteClick = {
-                                        // TODO: Show confirmation dialog here before calling delete
-                                        viewModel.requestDeleteItem(file)
-                                        expandedMenuForItemPath = null // Close menu
-                                    },
-                                    onRenameClick = {
+                                FileListItem(
+                                    item = file,
+                                    viewModel = viewModel,
+                                    isGridView = isGridView,
+                                    onRename = {
                                         itemToRename = file
                                         showRenameDialog = true
-                                        expandedMenuForItemPath = null // Close menu
                                     },
-                                    onClick = {
-                                        try {
-                                            val uri = androidx.core.content.FileProvider.getUriForFile(
-                                                context,
-                                                "com.example.secure.provider",
-                                                file.file
-                                            )
-                                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
-                                                setDataAndType(uri, context.contentResolver.getType(uri) ?: "application/octet-stream")
-                                                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                            }
-                                            context.startActivity(intent)
-                                        } catch (e: Exception) {
-                                            android.widget.Toast.makeText(context, "Error opening file: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
-                                            android.util.Log.e("DocumentsScreen", "Error opening file", e)
-                                        }
-                                    },
-                                    isGridView = isGridView,
-                                    onShareClick = { viewModel.shareFile(file) },
-                                    iconResId = FileManager.getIconForFile(file.file.name)
+                                    onMediaClick = { 
+                                        // Not applicable for documents
+                                    }
                                 )
                                 HorizontalDivider()
                             }

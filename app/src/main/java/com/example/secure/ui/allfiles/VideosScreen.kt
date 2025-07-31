@@ -28,6 +28,7 @@ import com.example.secure.file.FileManager
 import com.example.secure.file.FileManager.VaultFile
 import com.example.secure.file.FileManager.VaultFolder
 import com.example.secure.ui.composables.RenameItemDialog
+import com.example.secure.ui.allfiles.FileListItem
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
@@ -47,7 +48,7 @@ fun VideosScreen(
     val context = LocalContext.current
     val activity = context as? Activity
     var selectedVideoIndex by remember { mutableStateOf<Int?>(null) }
-    var expandedMenuForItemPath by remember { mutableStateOf<String?>(null) }
+    
     var itemToRename by remember { mutableStateOf<Any?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var isGridView by remember { mutableStateOf(true) }
@@ -132,60 +133,34 @@ fun VideosScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
-                            FileItem(
-                                vaultFile = file,
-                                isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
-                                onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
-                                onDismissMenu = { expandedMenuForItemPath = null },
-                                onUnhideClick = {
-                                    viewModel.requestUnhideItem(file)
-                                    expandedMenuForItemPath = null // Close menu
-                                },
-                                onDeleteClick = {
-                                    // TODO: Show confirmation dialog here before calling delete
-                                    viewModel.requestDeleteItem(file)
-                                    expandedMenuForItemPath = null // Close menu
-                                },
-                                onRenameClick = {
+                            FileListItem(
+                                item = file,
+                                viewModel = viewModel,
+                                isGridView = isGridView,
+                                onRename = {
                                     itemToRename = file
                                     showRenameDialog = true
-                                    expandedMenuForItemPath = null // Close menu
                                 },
-                                onClick = {
-                                    selectedVideoIndex = videoFiles.indexOf(file)
-                                },
-                                isGridView = isGridView,
-                                onShareClick = {}
+                                onMediaClick = { 
+                                    selectedVideoIndex = videoFiles.indexOf(it)
+                                }
                             )
                         }
                     }
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(videoFiles, key = { it.file.absolutePath }) { file ->
-                            FileItem(
-                                vaultFile = file,
-                                isMenuExpanded = expandedMenuForItemPath == file.file.absolutePath,
-                                onExpandMenu = { expandedMenuForItemPath = file.file.absolutePath },
-                                onDismissMenu = { expandedMenuForItemPath = null },
-                                onUnhideClick = {
-                                    viewModel.requestUnhideItem(file)
-                                    expandedMenuForItemPath = null // Close menu
-                                },
-                                onDeleteClick = {
-                                    // TODO: Show confirmation dialog here before calling delete
-                                    viewModel.requestDeleteItem(file)
-                                    expandedMenuForItemPath = null // Close menu
-                                },
-                                onRenameClick = {
+                            FileListItem(
+                                item = file,
+                                viewModel = viewModel,
+                                isGridView = isGridView,
+                                onRename = {
                                     itemToRename = file
                                     showRenameDialog = true
-                                    expandedMenuForItemPath = null // Close menu
                                 },
-                                onClick = {
-                                    selectedVideoIndex = videoFiles.indexOf(file)
-                                },
-                                isGridView = isGridView,
-                                onShareClick = {}
+                                onMediaClick = { 
+                                    selectedVideoIndex = videoFiles.indexOf(it)
+                                }
                             )
                             HorizontalDivider()
                         }
