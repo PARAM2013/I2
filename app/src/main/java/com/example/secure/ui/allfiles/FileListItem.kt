@@ -164,24 +164,7 @@ fun FolderItemView(folder: FileManager.VaultFolder, isGridView: Boolean) {
 fun FileItemView(file: FileManager.VaultFile, isGridView: Boolean) {
     if (isGridView) {
         Card(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(8.dp)
-            ) {
-                FileThumbnail(file, Modifier.fillMaxWidth().aspectRatio(1f))
-                Text(
-                    text = file.file.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 2,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                )
-                Text(
-                    text = FileUtils.formatFileSize(file.size),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            FileThumbnail(file, Modifier.fillMaxWidth().aspectRatio(1f))
         }
     } else {
         ListItem(

@@ -232,10 +232,10 @@ fun AllFilesScreen(
                 } else {
                     if (isGridView) {
                         LazyVerticalGrid(
-                            columns = GridCells.Adaptive(minSize = 128.dp),
+                            columns = GridCells.Fixed(3),
                             modifier = Modifier.fillMaxSize().padding(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(combinedList, key = { item ->
                                 when (item) {
