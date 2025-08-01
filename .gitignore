@@ -1,8 +1,14 @@
-<<<<<<< SEARCH
+# Android SDK
 /android-sdk
-=======
-/android-sdk
+/temp
+
+# Gradle
 /.gradle
->>>>>>> REPLACE
+/build
+
+# Android Studio
+/.idea
+
+# Local properties
 local.properties
 /app/local.properties

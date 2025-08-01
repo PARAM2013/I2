@@ -103,13 +103,15 @@ fun AllFilesScreen(
     var selectedMediaIndex by remember { mutableStateOf<Int?>(null) }
     val mediaFiles = uiState.vaultStats?.allFiles?.filter { it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO } ?: emptyList()
 
+    var isFabMenuExpanded by remember { mutableStateOf(false) }
+
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uris ->
             if (uris.isNotEmpty()) {
                 viewModel.importFiles(uris)
             }
-            
+            isFabMenuExpanded = false
         }
     )
 
@@ -172,7 +174,37 @@ fun AllFilesScreen(
                 )
             )
         },
-        
+        floatingActionButton = {
+            if (!uiState.isSelectionModeActive) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    if (isFabMenuExpanded) {
+                        SmallFloatingActionButton(
+                            onClick = { filePickerLauncher.launch("*/*") },
+                            content = { Icon(Icons.Filled.UploadFile, contentDescription = "Import Files") }
+                        )
+                        SmallFloatingActionButton(
+                            onClick = {
+                                viewModel.requestCreateFolderDialog(true)
+                                isFabMenuExpanded = false
+                                      },
+                            content = { Icon(Icons.Filled.CreateNewFolder, contentDescription = "Create Folder") }
+                        )
+                    }
+                    FloatingActionButton(
+                        onClick = { isFabMenuExpanded = !isFabMenuExpanded },
+                        content = {
+                            Icon(
+                                imageVector = if (isFabMenuExpanded) Icons.Filled.Close else Icons.Filled.Add,
+                                contentDescription = "Toggle FAB Menu"
+                            )
+                        }
+                    )
+                }
+            }
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
