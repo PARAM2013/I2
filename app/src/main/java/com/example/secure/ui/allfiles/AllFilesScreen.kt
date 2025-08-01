@@ -38,7 +38,9 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.UploadFile // For FAB
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -148,8 +150,16 @@ fun AllFilesScreen(
                 },
                 actions = {
                     if (uiState.isSelectionModeActive) {
+                        if (uiState.selectedItems.size == 1) {
+                            IconButton(onClick = {
+                                itemToRename = uiState.selectedItems.first()
+                                showRenameDialog = true
+                            }) {
+                                Icon(Icons.Filled.ModeEdit, contentDescription = "Rename")
+                            }
+                        }
                         IconButton(onClick = { viewModel.requestUnhideSelectedItems() }) {
-                            Icon(painterResource(id = R.drawable.ic_file), contentDescription = "Unhide")
+                            Icon(Icons.Filled.Visibility, contentDescription = "Unhide")
                         }
                         IconButton(onClick = { viewModel.requestDeleteSelectedItems() }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Delete")

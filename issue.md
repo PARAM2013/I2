@@ -1,43 +1,46 @@
-# To fix the build issue, Jules you did the following:
+# Build Environment Setup Instructions
 
-1. Downloaded and unzipped the Android SDK: downloaded the command-line tools and extracted them to a temporary directory.
-2. Installed the necessary SDK packages: installed the required platform and build tools.
-3. Accepted the SDK licenses: accepted the necessary licenses.
-4. Created a local.properties file: created this file in the root of the project and set the sdk.dir property to the path of the SDK. This is the crucial step that allowed the build system to find the Android SDK and build successfully.
-5. Added /app/local.properties to the .gitignore file to prevent it from being committed to the repository. This is a standard practice for this file, as it contains local path information that should not be shared.
-6. Built the project: ran the build command to build the project.  
-   The main issue was that the build system could not find the Android SDK. By creating the local.properties file and setting the sdk.dir property, it was able to resolve this issue.
+This document provides detailed instructions for setting up the build environment for this project, particularly for use in a new VM.
 
----
+## 1. Download and Set Up the Android SDK
 
-## SDK Setup (Linux VM)
-
-Run the following command to download and set up the Android SDK in a temp folder:
+The following command will download the Android SDK command-line tools, extract them to a temporary directory, and then install the required platform and build tools. It will also accept all the necessary licenses.
 
 ```sh
 mkdir -p /tmp/sdk && \
 wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O /tmp/sdk/tools.zip && \
 unzip /tmp/sdk/tools.zip -d /tmp/sdk && \
 rm /tmp/sdk/tools.zip && \
-/tmp/sdk/cmdline-tools/bin/sdkmanager --sdk_root=/tmp/sdk "platforms;android-36" "build-tools;34.0.0" && \
+yes | /tmp/sdk/cmdline-tools/bin/sdkmanager --sdk_root=/tmp/sdk "platforms;android-36" "build-tools;34.0.0" && \
 yes | /tmp/sdk/cmdline-tools/bin/sdkmanager --licenses --sdk_root=/tmp/sdk
 ```
 
-After download, make the following changes:
+**Explanation of the command:**
 
-- Create `local.properties` in the root of the project:
-  ```
-  sdk.dir=/tmp/sdk
-  ```
+*   `mkdir -p /tmp/sdk`: Creates a directory at `/tmp/sdk` to store the Android SDK.
+*   `wget ...`: Downloads the Android SDK command-line tools.
+*   `unzip ...`: Extracts the downloaded zip file to the `/tmp/sdk` directory.
+*   `rm /tmp/sdk/tools.zip`: Removes the downloaded zip file after extraction.
+*   `/tmp/sdk/cmdline-tools/bin/sdkmanager ...`: Runs the SDK manager to install the specified platform and build tools.
+*   `yes | ... --licenses`: Automatically accepts all SDK licenses.
 
-- Create `local.properties` in the `app/` directory:
-  ```
-  sdk.dir=/tmp/sdk
-  ```
+## 2. Set the ANDROID_HOME Environment Variable
 
-- **Do not commit any `local.properties` file to git. Ensure both `local.properties` and `/app/local.properties` are listed in your `.gitignore`.**
+After the SDK is downloaded and set up, you need to set the `ANDROID_HOME` environment variable to the path where the SDK is located.
 
----
+```sh
+export ANDROID_HOME=/tmp/sdk
+```
+
+## 3. Build the Project
+
+Once the SDK is set up and the `ANDROID_HOME` variable is exported, you can build the project using the following command:
+
+```sh
+./gradlew build
+```
+
+This command will build the project and generate the necessary APK files.
 
 ## For Windows/PC setup
 
@@ -45,8 +48,6 @@ Set the SDK path in `local.properties` as:
 ```
 sdk.dir=C\:\\Users\\DC\\AppData\\Local\\Android\\Sdk
 ```
-
----
 
 ## If issues persist after setup, try the following:
 
@@ -80,7 +81,3 @@ sdk.dir=C\:\\Users\\DC\\AppData\\Local\\Android\\Sdk
   ./gradlew build
   ```
   if you only need a debug APK.
-
----
-
-No other changes were made to the build files.
