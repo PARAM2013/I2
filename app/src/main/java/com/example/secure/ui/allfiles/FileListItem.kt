@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.secure.file.FileManager
 import com.example.secure.ui.dashboard.MainDashboardViewModel
+import com.example.secure.util.FileUtils
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -163,22 +164,29 @@ fun FolderItemView(folder: FileManager.VaultFolder, isGridView: Boolean) {
 fun FileItemView(file: FileManager.VaultFile, isGridView: Boolean) {
     if (isGridView) {
         Card(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 FileThumbnail(file, Modifier.fillMaxWidth().aspectRatio(1f))
-                if (file.category != FileManager.FileCategory.PHOTO && file.category != FileManager.FileCategory.VIDEO) {
-                    Text(
-                        text = file.file.name,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                }
+                Text(
+                    text = file.file.name,
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 2,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
+                Text(
+                    text = FileUtils.formatFileSize(file.size),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     } else {
         ListItem(
             headlineContent = { Text(file.file.name) },
-            supportingContent = { Text(text = "${file.size / 1024} KB") },
+            supportingContent = { Text(text = FileUtils.formatFileSize(file.size)) },
             leadingContent = {
                 FileThumbnail(file, Modifier.size(40.dp))
             }
