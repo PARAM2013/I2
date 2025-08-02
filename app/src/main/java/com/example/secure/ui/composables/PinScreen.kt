@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.Backspace
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -228,7 +228,7 @@ fun FingerprintAndBackspaceRow(
         KeypadButton(text = "0", onClick = onZeroClick, modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) // Give some padding
 
         IconButton(onClick = onBackspaceClick, modifier = Modifier.size(48.dp)) { // Standard IconButton size
-            Icon(Icons.Default.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
+            Icon(Icons.AutoMirrored.Filled.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
         }
     }
 }

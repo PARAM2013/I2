@@ -87,7 +87,7 @@ fun ZoomableImage(
             }
             .pointerInput(Unit) {
                 detectDragGestures {
-                    change, dragAmount ->
+                    _, dragAmount ->
                     if (scale > 1f) {
                         // When zoomed in, pan the image
                         val imageWidth = size.width * scale

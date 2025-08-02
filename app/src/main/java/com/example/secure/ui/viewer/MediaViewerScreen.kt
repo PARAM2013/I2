@@ -82,6 +82,7 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
                     VideoPlayer(
                         file = file,
+                        pagerState = pagerState,
                         modifier = Modifier.fillMaxSize()
                     )
                 }

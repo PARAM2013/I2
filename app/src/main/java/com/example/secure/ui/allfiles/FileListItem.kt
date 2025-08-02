@@ -48,7 +48,6 @@ fun FileListItem(
     item: Any,
     viewModel: MainDashboardViewModel,
     isGridView: Boolean,
-    onRename: (Any) -> Unit,
     onMediaClick: (FileManager.VaultFile) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
