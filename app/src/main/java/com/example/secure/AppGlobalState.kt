@@ -10,7 +10,7 @@ object AppGlobalState {
     var isLocked = true // Start as locked, LauncherActivity will decide
     var currentActivity: android.app.Activity? = null // Track current foreground activity, more generic type
     private var inactivityTimer: Timer? = null
-    private const val INACTIVITY_TIMEOUT_MS = 90000L // 90 seconds
+    private const val INACTIVITY_TIMEOUT_MS = 15000L // 90 seconds
     private val handler = Handler(Looper.getMainLooper())
 
     fun onActivityResumed(activity: android.app.Activity) { // Use android.app.Activity
