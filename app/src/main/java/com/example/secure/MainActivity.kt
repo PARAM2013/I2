@@ -28,6 +28,8 @@ import com.example.secure.ui.dashboard.MainDashboardScreen
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 
+import android.view.WindowManager
+
 class MainActivity : TrackedActivity() {
 
     // Permission launchers are mostly for the initial permission check now.
@@ -45,6 +47,8 @@ class MainActivity : TrackedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
 
         setContent {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
