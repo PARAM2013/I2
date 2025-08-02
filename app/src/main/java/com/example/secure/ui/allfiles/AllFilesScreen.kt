@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Add // For FAB
 import androidx.compose.material.icons.filled.Check
@@ -44,6 +45,8 @@ import androidx.compose.material.icons.filled.UploadFile // For FAB
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton // For FAB
 import androidx.compose.material3.HorizontalDivider
@@ -86,6 +89,7 @@ import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
+import com.example.secure.util.SortManager.SortOption
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,6 +111,7 @@ fun AllFilesScreen(
     val mediaFiles = uiState.vaultStats?.allFiles?.filter { it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO } ?: emptyList()
 
     var isFabMenuExpanded by remember { mutableStateOf(false) }
+    var showSortMenu by remember { mutableStateOf(false) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -172,6 +177,30 @@ fun AllFilesScreen(
                                 contentDescription = stringResource(R.string.action_toggle_view)
                             )
                         }
+                        IconButton(onClick = { showSortMenu = true }) {
+                            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort")
+                        }
+                        DropdownMenu(
+                            expanded = showSortMenu,
+                            onDismissRequest = { showSortMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Date: Newest to Oldest") },
+                                onClick = { viewModel.setSortOption(SortOption.DATE_DESC); showSortMenu = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Date: Oldest to Newest") },
+                                onClick = { viewModel.setSortOption(SortOption.DATE_ASC); showSortMenu = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Size: Largest to Smallest") },
+                                onClick = { viewModel.setSortOption(SortOption.SIZE_DESC); showSortMenu = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Size: Smallest to Largest") },
+                                onClick = { viewModel.setSortOption(SortOption.SIZE_ASC); showSortMenu = false }
+                            )
+                        }
                         IconButton(onClick = {
                             AppGlobalState.isLocked = true
                             activity?.finish()
@@ -226,7 +255,7 @@ fun AllFilesScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
                 val combinedList = (uiState.vaultStats?.allFolders?.sortedBy { it.folder.name.lowercase() } ?: emptyList<Any>()) +
-                                     (uiState.vaultStats?.allFiles?.sortedBy { it.file.name.lowercase() } ?: emptyList())
+                                     (uiState.vaultStats?.allFiles ?: emptyList())
 
                 if (combinedList.isEmpty()) {
                     EmptyContent()

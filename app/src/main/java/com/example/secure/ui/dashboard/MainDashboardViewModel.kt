@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
+import com.example.secure.util.SortManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +44,8 @@ data class MainDashboardUiState(
     val isSelectionModeActive: Boolean = false,
     val selectedItems: Set<Any> = emptySet(),
     val showDeleteConfirmation: Boolean = false,
-    val showUnhideConfirmation: Boolean = false
+    val showUnhideConfirmation: Boolean = false,
+    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -66,6 +68,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     )
 
     init {
+        _uiState.update { it.copy(sortOption = SortManager.getSortOption(appContext)) }
         loadGlobalDashboardCategories() // For the main dashboard screen
         navigateToPath(null)      // For AllFilesScreen content (root initially)
     }
@@ -190,12 +193,20 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
                 Log.d("MainDashboardVM", "Loading contents for path: ${targetDirectory.absolutePath}")
                 val pathStats = fileManager.listFilesInVault(targetDirectory)
-                Log.d("MainDashboardVM", "Path data loaded. Folders: ${pathStats.allFolders.size}, Files: ${pathStats.allFiles.size} for $relativePath")
+
+                val sortedFiles = when (uiState.value.sortOption) {
+                    SortManager.SortOption.DATE_DESC -> pathStats.allFiles.sortedByDescending { it.file.lastModified() }
+                    SortManager.SortOption.DATE_ASC -> pathStats.allFiles.sortedBy { it.file.lastModified() }
+                    SortManager.SortOption.SIZE_DESC -> pathStats.allFiles.sortedByDescending { it.size }
+                    SortManager.SortOption.SIZE_ASC -> pathStats.allFiles.sortedBy { it.size }
+                }.toMutableList()
+
+                Log.d("MainDashboardVM", "Path data loaded. Folders: ${pathStats.allFolders.size}, Files: ${sortedFiles.size} for $relativePath")
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        vaultStats = pathStats, // This state is for AllFilesScreen
-                        imageFiles = pathStats.allFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO },
+                        vaultStats = pathStats.copy(allFiles = sortedFiles),
+                        imageFiles = sortedFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO },
                         error = null
                     )
                 }
@@ -210,6 +221,12 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
             }
         }
+    }
+
+    fun setSortOption(sortOption: SortManager.SortOption) {
+        SortManager.saveSortOption(appContext, sortOption)
+        _uiState.update { it.copy(sortOption = sortOption) }
+        navigateToPath(currentPath.value) // Reload with new sort order
     }
 
     fun navigateToPath(relativePath: String?) {
