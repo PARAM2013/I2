@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
+import com.example.secure.util.AppPreferences
 import com.example.secure.util.SortManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -70,7 +71,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     init {
         _uiState.update { it.copy(sortOption = SortManager.getSortOption(appContext)) }
         loadGlobalDashboardCategories() // For the main dashboard screen
-        navigateToPath(com.example.secure.AppGlobalState.lastPath)      // For AllFilesScreen content (restore last path)
+        val lastPath = AppPreferences.getLastPath(application)
+        navigateToPath(lastPath)      // For AllFilesScreen content (restore last path)
     }
 
     // Loads global stats for the main dashboard categories
@@ -232,7 +234,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun navigateToPath(relativePath: String?) {
         val newPath = if (relativePath.isNullOrBlank() || relativePath == File.separator) null else relativePath
         _currentPath.value = newPath
-        com.example.secure.AppGlobalState.lastPath = newPath // Save the path
+        AppPreferences.setLastPath(getApplication(), newPath) // Save the path
         loadPathContents(newPath)
         // Refresh global categories as operations like delete/import in subfolders affect global counts
         loadGlobalDashboardCategories()

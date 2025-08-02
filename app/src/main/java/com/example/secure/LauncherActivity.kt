@@ -2,6 +2,7 @@ package com.example.secure
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.FragmentActivity // Required for BiometricPrompt
@@ -12,7 +13,7 @@ import com.example.secure.ui.theme.ISecureTheme
 class LauncherActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
         // Set the initial lock state. If a PIN exists, the app should be locked.
         // If no PIN, it will go to setup, which is a form of "locked" access.
         AppGlobalState.isLocked = PinManager.isPinSet(this)
