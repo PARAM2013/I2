@@ -34,8 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import java.io.File
@@ -48,6 +51,7 @@ fun VideoPlayer(
     val context = LocalContext.current
     val player = remember { PlayerManager.getPlayer(context) }
     val isPlaying by PlayerManager.isPlaying.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var showControls by remember { mutableStateOf(false) }
     var showSpeedControls by remember { mutableStateOf(false) }
@@ -60,8 +64,18 @@ fun VideoPlayer(
         PlayerManager.play(file)
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> PlayerManager.pausePlayer()
+                Lifecycle.Event.ON_RESUME -> PlayerManager.resumePlayer()
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
         onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
             PlayerManager.releasePlayer()
         }
     }

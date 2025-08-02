@@ -189,15 +189,34 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
             )
         }
         FileManager.FileCategory.VIDEO -> {
-            if (file.thumbnail != null) {
-                Image(
-                    bitmap = file.thumbnail.asImageBitmap(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = modifier
+            Box(modifier = modifier) {
+                if (file.thumbnail != null) {
+                    Image(
+                        bitmap = file.thumbnail.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize()
+                    )
+                } else {
+                    Icon(
+                        Icons.Filled.Videocam,
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize()
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(Color.Black.copy(alpha = 0.4f))
                 )
-            } else {
-                Icon(Icons.Filled.Videocam, contentDescription = null, modifier = modifier)
+                Icon(
+                    Icons.Filled.Videocam,
+                    contentDescription = "Play Video",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(32.dp)
+                )
             }
         }
         else -> {

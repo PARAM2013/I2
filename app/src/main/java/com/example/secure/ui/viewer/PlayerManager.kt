@@ -31,6 +31,14 @@ object PlayerManager {
         player?.play()
     }
 
+    fun pausePlayer() {
+        player?.pause()
+    }
+
+    fun resumePlayer() {
+        player?.play()
+    }
+
     fun setPlaybackSpeed(speed: Float) {
         player?.setPlaybackSpeed(speed)
     }
