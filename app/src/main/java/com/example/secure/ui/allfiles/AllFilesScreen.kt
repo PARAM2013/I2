@@ -55,11 +55,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SmallFloatingActionButton // For FAB
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf // For FAB state
@@ -102,8 +105,15 @@ fun AllFilesScreen(
     val context = LocalContext.current
     val activity = context as? Activity
     val currentPath by viewModel.currentPath.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    
+    LaunchedEffect(uiState.fileOperationResult) {
+        uiState.fileOperationResult?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearFileOperationResult()
+        }
+    }
+
     var itemToRename by remember { mutableStateOf<Any?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var isGridView by remember { mutableStateOf(true) }
@@ -124,6 +134,7 @@ fun AllFilesScreen(
     )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {

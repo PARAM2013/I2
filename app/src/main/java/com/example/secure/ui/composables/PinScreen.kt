@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -126,21 +127,48 @@ fun PinScreen(
 
                     Spacer(modifier = Modifier.height(32.dp))
 
-                    NumericKeypad(
-                        onDigitClick = { digit -> viewModel.onDigitEntered(digit) }
-                    )
+                    if (uiState.isLockedOut) {
+                        LockoutView(remainingSeconds = uiState.lockoutRemainingSeconds)
+                    } else {
+                        NumericKeypad(
+                            onDigitClick = { digit -> viewModel.onDigitEntered(digit) }
+                        )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    FingerprintAndBackspaceRow(
-                        isFingerprintVisible = uiState.isFingerprintVisible,
-                        onFingerprintClick = { viewModel.requestBiometricPrompt() },
-                        onZeroClick = { viewModel.onDigitEntered("0") },
-                        onBackspaceClick = { viewModel.onBackspace() }
-                    )
+                        FingerprintAndBackspaceRow(
+                            isFingerprintVisible = uiState.isFingerprintVisible,
+                            onFingerprintClick = { viewModel.requestBiometricPrompt() },
+                            onZeroClick = { viewModel.onDigitEntered("0") },
+                            onBackspaceClick = { viewModel.onBackspace() }
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LockoutView(remainingSeconds: Int) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = Icons.Default.Warning,
+            contentDescription = "Lockout Icon",
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(64.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Try again in $remainingSeconds seconds",
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

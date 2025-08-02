@@ -9,6 +9,7 @@ import android.os.Looper
 object AppGlobalState {
     var isLocked = true // Start as locked, LauncherActivity will decide
     var currentActivity: android.app.Activity? = null // Track current foreground activity, more generic type
+    var lastPath: String? = null // To store the last browsed path
     private var inactivityTimer: Timer? = null
     private const val INACTIVITY_TIMEOUT_MS = 15000L // 90 seconds
     private val handler = Handler(Looper.getMainLooper())

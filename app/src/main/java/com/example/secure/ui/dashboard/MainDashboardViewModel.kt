@@ -70,7 +70,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     init {
         _uiState.update { it.copy(sortOption = SortManager.getSortOption(appContext)) }
         loadGlobalDashboardCategories() // For the main dashboard screen
-        navigateToPath(null)      // For AllFilesScreen content (root initially)
+        navigateToPath(com.example.secure.AppGlobalState.lastPath)      // For AllFilesScreen content (restore last path)
     }
 
     // Loads global stats for the main dashboard categories
@@ -232,6 +232,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun navigateToPath(relativePath: String?) {
         val newPath = if (relativePath.isNullOrBlank() || relativePath == File.separator) null else relativePath
         _currentPath.value = newPath
+        com.example.secure.AppGlobalState.lastPath = newPath // Save the path
         loadPathContents(newPath)
         // Refresh global categories as operations like delete/import in subfolders affect global counts
         loadGlobalDashboardCategories()

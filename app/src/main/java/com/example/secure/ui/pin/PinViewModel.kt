@@ -2,6 +2,7 @@ package com.example.secure.ui.pin
 
 import android.app.Application
 import android.content.Context
+import android.os.CountDownTimer
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private const val MAX_FAILED_ATTEMPTS = 3
+private const val LOCKOUT_DURATION_SECONDS = 30
 
 enum class PinScreenMode {
     SETUP_NEW_PIN, // Initial PIN setup
@@ -36,7 +40,12 @@ data class PinScreenUiState(
     val isFingerprintVisible: Boolean = false,
     val biometricAuthStatus: BiometricAuthStatus = BiometricAuthStatus.NOT_AVAILABLE,
     val navigateToMain: Boolean = false,
-    val requestBiometricPrompt: Boolean = false // To signal UI to show biometric prompt
+    val requestBiometricPrompt: Boolean = false, // To signal UI to show biometric prompt
+
+    // New state for lockout
+    val failedAttempts: Int = 0,
+    val isLockedOut: Boolean = false,
+    val lockoutRemainingSeconds: Int = 0
 )
 
 class PinViewModel(application: Application) : AndroidViewModel(application) {
@@ -105,6 +114,8 @@ class PinViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun onDigitEntered(digit: String) {
+        if (_uiState.value.isLockedOut) return // Do not accept input when locked out
+
         if (_uiState.value.enteredPin.length < 4) {
             _uiState.update { currentState ->
                 currentState.copy(
@@ -162,17 +173,54 @@ class PinViewModel(application: Application) : AndroidViewModel(application) {
             }
             PinScreenMode.ENTER_PIN -> {
                 if (pinManager.verifyPin(getApplication(), currentPin)) {
-                    _uiState.update { it.copy(navigateToMain = true, errorText = null) }
+                    _uiState.update { it.copy(navigateToMain = true, errorText = null, failedAttempts = 0) }
                 } else {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            errorText = "Incorrect PIN. Try again.", // Use string resource
-                            enteredPin = ""
-                        )
+                    val newFailedAttempts = _uiState.value.failedAttempts + 1
+                    if (newFailedAttempts >= MAX_FAILED_ATTEMPTS) {
+                        startLockoutTimer()
+                    } else {
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                errorText = "Incorrect PIN. Try again.", // Use string resource
+                                enteredPin = "",
+                                failedAttempts = newFailedAttempts
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun startLockoutTimer() {
+        _uiState.update {
+            it.copy(
+                isLockedOut = true,
+                errorText = "Too many failed attempts.",
+                enteredPin = "",
+                lockoutRemainingSeconds = LOCKOUT_DURATION_SECONDS
+            )
+        }
+
+        object : CountDownTimer(LOCKOUT_DURATION_SECONDS * 1000L, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                _uiState.update {
+                    it.copy(lockoutRemainingSeconds = (millisUntilFinished / 1000).toInt())
+                }
+            }
+
+            override fun onFinish() {
+                _uiState.update {
+                    it.copy(
+                        isLockedOut = false,
+                        failedAttempts = 0,
+                        lockoutRemainingSeconds = 0,
+                        errorText = null, // Clear lockout error
+                        promptText = getPromptForMode(PinScreenMode.ENTER_PIN) // Reset prompt
+                    )
+                }
+            }
+        }.start()
     }
 
     fun onBiometricAuthenticationSucceeded() {
