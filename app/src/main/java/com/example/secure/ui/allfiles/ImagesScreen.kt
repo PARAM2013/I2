@@ -138,6 +138,10 @@ fun ImagesScreen(
                                 item = file,
                                 viewModel = viewModel,
                                 isGridView = isGridView,
+                                onRename = {
+                                    itemToRename = file
+                                    showRenameDialog = true
+                                },
                                 onMediaClick = { 
                                     selectedImageIndex = imageFiles.indexOf(it)
                                 }
@@ -151,6 +155,10 @@ fun ImagesScreen(
                                 item = file,
                                 viewModel = viewModel,
                                 isGridView = isGridView,
+                                onRename = {
+                                    itemToRename = file
+                                    showRenameDialog = true
+                                },
                                 onMediaClick = { 
                                     selectedImageIndex = imageFiles.indexOf(it)
                                 }

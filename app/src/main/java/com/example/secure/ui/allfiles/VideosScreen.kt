@@ -137,6 +137,10 @@ fun VideosScreen(
                                 item = file,
                                 viewModel = viewModel,
                                 isGridView = isGridView,
+                                onRename = {
+                                    itemToRename = file
+                                    showRenameDialog = true
+                                },
                                 onMediaClick = { 
                                     selectedVideoIndex = videoFiles.indexOf(it)
                                 }
@@ -150,6 +154,10 @@ fun VideosScreen(
                                 item = file,
                                 viewModel = viewModel,
                                 isGridView = isGridView,
+                                onRename = {
+                                    itemToRename = file
+                                    showRenameDialog = true
+                                },
                                 onMediaClick = { 
                                     selectedVideoIndex = videoFiles.indexOf(it)
                                 }

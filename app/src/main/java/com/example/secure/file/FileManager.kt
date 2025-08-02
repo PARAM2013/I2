@@ -305,7 +305,12 @@ object FileManager {
             } else { // It's a file
                 val category = getFileCategory(item.name)
                 val size = item.length()
-                val vaultFile = VaultFile(item, category, size)
+                val thumbnail = if (category == FileCategory.VIDEO) {
+                    ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                } else {
+                    null
+                }
+                val vaultFile = VaultFile(item, category, size, thumbnail)
 
                 stats.allFiles.add(vaultFile) // Add to list of files in current directory
                 stats.grandTotalFiles++
@@ -414,6 +419,7 @@ object FileManager {
     fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null, deleteOriginal: Boolean = true): File? {
         val contentResolver = context.contentResolver
         var fileName: String? = null
+        var fileSize: Long = 0
 
         // Get file name and size from URI
         contentResolver.query(sourceFileUri, null, null, null, null)?.use { cursor ->
@@ -421,6 +427,10 @@ object FileManager {
                 val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
                 if (nameIndex != -1) {
                     fileName = cursor.getString(nameIndex)
+                }
+                val sizeIndex = cursor.getColumnIndex(android.provider.OpenableColumns.SIZE)
+                if (sizeIndex != -1) {
+                    fileSize = cursor.getLong(sizeIndex)
                 }
             }
         }

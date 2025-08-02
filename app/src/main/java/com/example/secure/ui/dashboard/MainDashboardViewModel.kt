@@ -12,8 +12,6 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
-import android.os.Build
-import android.util.Size
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,7 +56,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
-    private val contentResolver = application.contentResolver
 
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
@@ -92,25 +89,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     when (category.id) {
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
-                        "videos" -> {
-                            val firstVideo = videoFiles.firstOrNull()
-                            val thumbnail = firstVideo?.let {
-                                try {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                        contentResolver.loadThumbnail(Uri.fromFile(it.file), Size(128, 128), null)
-                                    } else {
-                                        android.media.ThumbnailUtils.createVideoThumbnail(it.file.path, android.provider.MediaStore.Video.Thumbnails.MINI_KIND)
-                                    }
-                                } catch (e: Exception) {
-                                    Log.e("MainDashboardVM", "Error creating thumbnail for ${it.file.name}", e)
-                                    null
-                                }
-                            }
-                            category.copy(
-                                subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
-                                thumbnail = thumbnail
-                            )
-                        }
+                        "videos" -> category.copy(
+                            subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
+                            thumbnail = videoFiles.firstOrNull()?.thumbnail // Get thumbnail from first video
+                        )
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
                         else -> category
                     }
@@ -134,11 +116,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     .filter { it.category == FileManager.FileCategory.VIDEO }
                     .map { vaultFile ->
                         val thumbnail = try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                contentResolver.loadThumbnail(Uri.fromFile(vaultFile.file), Size(128, 128), null)
-                            } else {
-                                android.media.ThumbnailUtils.createVideoThumbnail(vaultFile.file.path, android.provider.MediaStore.Video.Thumbnails.MINI_KIND)
-                            }
+                            android.media.ThumbnailUtils.createVideoThumbnail(
+                                vaultFile.file.path,
+                                android.provider.MediaStore.Video.Thumbnails.MINI_KIND
+                            )
                         } catch (e: Exception) {
                             Log.e("MainDashboardVM", "Error creating thumbnail for ${vaultFile.file.name}", e)
                             null
@@ -371,6 +352,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun requestUnhideItem(item: Any) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
+            val success: Boolean
             val itemName: String
             var operationMessage: String
 
@@ -379,8 +361,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     itemName = item.file.name
                     Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
                     val unhiddenFile = fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory())
-                    operationMessage = if (unhiddenFile != null) {
-                        appContext.getString(R.string.file_restored_success) + " ${unhiddenFile.name}"
+                    success = unhiddenFile != null
+                    operationMessage = if (success) {
+                        appContext.getString(R.string.file_restored_success) + " ${unhiddenFile?.name}"
                     } else {
                         "Failed to unhide file: $itemName"
                     }
@@ -388,8 +371,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 is FileManager.VaultFolder -> {
                     itemName = item.folder.name
                     Log.d("MainDashboardVM", "Requesting unhide for folder: $itemName")
-                    val unhideSuccessful = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
-                    operationMessage = if (unhideSuccessful) {
+                    success = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
+                    operationMessage = if (success) {
                         appContext.getString(R.string.file_restored_success) + " Folder: $itemName" // Consider a more folder-specific string
                     } else {
                         "Failed to unhide folder: $itemName"
@@ -397,12 +380,15 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
                 else -> {
                     Log.w("MainDashboardVM", "requestUnhideItem: Unknown item type")
+                    success = false
                     operationMessage = "Unhide failed: Unknown item type."
                 }
             }
 
             _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
-            navigateToPath(_currentPath.value) // Refresh content
+            if (success) {
+                navigateToPath(_currentPath.value) // Refresh content
+            }
         }
     }
 
@@ -449,6 +435,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             val oldName: String = fileToRename?.name ?: "Item"
 
             var operationMessage: String
+            var success = false
 
             if (fileToRename == null) {
                 operationMessage = "Rename failed: Unknown item type."
@@ -457,10 +444,12 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
             } else if (newName == oldName) {
                 operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
+                success = true // Considered a "success" as no change was needed and no error occurred.
             }
             else {
                 val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
                 if (renamedFile != null) {
+                    success = true
                     operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
                 } else {
                     // FileManager.renameItemInVault logs specific errors and returns null for various reasons.

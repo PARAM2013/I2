@@ -194,6 +194,10 @@ fun DocumentsScreen(
                                     item = file,
                                     viewModel = viewModel,
                                     isGridView = isGridView,
+                                    onRename = {
+                                        itemToRename = file
+                                        showRenameDialog = true
+                                    },
                                     onMediaClick = { 
                                         // Not applicable for documents
                                     }
@@ -207,6 +211,10 @@ fun DocumentsScreen(
                                     item = file,
                                     viewModel = viewModel,
                                     isGridView = isGridView,
+                                    onRename = {
+                                        itemToRename = file
+                                        showRenameDialog = true
+                                    },
                                     onMediaClick = { 
                                         // Not applicable for documents
                                     }
