@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Image
+import android.app.PendingIntent
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
@@ -46,7 +47,8 @@ data class MainDashboardUiState(
     val selectedItems: Set<Any> = emptySet(),
     val showDeleteConfirmation: Boolean = false,
     val showUnhideConfirmation: Boolean = false,
-    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC
+    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC,
+    val deletionPendingIntent: PendingIntent? = null
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -297,7 +299,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     fun importFiles(uris: List<Uri>) {
         if (uris.isEmpty()) return
-        
+
         if (!fileManager.checkStoragePermissions(appContext)) {
             _uiState.update { it.copy(
                 error = "Storage permissions are required to import files. Please grant permissions in Settings.",
@@ -308,15 +310,17 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
+            val importedUris = mutableListOf<Uri>()
             var successfulImports = 0
             var failedImports = 0
+
             uris.forEach { uri ->
                 try {
                     Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
-                    // Assuming deleteOriginal = true by default, adjust if needed
-                    val importedFile = fileManager.importFile(uri, appContext, _currentPath.value, true)
-                    if (importedFile != null) {
+                    val importResult = fileManager.importFile(uri, appContext, _currentPath.value, true)
+                    if (importResult != null) {
                         successfulImports++
+                        importedUris.add(importResult.second)
                     } else {
                         failedImports++
                     }
@@ -325,15 +329,47 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     failedImports++
                 }
             }
+
             val message = when {
                 successfulImports > 0 && failedImports == 0 -> "$successfulImports file(s) imported successfully."
                 successfulImports > 0 && failedImports > 0 -> "$successfulImports file(s) imported, $failedImports failed."
-                // failedImports > 0 -> "Failed to import $failedImports file(s)." // Covered by 'else' if successfulImports is 0
-                else -> "No files were imported, or all failed. Check logs if files were selected." // Adjusted message
+                else -> "No files were imported, or all failed."
             }
             _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
-            navigateToPath(_currentPath.value) // Refresh current path and global categories
+            navigateToPath(_currentPath.value) // Refresh view
+
+            if (importedUris.isNotEmpty()) {
+                requestDeletePermission(importedUris)
+            }
         }
+    }
+
+    private fun requestDeletePermission(uris: List<Uri>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            viewModelScope.launch {
+                try {
+                    val pendingIntent = MediaStore.createDeleteRequest(appContext.contentResolver, uris)
+                    _uiState.update { it.copy(deletionPendingIntent = pendingIntent) }
+                } catch (e: Exception) {
+                    Log.e("MainDashboardVM", "Error creating delete request", e)
+                    _uiState.update { it.copy(error = "Could not request deletion for original files.") }
+                }
+            }
+        } else {
+            // For older Android versions, direct deletion was attempted in FileManager.
+            // If it failed, we can't do much more without complex logic.
+            // For now, we just log that we are not attempting deletion on older SDKs.
+            Log.w("MainDashboardVM", "Deletion of original files is not automatically requested on this Android version.")
+        }
+    }
+
+    fun onDeletionResult(isDeleted: Boolean) {
+        val message = if (isDeleted) {
+            "Original files deleted."
+        } else {
+            "Could not delete original files. They may need to be removed manually."
+        }
+        _uiState.update { it.copy(deletionPendingIntent = null, fileOperationResult = message) }
     }
 
     fun createFolder(folderName: String) {

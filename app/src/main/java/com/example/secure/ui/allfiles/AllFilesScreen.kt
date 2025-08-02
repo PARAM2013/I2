@@ -133,6 +133,20 @@ fun AllFilesScreen(
         }
     )
 
+    val deleteRequestLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        viewModel.onDeletionResult(result.resultCode == Activity.RESULT_OK)
+    }
+
+    LaunchedEffect(uiState.deletionPendingIntent) {
+        uiState.deletionPendingIntent?.let {
+            deleteRequestLauncher.launch(
+                androidx.activity.result.IntentSenderRequest.Builder(it.intentSender).build()
+            )
+        }
+    }
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {

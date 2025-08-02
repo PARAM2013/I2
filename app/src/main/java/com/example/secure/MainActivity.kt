@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.secure.file.FileManager
 import com.example.secure.ui.allfiles.AllFilesScreen
 import com.example.secure.ui.allfiles.ImagesScreen
+import com.example.secure.util.AppPreferences
 import com.example.secure.ui.allfiles.VideosScreen
 import com.example.secure.ui.allfiles.DocumentsScreen
 import com.example.secure.ui.dashboard.MainDashboardScreen
@@ -53,6 +54,13 @@ class MainActivity : TrackedActivity() {
         setContent {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
             val navController = rememberNavController()
+
+            LaunchedEffect(Unit) {
+                val lastPath = AppPreferences.getLastPath(this@MainActivity)
+                if (lastPath != null) {
+                    navController.navigate(NavRoutes.ALL_FILES)
+                }
+            }
 
             ISecureTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
