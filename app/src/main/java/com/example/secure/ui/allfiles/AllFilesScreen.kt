@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.CreateNewFolder // For FAB
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.UploadFile // For FAB
@@ -228,7 +229,7 @@ fun AllFilesScreen(
                                      (uiState.vaultStats?.allFiles?.sortedBy { it.file.name.lowercase() } ?: emptyList())
 
                 if (combinedList.isEmpty()) {
-                    // Empty folder message
+                    EmptyContent()
                 } else {
                     if (isGridView) {
                         LazyVerticalGrid(
@@ -350,5 +351,27 @@ fun AllFilesScreen(
 fun AllFilesScreenPreview() {
     ISecureTheme {
         AllFilesScreen(onNavigateBack = {})
+    }
+}
+
+@Composable
+fun EmptyContent() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Default.Inbox,
+            contentDescription = "Empty",
+            modifier = Modifier.size(128.dp),
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Empty",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
     }
 }
