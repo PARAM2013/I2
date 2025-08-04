@@ -14,6 +14,7 @@ import androidx.activity.compose.setContent
 // import androidx.activity.result.contract.ActivityResultContracts // No longer directly used here for FAB
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost

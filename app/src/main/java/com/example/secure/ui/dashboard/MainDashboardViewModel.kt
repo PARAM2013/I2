@@ -4,6 +4,8 @@ import android.app.Application
 import com.example.secure.R // Added missing import for R class
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Article
