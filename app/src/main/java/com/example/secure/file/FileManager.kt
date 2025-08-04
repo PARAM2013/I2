@@ -15,9 +15,13 @@ import java.io.InputStream
 import androidx.exifinterface.media.ExifInterface
 import com.example.secure.auth.PinManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import com.example.secure.R
+import com.example.secure.util.VideoUtils
 
 object FileManager {
 
@@ -239,7 +243,8 @@ object FileManager {
         val file: File,
         val category: FileCategory,
         val size: Long,
-        val thumbnail: Bitmap? = null // Add this line
+        val thumbnail: Bitmap? = null, // Add this line
+        val duration: Long? = null
     )
 
     // Data class to hold folder details
@@ -291,28 +296,44 @@ object FileManager {
         }
     }
 
-    fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
+    fun listFilesInVault(context: Context, directory: File = getVaultDirectory()): VaultStats {
         val stats = VaultStats()
-        val items = directory.listFiles() ?: return stats // Return empty stats if directory is not listable
+        val items = directory.listFiles() ?: return stats
 
         for (item in items) {
             if (item.isDirectory) {
-                stats.grandTotalFolders++ // Counts as one folder in the current listing
-                val folderStat = VaultFolder(folder = item, totalFiles = 0, totalSize = 0) // Initialize with 0, not recursive content
-                // We list immediate children, so subFolders and files within this VaultFolder are not populated here.
-                // The UI will navigate into it and call listFilesInVault again for that sub-folder.
+                stats.grandTotalFolders++
+                val folderStat = VaultFolder(folder = item)
                 stats.allFolders.add(folderStat)
-            } else { // It's a file
+            } else {
                 val category = getFileCategory(item.name)
                 val size = item.length()
-                val thumbnail = if (category == FileCategory.VIDEO) {
-                    ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
-                } else {
-                    null
-                }
-                val vaultFile = VaultFile(item, category, size, thumbnail)
+                var thumbnail: Bitmap? = null
+                var duration: Long? = null
 
-                stats.allFiles.add(vaultFile) // Add to list of files in current directory
+                if (category == FileCategory.VIDEO) {
+                    duration = VideoUtils.getVideoDuration(context, item)
+                    thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+
+                    if (thumbnail != null && duration != null) {
+                        val mutableBitmap = thumbnail.copy(Bitmap.Config.ARGB_8888, true)
+                        val canvas = Canvas(mutableBitmap)
+                        val paint = Paint().apply {
+                            color = Color.WHITE
+                            textSize = 20f
+                            isAntiAlias = true
+                        }
+                        val text = com.example.secure.util.FileUtils.formatDuration(duration)
+                        val textWidth = paint.measureText(text)
+                        val x = mutableBitmap.width - textWidth - 10
+                        val y = mutableBitmap.height - 10f
+                        canvas.drawText(text, x, y, paint)
+                        thumbnail = mutableBitmap
+                    }
+                }
+
+                val vaultFile = VaultFile(item, category, size, thumbnail, duration)
+                stats.allFiles.add(vaultFile)
                 stats.grandTotalFiles++
                 stats.grandTotalSize += size
 
