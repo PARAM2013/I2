@@ -97,39 +97,39 @@ fun PinScreen(
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LottiePinAnimation(modifier = Modifier.weight(1f))
+                if (uiState.isLockedOut) {
+                    LockoutView(remainingSeconds = uiState.lockoutRemainingSeconds)
+                } else {
+                    LottiePinAnimation(modifier = Modifier.weight(1f))
 
-                Column(
-                    modifier = Modifier.weight(2f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = uiState.promptText.ifEmpty {
-                            stringResource(id = R.string.prompt_enter_pin) // Fallback
-                        },
-                        style = MaterialTheme.typography.headlineSmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    uiState.errorText?.let { error ->
+                    Column(
+                        modifier = Modifier.weight(2f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Text(
-                            text = error,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = uiState.promptText.ifEmpty {
+                                stringResource(id = R.string.prompt_enter_pin) // Fallback
+                            },
+                            style = MaterialTheme.typography.headlineSmall,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 8.dp)
+                            modifier = Modifier.padding(bottom = 16.dp)
                         )
-                    }
 
-                    PinIndicator(currentLength = uiState.enteredPin.length, maxLength = 4)
+                        uiState.errorText?.let { error ->
+                            Text(
+                                text = error,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                        PinIndicator(currentLength = uiState.enteredPin.length, maxLength = 4)
 
-                    if (uiState.isLockedOut) {
-                        LockoutView(remainingSeconds = uiState.lockoutRemainingSeconds)
-                    } else {
+                        Spacer(modifier = Modifier.height(32.dp))
+
                         NumericKeypad(
                             onDigitClick = { digit -> viewModel.onDigitEntered(digit) }
                         )
@@ -151,16 +151,21 @@ fun PinScreen(
 
 @Composable
 fun LockoutView(remainingSeconds: Int) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.wrong_pin))
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever
+    )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Icon(
-            imageVector = Icons.Default.Warning,
-            contentDescription = "Lockout Icon",
-            tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(64.dp)
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
