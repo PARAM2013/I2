@@ -1,0 +1,30 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>310</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt" />
+  <problem_class id="AndroidLintDefaultLocale" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Implied default locale in case conversion</problem_class>
+  <hints />
+  <description>&lt;html&gt;Implicitly using the default locale is a common source of bugs: Use &lt;code&gt;String.format(Locale, ...)&lt;/code&gt; instead&lt;/html&gt;</description>
+  <highlighted_element>String.format(&quot;%d:%02d&quot;, minutes, seconds)</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt</file>
+  <line>174</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt" />
+  <problem_class id="AndroidLintDefaultLocale" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Implied default locale in case conversion</problem_class>
+  <hints />
+  <description>&lt;html&gt;Implicitly using the default locale is a common source of bugs: Use &lt;code&gt;String.format(Locale, ...)&lt;/code&gt; instead&lt;/html&gt;</description>
+  <highlighted_element>String.format(&quot;%.1f %s&quot;, fileSize, units[unitIndex])</highlighted_element>
+  <language>kotlin</language>
+  <offset>11</offset>
+  <length>52</length>
+</problem>
+</problems>

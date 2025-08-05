@@ -1,0 +1,93 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>244</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.DocumentsScreenKt void DocumentsScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>showRenameDialog</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>245</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.DocumentsScreenKt void DocumentsScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>itemToRename</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>206</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.ImagesScreenKt void ImagesScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>showRenameDialog</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>207</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.ImagesScreenKt void ImagesScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>itemToRename</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>205</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.VideosScreenKt void VideosScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>showRenameDialog</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>206</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.VideosScreenKt void VideosScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateBack, com.example.secure.ui.dashboard.MainDashboardViewModel viewModel)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>itemToRename</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt</file>
+  <line>78</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.viewer.MediaViewerScreenKt void MediaViewerScreen(java.util.List&lt;? extends java.io.File&gt; files, int initialIndex, kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onClose)" />
+  <problem_class id="AssignedValueIsNeverRead" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">Assigned value is never read</problem_class>
+  <description>Assigned value is never read</description>
+  <highlighted_element>currentImageScale</highlighted_element>
+  <language>kotlin</language>
+  <offset>51</offset>
+  <length>17</length>
+</problem>
+</problems>

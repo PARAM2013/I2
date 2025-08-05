@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>337</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.file.FileManager com.example.secure.file.FileManager.VaultStats listFilesInVault(java.io.File directory)" />
+  <problem_class id="LiftReturnOrAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Return or assignment can be lifted out</problem_class>
+  <description>'Assignment' can be lifted out of 'if'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>511</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestRenameItem(java.lang.Object item, java.lang.String newName)" />
+  <problem_class id="LiftReturnOrAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Return or assignment can be lifted out</problem_class>
+  <description>'Assignment' can be lifted out of 'if'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>517</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestRenameItem(java.lang.Object item, java.lang.String newName)" />
+  <problem_class id="LiftReturnOrAssignment" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Return or assignment can be lifted out</problem_class>
+  <description>'Assignment' can be lifted out of 'if'</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>2</length>
+</problem>
+</problems>

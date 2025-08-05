@@ -1,0 +1,68 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/ic_doc.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_doc.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/ic_doc.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/ic_pdf.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_pdf.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/ic_pdf.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/ic_ppt.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_ppt.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/ic_ppt.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/ic_xls.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_xls.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/ic_xls.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/ic_zip.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_zip.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/ic_zip.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/security.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/security.png" />
+  <problem_class id="AndroidLintIconLocation" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Image defined in density-independent drawable folder</problem_class>
+  <hints />
+  <description>&lt;html&gt;Found bitmap drawable &lt;code&gt;res/drawable/security.png&lt;/code&gt; in densityless folder&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+</problems>

@@ -1,0 +1,30 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>82</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M&lt;/code&gt; is always true here (&lt;code&gt;SDK_INT&lt;/code&gt; ≥ 24 and &amp;lt; 30)&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>114</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt" />
+  <problem_class id="AndroidLintObsoleteSdkInt" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Obsolete SDK_INT Version Check</problem_class>
+  <hints />
+  <description>&lt;html&gt;Unnecessary; &lt;code&gt;Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M&lt;/code&gt; is always true here (&lt;code&gt;SDK_INT&lt;/code&gt; ≥ 24 and &amp;lt; 30)&lt;/html&gt;</description>
+  <highlighted_element>Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>46</length>
+</problem>
+</problems>

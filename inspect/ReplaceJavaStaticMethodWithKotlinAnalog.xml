@@ -1,0 +1,41 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/FileUtils.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.util</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.util.FileUtils java.lang.String formatFileSize(long size)" />
+  <problem_class id="ReplaceJavaStaticMethodWithKotlinAnalog" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Java methods should be replaced with Kotlin analog</problem_class>
+  <description>Should be replaced with Kotlin function</description>
+  <highlighted_element>log10(size.toDouble())</highlighted_element>
+  <language>kotlin</language>
+  <offset>32</offset>
+  <length>22</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/FileUtils.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.util</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.util.FileUtils java.lang.String formatFileSize(long size)" />
+  <problem_class id="ReplaceJavaStaticMethodWithKotlinAnalog" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Java methods should be replaced with Kotlin analog</problem_class>
+  <description>Should be replaced with Kotlin function</description>
+  <highlighted_element>log10(1024.0)</highlighted_element>
+  <language>kotlin</language>
+  <offset>62</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/FileUtils.kt</file>
+  <line>10</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.util</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.util.FileUtils java.lang.String formatFileSize(long size)" />
+  <problem_class id="ReplaceJavaStaticMethodWithKotlinAnalog" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Java methods should be replaced with Kotlin analog</problem_class>
+  <description>Should be replaced with Kotlin function</description>
+  <highlighted_element>pow(1024.0, digitGroups.toDouble())</highlighted_element>
+  <language>kotlin</language>
+  <offset>59</offset>
+  <length>35</length>
+</problem>
+</problems>

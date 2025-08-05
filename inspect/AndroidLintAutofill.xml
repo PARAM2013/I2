@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/layout/activity_pin_change.xml</file>
+  <line>21</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/layout/activity_pin_change.xml" />
+  <problem_class id="AndroidLintAutofill" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use Autofill</problem_class>
+  <hints />
+  <description>&lt;html&gt;Missing &lt;code&gt;autofillHints&lt;/code&gt; attribute&lt;/html&gt;</description>
+  <highlighted_element>EditText</highlighted_element>
+  <language>XML</language>
+  <offset>5</offset>
+  <length>8</length>
+</problem>
+</problems>

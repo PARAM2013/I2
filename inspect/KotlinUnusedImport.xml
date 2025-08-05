@@ -1,0 +1,1146 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>13</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.io.File</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.app.Application // For Preview ViewModel</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>5</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.net.Uri</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>22</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>8</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.ExperimentalFoundationApi</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>60</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.Image</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>10</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.background</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>11</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.combinedClickable</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>15</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.Row</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>17</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.aspectRatio</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>19</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.fillMaxWidth</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>23</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.width</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>29</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.shape.CircleShape</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Check</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>51</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>39</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Folder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>46</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.Card</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>38</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>55</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.ListItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>73</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.draw.clip</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>74</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.graphics.Color</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>75</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.graphics.asImageBitmap</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>49</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>76</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.layout.ContentScale</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>78</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.res.painterResource</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>85</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import coil.compose.rememberAsyncImagePainter</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>3</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.app.Application // For Preview ViewModel</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.combinedClickable</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>12</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.size</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>20</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Description</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>57</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>21</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Folder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>22</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.MoreVert // For Context Menu</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>74</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>27</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.DropdownMenu // For Context Menu</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>66</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>28</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.DropdownMenuItem // For Context Menu</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>70</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>32</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.ListItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>46</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.tooling.preview.Preview</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>49</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import coil.compose.rememberAsyncImagePainter</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>50</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.res.painterResource</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>51</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.Image</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>52</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.activity.compose.rememberLauncherForActivityResult // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>77</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>53</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.activity.result.contract.ActivityResultContracts // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>75</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>54</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Add // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>60</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>55</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Close // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>62</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>56</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.CreateNewFolder // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>72</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>57</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.UploadFile // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>67</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>58</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.FloatingActionButton // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>65</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>59</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material3.SmallFloatingActionButton // For FAB</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>70</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>64</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.file.FileManager // Required for VaultStats, VaultFile, VaultFolder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>93</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>67</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>90</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>69</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.allfiles.FileListItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>70</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>83</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>72</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.theme.ISecureTheme</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt</file>
+  <line>73</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/DocumentsScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.io.File // Still needed for File objects within VaultFile/VaultFolder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>81</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/FileListItem.kt</file>
+  <line>11</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/FileListItem.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.Row</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/FileListItem.kt</file>
+  <line>18</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/FileListItem.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.layout.width</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>3</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.app.Application</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.combinedClickable</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>19</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.tooling.preview.Preview</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>24</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import coil.compose.rememberAsyncImagePainter</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>25</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.Image</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>27</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.file.FileManager</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>31</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.allfiles.FileListItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>33</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.theme.ISecureTheme</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/ImagesScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.io.File // Still needed for File objects within VaultFile/VaultFolder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>81</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>3</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.app.Application</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.combinedClickable</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>19</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.tooling.preview.Preview</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>24</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import coil.compose.rememberAsyncImagePainter</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>25</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.Image</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>27</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.file.FileManager</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>31</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.allfiles.FileListItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>50</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>33</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.ui.theme.ISecureTheme</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/VideosScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import java.io.File // Still needed for File objects within VaultFile/VaultFolder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>81</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt</file>
+  <line>12</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Warning</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt</file>
+  <line>28</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.platform.LocalLifecycleOwner</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>3</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.app.Application</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import android.widget.Toast</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>5</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.activity.compose.rememberLauncherForActivityResult</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>66</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>6</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.activity.result.contract.ActivityResultContracts</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>64</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>16</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.graphics.vector.ImageVector</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>20</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.text.input.TextFieldValue</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>30</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import com.example.secure.file.FileManager</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>42</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>10</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.Icons</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>44</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>11</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Article</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>12</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Folder</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>52</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>13</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Image</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>51</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>15</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.Videocam</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>16</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.graphics.vector.ImageVector</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt</file>
+  <line>8</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.foundation.gestures.detectTapGestures</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>61</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/MediaViewerScreen.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.ui.input.pointer.pointerInput</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>53</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/VideoPlayer.kt</file>
+  <line>18</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/VideoPlayer.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.SkipNext</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>54</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/VideoPlayer.kt</file>
+  <line>19</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.viewer</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/viewer/VideoPlayer.kt" />
+  <problem_class id="KotlinUnusedImport" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused import directive</problem_class>
+  <description>Unused import directive</description>
+  <highlighted_element>import androidx.compose.material.icons.filled.SkipPrevious</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>58</length>
+</problem>
+</problems>

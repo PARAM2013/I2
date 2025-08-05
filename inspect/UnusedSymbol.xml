@@ -1,0 +1,316 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>134</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.MainActivity void setupPermissionLaunchers()" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;setupPermissionLaunchers&quot; is never used</description>
+  <highlighted_element>setupPermissionLaunchers</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>37</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.auth.PinManager java.lang.String getPin(android.content.Context context)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;getPin&quot; is never used</description>
+  <highlighted_element>getPin</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>6</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>66</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.auth.PinManager void clearPin(android.content.Context context)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;clearPin&quot; is never used</description>
+  <highlighted_element>clearPin</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>414</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestUnhideItem(java.lang.Object item)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;requestUnhideItem&quot; is never used</description>
+  <highlighted_element>requestUnhideItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>457</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestDeleteItem(java.lang.Object item)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;requestDeleteItem&quot; is never used</description>
+  <highlighted_element>requestDeleteItem</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>17</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>534</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void shareFile(com.example.secure.file.FileManager.VaultFile file)" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;shareFile&quot; is never used</description>
+  <highlighted_element>shareFile</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>5</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt Purple80" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;Purple80&quot; is never used</description>
+  <highlighted_element>Purple80</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>6</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt PurpleGrey80" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;PurpleGrey80&quot; is never used</description>
+  <highlighted_element>PurpleGrey80</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt Purple40" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;Purple40&quot; is never used</description>
+  <highlighted_element>Purple40</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>10</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt PurpleGrey40" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;PurpleGrey40&quot; is never used</description>
+  <highlighted_element>PurpleGrey40</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>16</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt DangerRed" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;DangerRed&quot; is never used</description>
+  <highlighted_element>DangerRed</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>9</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>17</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt SuccessGreen" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;SuccessGreen&quot; is never used</description>
+  <highlighted_element>SuccessGreen</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>18</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt WarningYellow" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;WarningYellow&quot; is never used</description>
+  <highlighted_element>WarningYellow</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>24</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt DarkGrey" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;DarkGrey&quot; is never used</description>
+  <highlighted_element>DarkGrey</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>8</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/new_requirement.md</file>
+  <line>91</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/new_requirement.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;VaultMediaViewer&quot; is never used</description>
+  <highlighted_element>VaultMediaViewer</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>16</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>8</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Class &quot;MainActivity&quot; is never used</description>
+  <highlighted_element>MainActivity</highlighted_element>
+  <language>kotlin</language>
+  <offset>6</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>9</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;lockTimeout&quot; is never used</description>
+  <highlighted_element>lockTimeout</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>10</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;lastInteractionTime&quot; is never used</description>
+  <highlighted_element>lastInteractionTime</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>11</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Property &quot;isAppLocked&quot; is never used</description>
+  <highlighted_element>isAppLocked</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>11</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>62</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Class &quot;FileOperationState&quot; is never used</description>
+  <highlighted_element>FileOperationState</highlighted_element>
+  <language>kotlin</language>
+  <offset>11</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>88</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;migrateToGridDefault&quot; is never used</description>
+  <highlighted_element>migrateToGridDefault</highlighted_element>
+  <language>kotlin</language>
+  <offset>12</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>99</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;MediaViewerActions&quot; is never used</description>
+  <highlighted_element>MediaViewerActions</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>18</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>135</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Class &quot;FileListState&quot; is never used</description>
+  <highlighted_element>FileListState</highlighted_element>
+  <language>kotlin</language>
+  <offset>11</offset>
+  <length>13</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>165</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;formatFileSize&quot; is never used</description>
+  <highlighted_element>formatFileSize</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>14</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/ui.md</file>
+  <line>179</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/ui.md" />
+  <problem_class id="UnusedSymbol" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused symbol</problem_class>
+  <description>Function &quot;VaultTheme&quot; is never used</description>
+  <highlighted_element>VaultTheme</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>10</length>
+</problem>
+</problems>

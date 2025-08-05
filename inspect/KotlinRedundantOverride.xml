@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>230</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.MainActivity boolean onSupportNavigateUp()" />
+  <problem_class id="KotlinRedundantOverride" severity="WEAK WARNING" attribute_key="INFO_ATTRIBUTES">Redundant overriding method</problem_class>
+  <description>Redundant overriding method</description>
+  <highlighted_element>override fun</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>12</length>
+</problem>
+</problems>

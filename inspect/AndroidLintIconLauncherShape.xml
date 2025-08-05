@@ -1,0 +1,13 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/security.png</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/security.png" />
+  <problem_class id="AndroidLintIconLauncherShape" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">The launcher icon shape should use a distinct silhouette</problem_class>
+  <hints />
+  <description>&lt;html&gt;Launcher icon used as round icon did not have a circular shape&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+</problems>

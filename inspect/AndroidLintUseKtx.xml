@@ -1,0 +1,142 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>163</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(String.format(&quot;package:%s&quot;, applicationContext.packageName))</highlighted_element>
+  <language>kotlin</language>
+  <offset>34</offset>
+  <length>70</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>163</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>Uri.parse(String.format(&quot;package:%s&quot;, applicationContext.packageName))</highlighted_element>
+  <language>kotlin</language>
+  <offset>34</offset>
+  <length>70</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>31</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>67</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>75</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>88</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>105</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>android.net.Uri.parse(&quot;package:${activity.packageName}&quot;)</highlighted_element>
+  <language>kotlin</language>
+  <offset>34</offset>
+  <length>56</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>105</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;String.toUri&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>android.net.Uri.parse(&quot;package:${activity.packageName}&quot;)</highlighted_element>
+  <language>kotlin</language>
+  <offset>34</offset>
+  <length>56</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/AppPreferences.kt</file>
+  <line>20</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.util</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/AppPreferences.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/SortManager.kt</file>
+  <line>23</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.util</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/util/SortManager.kt" />
+  <problem_class id="AndroidLintUseKtx" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use KTX extension function</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use the KTX extension function &lt;code&gt;SharedPreferences.edit&lt;/code&gt; instead?&lt;/html&gt;</description>
+  <highlighted_element>getPreferences(context).edit()</highlighted_element>
+  <language>kotlin</language>
+  <offset>21</offset>
+  <length>30</length>
+</problem>
+</problems>

@@ -1,0 +1,845 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/drawable/bg_pin_digit_empty.xml</file>
+  <line>2</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/drawable/bg_pin_digit_empty.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.drawable.bg_pin_digit_empty&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; android:shape=&quot;oval&quot;&gt; &lt;sol...</highlighted_element>
+  <language>XML</language>
+  <offset>0</offset>
+  <length>321</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/menu/main_menu.xml</file>
+  <line>2</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/menu/main_menu.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.menu.main_menu&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>&lt;menu xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; xmlns:app=&quot;http://schemas.andro...</highlighted_element>
+  <language>XML</language>
+  <offset>0</offset>
+  <length>315</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.webp</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.webp" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.mipmap.ic_launcher&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element />
+  <language />
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/raw/dashboard_animation.json</file>
+  <line>1</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/raw/dashboard_animation.json" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.raw.dashboard_animation&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>{&quot;nm&quot;:&quot;Nothing item found&quot;,&quot;ddd&quot;:0,&quot;h&quot;:168,&quot;w&quot;:256,&quot;meta&quot;:{&quot;g&quot;:&quot;@lottiefiles/toolkit-js 0.33.2&quot;},&quot;la...</highlighted_element>
+  <language>JSON</language>
+  <offset>0</offset>
+  <length>127027</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml</file>
+  <line>3</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.dimen.activity_horizontal_margin&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;activity_horizontal_margin&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>11</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml</file>
+  <line>4</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.dimen.activity_vertical_margin&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;activity_vertical_margin&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>11</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.title_secure_dashboard&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;title_secure_dashboard&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>29</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>16</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.prompt_set_pin&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;prompt_set_pin&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>21</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>23</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.pin_set_successfully&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;pin_set_successfully&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>29</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.prompt_fingerprint_description&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;prompt_fingerprint_description&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>37</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>30</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.go_to_settings_to_enable_fingerprint&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;go_to_settings_to_enable_fingerprint&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>43</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>32</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_succeeded&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_succeeded&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>33</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_failed&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_failed&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>34</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_hw_not_available&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_hw_not_available&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>44</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_no_fingerprints&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_no_fingerprints&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>43</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>36</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_none_enrolled&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_none_enrolled&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>37</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_sdk_too_low&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_sdk_too_low&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>39</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>38</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_user_canceled&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_user_canceled&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>39</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_lockout&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_lockout&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>40</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_lockout_permanent&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_lockout_permanent&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>45</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>41</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.biometric_auth_error_prefix&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;biometric_auth_error_prefix&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>47</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.category_all_files&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;category_all_files&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>59</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.file_import_success&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;file_import_success&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>61</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.folder_create_success&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;folder_create_success&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>28</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>62</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.dialog_create_folder_title&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;dialog_create_folder_title&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>63</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.hint_folder_name&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;hint_folder_name&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>64</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.button_create&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;button_create&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>66</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.error_folder_name_empty&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;error_folder_name_empty&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>67</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.error_folder_exists&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;error_folder_exists&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>68</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_delete_file_title&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_delete_file_title&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>69</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_delete_file_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_delete_file_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>70</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_unhide_file_title&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_unhide_file_title&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>71</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_unhide_file_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_unhide_file_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>72</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.button_delete&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;button_delete&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>73</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.button_unhide&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;button_unhide&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>20</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>74</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.sharing_blocked_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;sharing_blocked_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>30</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>78</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_change_pin&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_change_pin&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>79</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_enable_fingerprint&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_enable_fingerprint&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>80</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_disable_fingerprint&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_disable_fingerprint&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>35</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>81</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_enable_metadata_removal&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_enable_metadata_removal&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>39</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>82</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_disable_metadata_removal&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_disable_metadata_removal&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>83</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_category_security&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_category_security&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>84</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings_category_general&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings_category_general&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>89</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.fab_options_toggle&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;fab_options_toggle&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>97</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.empty_vault_all_files_title&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;empty_vault_all_files_title&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>98</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.empty_vault_all_files_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;empty_vault_all_files_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>99</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.empty_folder_title&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;empty_folder_title&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>100</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.empty_folder_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;empty_folder_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>27</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>101</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.folder_icon_desc&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;folder_icon_desc&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>23</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>102</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.file_icon_desc&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;file_icon_desc&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>21</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>103</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.file_size_kb&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;file_size_kb&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>19</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>104</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_description&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_description&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>105</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.button_confirm&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;button_confirm&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>21</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>108</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_unhide&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_unhide&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>109</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_view&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_view&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>110</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_rename&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_rename&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>26</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>111</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_move&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_move&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>112</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.context_menu_share&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;context_menu_share&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>25</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>116</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_delete_item_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_delete_item_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>34</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>117</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.confirm_delete_folder_message&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;confirm_delete_folder_message&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>36</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>131</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.title_activity_media_view&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;title_activity_media_view&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>32</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>139</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.string.settings&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;settings&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>12</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/themes.xml</file>
+  <line>18</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/themes.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.style.PinDigit&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;PinDigit&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>11</offset>
+  <length>15</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/themes.xml</file>
+  <line>28</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/themes.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.style.PinKeypadButton&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;PinKeypadButton&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>11</offset>
+  <length>22</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/themes.xml</file>
+  <line>39</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/themes.xml" />
+  <problem_class id="AndroidLintUnusedResources" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused resources</problem_class>
+  <hints />
+  <description>&lt;html&gt;The resource &lt;code&gt;R.style.PinKeypadButton_Image&lt;/code&gt; appears to be unused&lt;/html&gt;</description>
+  <highlighted_element>name=&quot;PinKeypadButton.Image&quot;</highlighted_element>
+  <language>XML</language>
+  <offset>11</offset>
+  <length>28</length>
+</problem>
+</problems>

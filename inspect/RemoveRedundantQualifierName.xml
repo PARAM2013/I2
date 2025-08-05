@@ -1,0 +1,15 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>109</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.file.FileManager void requestStoragePermissions(android.app.Activity activity)" />
+  <problem_class id="RemoveRedundantQualifierName" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Redundant qualifier name</problem_class>
+  <description>Remove redundant qualifier name</description>
+  <highlighted_element>android.util</highlighted_element>
+  <language>kotlin</language>
+  <offset>20</offset>
+  <length>12</length>
+</problem>
+</problems>

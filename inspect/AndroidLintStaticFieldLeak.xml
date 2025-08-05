@@ -1,0 +1,30 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;Do not place Android context classes in static fields (static reference to &lt;code&gt;AppGlobalState&lt;/code&gt; which has field &lt;code&gt;currentActivity&lt;/code&gt; pointing to &lt;code&gt;Activity&lt;/code&gt;); this is a memory leak&lt;/html&gt;</description>
+  <highlighted_element>object AppGlobalState { var isLocked = true // Start as locked, LauncherActivity will decide ...</highlighted_element>
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>4704</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt</file>
+  <line>11</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt" />
+  <problem_class id="AndroidLintStaticFieldLeak" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Static Field Leaks</problem_class>
+  <hints />
+  <description>&lt;html&gt;Do not place Android context classes in static fields; this is a memory leak&lt;/html&gt;</description>
+  <highlighted_element>var currentActivity: android.app.Activity? = null // Track current foreground activity, more generic...</highlighted_element>
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>105</length>
+</problem>
+</problems>

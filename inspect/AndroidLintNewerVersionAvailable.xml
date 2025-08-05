@@ -1,0 +1,99 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>92</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.airbnb.android:lottie than 6.4.1 is available: 6.6.7&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.airbnb.android:lottie:6.4.1&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>93</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.airbnb.android:lottie-compose than 6.4.1 is available: 6.6.7&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.airbnb.android:lottie-compose:6.4.1&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>96</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of io.coil-kt:coil-compose than 2.6.0 is available: 2.7.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;io.coil-kt:coil-compose:2.6.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>107</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.accompanist:accompanist-permissions than 0.34.0 is available: 0.37.3&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-permissions:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>108</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.accompanist:accompanist-pager than 0.34.0 is available: 0.36.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-pager:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>49</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>109</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of com.google.accompanist:accompanist-pager-indicators than 0.34.0 is available: 0.36.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-pager-indicators:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>60</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/gradle/libs.versions.toml</file>
+  <line>4</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/gradle/libs.versions.toml" />
+  <problem_class id="AndroidLintNewerVersionAvailable" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Newer Library Versions Available</problem_class>
+  <hints />
+  <description>&lt;html&gt;A newer version of org.jetbrains.kotlin.android than 1.9.22 is available: 2.2.0&lt;/html&gt;</description>
+  <highlighted_element>&quot;1.9.22&quot;</highlighted_element>
+  <language>TOML</language>
+  <offset>9</offset>
+  <length>8</length>
+</problem>
+</problems>

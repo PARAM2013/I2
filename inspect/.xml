@@ -1,0 +1,359 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/androidTest/java/com/example/secure/ExampleInstrumentedTest.kt</file>
+  <line>11</line>
+  <module>Secure.app.androidTest</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ExampleInstrumentedTest" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>3</length>
+  <highlighted_element>/**</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/androidTest/java/com/example/secure/ExampleInstrumentedTest.kt</file>
+  <line>18</line>
+  <module>Secure.app.androidTest</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ExampleInstrumentedTest void useAppContext()" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>5</length>
+  <highlighted_element>@Test</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt</file>
+  <line>94</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.TrackedActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>61</length>
+  <highlighted_element>// BaseActivity to automatically register with AppGlobalState</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Abstract&amp;nbsp;class is not implemented.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/LauncherActivity.kt</file>
+  <line>13</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.LauncherActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>45</length>
+  <highlighted_element>class LauncherActivity : FragmentActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.MainActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>40</length>
+  <highlighted_element>class MainActivity : TrackedActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardFragment.kt</file>
+  <line>20</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ui.SecureDashboardFragment" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>44</length>
+  <highlighted_element>class SecureDashboardFragment : Fragment() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/allfiles/AllFilesScreen.kt</file>
+  <line>395</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.allfiles</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.allfiles.AllFilesScreenKt void AllFilesScreenPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/CommonDialogs.kt</file>
+  <line>66</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.composables.CommonDialogsKt void CreateFolderDialogPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt</file>
+  <line>289</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.composables.PinScreenKt void PinScreenPreview_Basic()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt</file>
+  <line>328</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.composables.PinScreenKt void PinIndicatorPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>69</length>
+  <highlighted_element>@Preview(showBackground = true, name = &quot;Pin Indicator Preview (2/4)&quot;)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/PinScreen.kt</file>
+  <line>336</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.composables.PinScreenKt void KeypadPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>56</length>
+  <highlighted_element>@Preview(showBackground = true, name = &quot;Keypad Preview&quot;)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/composables/RenameItemDialog.kt</file>
+  <line>94</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.composables</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.composables.RenameItemDialogKt void RenameItemDialogPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/FileListItem.kt</file>
+  <line>128</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.FileListItemKt void FileListItemPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>241</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardScreenKt void MainDashboardScreenPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardScreen.kt</file>
+  <line>270</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardScreenKt void CategoryCardPreview()" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>31</length>
+  <highlighted_element>@Preview(showBackground = true)</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/lockscreen/LockScreenActivity.kt</file>
+  <line>7</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.lockscreen</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ui.lockscreen.LockScreenActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>48</length>
+  <highlighted_element>class LockScreenActivity : AppCompatActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/pin/PinSetupActivity.kt</file>
+  <line>7</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.pin</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ui.pin.PinSetupActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+  <highlighted_element>class PinSetupActivity : AppCompatActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/settings/PinChangeActivity.kt</file>
+  <line>12</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.settings</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ui.settings.PinChangeActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>47</length>
+  <highlighted_element>class PinChangeActivity : AppCompatActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/settings/SettingsActivity.kt</file>
+  <line>12</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.settings</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ui.settings.SettingsActivity" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>46</length>
+  <highlighted_element>class SettingsActivity : AppCompatActivity() {</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/test/java/com/example/secure/ExampleUnitTest.kt</file>
+  <line>7</line>
+  <module>Secure.app.unitTest</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="class" FQNAME="com.example.secure.ExampleUnitTest" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>3</length>
+  <highlighted_element>/**</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Class is not instantiated.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/test/java/com/example/secure/ExampleUnitTest.kt</file>
+  <line>13</line>
+  <module>Secure.app.unitTest</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ExampleUnitTest void addition_isCorrect()" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>5</length>
+  <highlighted_element>@Test</highlighted_element>
+  <problem_class id="" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+</problems>

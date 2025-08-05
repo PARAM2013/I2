@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>47</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintPluralsCandidate" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Potential Plurals</problem_class>
+  <hints />
+  <description>&lt;html&gt;Formatting %d followed by words (&quot;Folders&quot;): This should probably be a plural rather than a string&lt;/html&gt;</description>
+  <highlighted_element>&lt;string name=&quot;category_all_files&quot;&gt;All Files (%1$d Folders, %2$s)&lt;/string&gt;</highlighted_element>
+  <language>XML</language>
+  <offset>4</offset>
+  <length>73</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>48</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintPluralsCandidate" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Potential Plurals</problem_class>
+  <hints />
+  <description>&lt;html&gt;Formatting %d followed by words (&quot;Files&quot;): This should probably be a plural rather than a string&lt;/html&gt;</description>
+  <highlighted_element>&lt;string name=&quot;category_photos&quot;&gt;Photos (%1$d Files, %2$s)&lt;/string&gt;</highlighted_element>
+  <language>XML</language>
+  <offset>4</offset>
+  <length>65</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>49</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintPluralsCandidate" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Potential Plurals</problem_class>
+  <hints />
+  <description>&lt;html&gt;Formatting %d followed by words (&quot;Files&quot;): This should probably be a plural rather than a string&lt;/html&gt;</description>
+  <highlighted_element>&lt;string name=&quot;category_videos&quot;&gt;Videos (%1$d Files, %2$s)&lt;/string&gt;</highlighted_element>
+  <language>XML</language>
+  <offset>4</offset>
+  <length>65</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/res/values/strings.xml</file>
+  <line>50</line>
+  <module>Secure.app.main</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+  <problem_class id="AndroidLintPluralsCandidate" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Potential Plurals</problem_class>
+  <hints />
+  <description>&lt;html&gt;Formatting %d followed by words (&quot;Files&quot;): This should probably be a plural rather than a string&lt;/html&gt;</description>
+  <highlighted_element>&lt;string name=&quot;category_documents&quot;&gt;Documents (%1$d Files, %2$s)&lt;/string&gt;</highlighted_element>
+  <language>XML</language>
+  <offset>4</offset>
+  <length>71</length>
+</problem>
+</problems>

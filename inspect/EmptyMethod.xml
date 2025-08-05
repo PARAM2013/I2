@@ -1,0 +1,34 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>134</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.MainActivity void setupPermissionLaunchers()" />
+  <problem_class id="EmptyMethod" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Empty method</problem_class>
+  <hints>
+    <hint value="false" />
+  </hints>
+  <description>The method is empty</description>
+  <highlighted_element>setupPermissionLaunchers</highlighted_element>
+  <language>kotlin</language>
+  <offset>16</offset>
+  <length>24</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>230</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.MainActivity boolean onSupportNavigateUp()" />
+  <problem_class id="EmptyMethod" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Empty method</problem_class>
+  <hints>
+    <hint value="false" />
+  </hints>
+  <description>Method only calls its super</description>
+  <highlighted_element>onSupportNavigateUp</highlighted_element>
+  <language>kotlin</language>
+  <offset>17</offset>
+  <length>19</length>
+</problem>
+</problems>

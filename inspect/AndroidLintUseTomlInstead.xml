@@ -1,0 +1,170 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>82</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.exifinterface:exifinterface:1.3.7&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>44</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>92</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.airbnb.android:lottie:6.4.1&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>93</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.airbnb.android:lottie-compose:6.4.1&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>41</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>96</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;io.coil-kt:coil-compose:2.6.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>31</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>99</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.media3:media3-exoplayer:1.2.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>40</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>100</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.media3:media3-ui:1.2.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>33</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>101</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.media3:media3-common:1.2.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>37</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>104</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.github.chrisbanes:PhotoView:2.3.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>39</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>107</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-permissions:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>55</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>108</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-pager:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>49</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>109</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;com.google.accompanist:accompanist-pager-indicators:0.34.0&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>60</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/build.gradle.kts</file>
+  <line>112</line>
+  <module>Secure.app</module>
+  <package>&lt;default&gt;</package>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/app/build.gradle.kts" />
+  <problem_class id="AndroidLintUseTomlInstead" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Use TOML Version Catalog Instead</problem_class>
+  <hints />
+  <description>&lt;html&gt;Use version catalog instead&lt;/html&gt;</description>
+  <highlighted_element>&quot;androidx.compose.foundation:foundation:1.6.4&quot;</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>46</length>
+</problem>
+</problems>

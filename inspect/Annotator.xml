@@ -1,0 +1,54 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/new_requirement.md</file>
+  <line>156</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/new_requirement.md" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>Expecting an element #loc</description>
+  <highlighted_element>...</highlighted_element>
+  <language>Markdown</language>
+  <offset>4</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/new_requirement.md</file>
+  <line>162</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/new_requirement.md" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>Expecting ')' #loc</description>
+  <highlighted_element>...</highlighted_element>
+  <language>Markdown</language>
+  <offset>51</offset>
+  <length>3</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/new_requirement.md</file>
+  <line>162</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/new_requirement.md" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>Expecting an expression #loc</description>
+  <highlighted_element>.</highlighted_element>
+  <language>Markdown</language>
+  <offset>51</offset>
+  <length>1</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/new_requirement.md</file>
+  <line>163</line>
+  <module>Secure</module>
+  <entry_point TYPE="file" FQNAME="file://$PROJECT_DIR$/new_requirement.md" />
+  <problem_class id="Annotator" severity="ERROR" attribute_key="WRONG_REFERENCES_ATTRIBUTES">Annotator</problem_class>
+  <hints />
+  <description>Expecting an element #loc</description>
+  <highlighted_element>)</highlighted_element>
+  <language>Markdown</language>
+  <offset>8</offset>
+  <length>1</length>
+</problem>
+</problems>

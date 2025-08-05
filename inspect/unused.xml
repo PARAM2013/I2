@@ -1,0 +1,392 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/MainActivity.kt</file>
+  <line>134</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.MainActivity void setupPermissionLaunchers()" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>40</length>
+  <highlighted_element>private fun setupPermissionLaunchers() {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>37</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.auth.PinManager java.lang.String getPin(android.content.Context context)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>39</length>
+  <highlighted_element>fun getPin(context: Context): String? {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/auth/PinManager.kt</file>
+  <line>66</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.auth</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.auth.PinManager void clearPin(android.content.Context context)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>32</length>
+  <highlighted_element>fun clearPin(context: Context) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardFragment.kt</file>
+  <line>25</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="field" FQNAME="com.example.secure.ui.SecureDashboardFragment viewModel$delegate" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>63</length>
+  <highlighted_element>private val viewModel: SecureDashboardViewModel by viewModels()</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never assigned.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>22</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.SecureDashboardViewModel SecureDashboardViewModel(android.app.Application application)" />
+  <language>kotlin</language>
+  <offset>30</offset>
+  <length>26</length>
+  <highlighted_element>(application: Application)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Constructor is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>45</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.SecureDashboardViewModel void importFile(android.net.Uri uri)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>26</length>
+  <highlighted_element>fun importFile(uri: Uri) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>&lt;ul&gt;&lt;li&gt;Method owner class is never instantiated OR&lt;/li&gt;&lt;li&gt;All instantiations are not reachable from the entry points.&lt;/li&gt;&lt;/ul&gt;</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>64</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.SecureDashboardViewModel void createFolder(java.lang.String folderName)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>38</length>
+  <highlighted_element>fun createFolder(folderName: String) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>&lt;ul&gt;&lt;li&gt;Method owner class is never instantiated OR&lt;/li&gt;&lt;li&gt;All instantiations are not reachable from the entry points.&lt;/li&gt;&lt;/ul&gt;</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>85</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.SecureDashboardViewModel void clearFileOperationResult()" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>76</length>
+  <highlighted_element>// Call this to clear one-time messages like toasts after they've been shown</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>&lt;ul&gt;&lt;li&gt;Method owner class is never instantiated OR&lt;/li&gt;&lt;li&gt;All instantiations are not reachable from the entry points.&lt;/li&gt;&lt;/ul&gt;</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/SecureDashboardViewModel.kt</file>
+  <line>90</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.SecureDashboardViewModel void clearError()" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>18</length>
+  <highlighted_element>fun clearError() {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>&lt;ul&gt;&lt;li&gt;Method owner class is never instantiated OR&lt;/li&gt;&lt;li&gt;All instantiations are not reachable from the entry points.&lt;/li&gt;&lt;/ul&gt;</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>56</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel MainDashboardViewModel(android.app.Application application)" />
+  <language>kotlin</language>
+  <offset>28</offset>
+  <length>26</length>
+  <highlighted_element>(application: Application)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Constructor is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>414</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestUnhideItem(java.lang.Object item)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>34</length>
+  <highlighted_element>fun requestUnhideItem(item: Any) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>457</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void requestDeleteItem(java.lang.Object item)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>34</length>
+  <highlighted_element>fun requestDeleteItem(item: Any) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/dashboard/MainDashboardViewModel.kt</file>
+  <line>534</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.dashboard</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.dashboard.MainDashboardViewModel void shareFile(com.example.secure.file.FileManager.VaultFile file)" />
+  <language>kotlin</language>
+  <offset>4</offset>
+  <length>44</length>
+  <highlighted_element>fun shareFile(file: FileManager.VaultFile) {</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Method is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/pin/PinViewModel.kt</file>
+  <line>51</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.pin</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.pin.PinViewModel PinViewModel(android.app.Application application)" />
+  <language>kotlin</language>
+  <offset>18</offset>
+  <length>26</length>
+  <highlighted_element>(application: Application)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Constructor is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/settings/SettingsScreen.kt</file>
+  <line>35</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.settings</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.ui.settings.SettingsScreenKt void SettingsScreen(kotlin.jvm.functions.Function0&lt;kotlin.Unit&gt; onNavigateUp, android.app.Activity activityContext)" />
+  <problem_class id="unused" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Unused declaration</problem_class>
+  <hints>
+    <hint value="onNavigateUp" />
+  </hints>
+  <description>Parameter &lt;code&gt;onNavigateUp&lt;/code&gt; is not used</description>
+  <highlighted_element>onNavigateUp</highlighted_element>
+  <language>kotlin</language>
+  <offset>19</offset>
+  <length>12</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>5</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt Purple80" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>32</length>
+  <highlighted_element>val Purple80 = Color(0xFFD0BCFF)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>6</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt PurpleGrey80" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>36</length>
+  <highlighted_element>val PurpleGrey80 = Color(0xFFCCC2DC)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>9</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt Purple40" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>32</length>
+  <highlighted_element>val Purple40 = Color(0xFF6650a4)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>10</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt PurpleGrey40" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>36</length>
+  <highlighted_element>val PurpleGrey40 = Color(0xFF625b71)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>16</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt DangerRed" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>33</length>
+  <highlighted_element>val DangerRed = Color(0xFFDC3545)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>17</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt SuccessGreen" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>36</length>
+  <highlighted_element>val SuccessGreen = Color(0xFF28A745)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>18</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt WarningYellow" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>37</length>
+  <highlighted_element>val WarningYellow = Color(0xFFFFC107)</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt</file>
+  <line>24</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.ui.theme</package>
+  <entry_point TYPE="field" FQNAME="file://$PROJECT_DIR$/app/src/main/java/com/example/secure/ui/theme/Color.kt DarkGrey" />
+  <language>kotlin</language>
+  <offset>0</offset>
+  <length>78</length>
+  <highlighted_element>val DarkGrey = Color(0xFF343A40) // A dark grey for text or dark mode surfaces</highlighted_element>
+  <problem_class id="unused" severity="WARNING" attribute_key="NOT_USED_ELEMENT_ATTRIBUTES">unused declaration</problem_class>
+  <hints>
+    <hint value="comment" />
+    <hint value="delete" />
+  </hints>
+  <description>Field is never used.</description>
+</problem>
+</problems>

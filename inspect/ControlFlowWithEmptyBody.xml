@@ -1,0 +1,28 @@
+<problems>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/AppGlobalState.kt</file>
+  <line>36</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.AppGlobalState void onActivityPaused(android.app.Activity activity)" />
+  <problem_class id="ControlFlowWithEmptyBody" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Control flow with empty body</problem_class>
+  <description>'if' has empty body</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>8</offset>
+  <length>2</length>
+</problem>
+<problem>
+  <file>file://$PROJECT_DIR$/app/src/main/java/com/example/secure/file/FileManager.kt</file>
+  <line>132</line>
+  <module>Secure.app.main</module>
+  <package>com.example.secure.file</package>
+  <entry_point TYPE="method" FQNAME="com.example.secure.file.FileManager void requestLegacyStoragePermissions(android.app.Activity activity)" />
+  <problem_class id="ControlFlowWithEmptyBody" severity="WARNING" attribute_key="WARNING_ATTRIBUTES">Control flow with empty body</problem_class>
+  <description>'if' has empty body</description>
+  <highlighted_element>if</highlighted_element>
+  <language>kotlin</language>
+  <offset>15</offset>
+  <length>2</length>
+</problem>
+</problems>
