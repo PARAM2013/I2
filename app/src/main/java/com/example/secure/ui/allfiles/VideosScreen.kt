@@ -1,7 +1,5 @@
 package com.example.secure.ui.allfiles
 
-import android.app.Application
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.*
@@ -16,23 +14,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
-import androidx.compose.foundation.Image
 import com.example.secure.R
-import com.example.secure.file.FileManager
 import com.example.secure.file.FileManager.VaultFile
 import com.example.secure.file.FileManager.VaultFolder
 import com.example.secure.ui.composables.RenameItemDialog
-import com.example.secure.ui.allfiles.FileListItem
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
-import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import androidx.compose.runtime.LaunchedEffect
 import com.example.secure.AppGlobalState
 import androidx.compose.material.icons.filled.Lock

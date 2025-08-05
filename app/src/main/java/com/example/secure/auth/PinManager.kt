@@ -2,6 +2,7 @@ package com.example.secure.auth
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
@@ -28,17 +29,10 @@ object PinManager {
         val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
         val hash = factory.generateSecret(spec).encoded
 
-        val editor = getPreferences(context).edit()
-        editor.putString(PIN_KEY, hash.toHexString())
-        editor.putString(SALT_KEY, salt.toHexString())
-        editor.apply()
-    }
-
-    fun getPin(context: Context): String? {
-        // This method is no longer safe or useful as it would return the hash.
-        // It's better to remove it or make it private if only used internally.
-        // For now, it will return the hash, but it shouldn't be used for verification.
-        return getPreferences(context).getString(PIN_KEY, null)
+        getPreferences(context).edit {
+            putString(PIN_KEY, hash.toHexString())
+            putString(SALT_KEY, salt.toHexString())
+        }
     }
 
     fun isPinSet(context: Context): Boolean {
@@ -63,18 +57,11 @@ object PinManager {
         return storedHash.contentEquals(hashToVerify)
     }
 
-    fun clearPin(context: Context) {
-        val editor = getPreferences(context).edit()
-        editor.remove(PIN_KEY)
-        editor.remove(SALT_KEY)
-        editor.apply()
-    }
-
     // Fingerprint preference
     fun setFingerprintAuthEnabled(context: Context, enabled: Boolean) {
-        val editor = getPreferences(context).edit()
-        editor.putBoolean(FINGERPRINT_ENABLED_KEY, enabled)
-        editor.apply()
+        getPreferences(context).edit {
+            putBoolean(FINGERPRINT_ENABLED_KEY, enabled)
+        }
     }
 
     fun isFingerprintAuthEnabled(context: Context): Boolean {
@@ -85,9 +72,9 @@ object PinManager {
 
     // Metadata removal preference
     fun setMetadataRemovalEnabled(context: Context, enabled: Boolean) {
-        val editor = getPreferences(context).edit()
-        editor.putBoolean(METADATA_REMOVAL_ENABLED_KEY, enabled)
-        editor.apply()
+        getPreferences(context).edit {
+            putBoolean(METADATA_REMOVAL_ENABLED_KEY, enabled)
+        }
     }
 
     fun isMetadataRemovalEnabled(context: Context): Boolean {

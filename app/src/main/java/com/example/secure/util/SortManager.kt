@@ -2,6 +2,7 @@ package com.example.secure.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 object SortManager {
 
@@ -20,9 +21,9 @@ object SortManager {
     }
 
     fun saveSortOption(context: Context, sortOption: SortOption) {
-        val editor = getPreferences(context).edit()
-        editor.putString(KEY_SORT_OPTION, sortOption.name)
-        editor.apply()
+        getPreferences(context).edit {
+            putString(KEY_SORT_OPTION, sortOption.name)
+        }
     }
 
     fun getSortOption(context: Context): SortOption {

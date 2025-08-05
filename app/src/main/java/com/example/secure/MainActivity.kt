@@ -15,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -131,36 +132,13 @@ class MainActivity : TrackedActivity() {
         checkAndRequestPermissions()
     }
 
-    private fun setupPermissionLaunchers() {
-        // manageStoragePermissionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-        //     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        //         if (Environment.isExternalStorageManager()) {
-        //             Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission granted.", Toast.LENGTH_SHORT).show()
-        //         } else {
-        //             Toast.makeText(this, "MANAGE_EXTERNAL_STORAGE permission is required.", Toast.LENGTH_LONG).show()
-        //         }
-        //         // Potentially refresh ViewModel data if needed after permission change
-        //         // val viewModel: MainDashboardViewModel by viewModels()
-        //         // viewModel.refreshCategories()
-        //     }
-        // }
-
-        // pickFileLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        //     uri?.let { selectedUri ->
-        //         Toast.makeText(this, "Selected file: ${selectedUri.lastPathSegment}", Toast.LENGTH_SHORT).show()
-        //         // val viewModel: MainDashboardViewModel by viewModels()
-        //         // viewModel.importFile(selectedUri) // Assuming ViewModel has importFile
-        //     } ?: Toast.makeText(this, "File selection cancelled.", Toast.LENGTH_SHORT).show()
-        // }
-    }
-
     private fun checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // For Android 11+
             if (!Environment.isExternalStorageManager()) {
                 try {
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.addCategory("android.intent.category.DEFAULT")
-                    intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
+                    intent.data = "package:${applicationContext.packageName}".toUri()
                     // manageStoragePermissionLauncher.launch(intent) // Use if launcher is active
                     startActivityForResult(intent, FileManager.REQUEST_MANAGE_STORAGE_PERMISSION_CODE) // Fallback if launcher not used here
                     Toast.makeText(this, "Requesting MANAGE_EXTERNAL_STORAGE permission.", Toast.LENGTH_LONG).show()

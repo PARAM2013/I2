@@ -9,6 +9,7 @@ import android.os.Environment
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -102,7 +103,7 @@ object FileManager {
             if (!Environment.isExternalStorageManager()) {
                 try {
                     val intent = android.content.Intent(android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                    intent.data = android.net.Uri.parse("package:${activity.packageName}")
+                    intent.data = "package:${activity.packageName}".toUri()
                     activity.startActivityForResult(intent, REQUEST_MANAGE_STORAGE_PERMISSION_CODE)
                 } catch (e: Exception) {
                     // Fallback or error handling if the intent fails (e.g., on some custom ROMs or emulators)

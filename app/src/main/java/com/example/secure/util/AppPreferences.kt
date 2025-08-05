@@ -2,6 +2,7 @@ package com.example.secure.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 object AppPreferences {
 
@@ -17,12 +18,12 @@ object AppPreferences {
     }
 
     fun setLastPath(context: Context, path: String?) {
-        val editor = getPreferences(context).edit()
-        if (path == null) {
-            editor.remove(KEY_LAST_PATH)
-        } else {
-            editor.putString(KEY_LAST_PATH, path)
+        getPreferences(context).edit {
+            if (path == null) {
+                remove(KEY_LAST_PATH)
+            } else {
+                putString(KEY_LAST_PATH, path)
+            }
         }
-        editor.apply()
     }
 }

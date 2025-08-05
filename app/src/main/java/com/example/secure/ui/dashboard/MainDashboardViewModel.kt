@@ -7,13 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Image
 import android.app.PendingIntent
-import androidx.compose.material.icons.filled.Videocam
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
@@ -24,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File // Added missing import
+import java.io.File
 import java.util.Locale
 
 data class DashboardCategoryItem(
@@ -411,80 +405,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(error = null) }
     }
 
-    fun requestUnhideItem(item: Any) {
-        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
-        viewModelScope.launch {
-            var success: Boolean
-            val itemName: String
-            var operationMessage: String
-
-            when (item) {
-                is FileManager.VaultFile -> {
-                    itemName = item.file.name
-                    Log.d("MainDashboardVM", "Requesting unhide for file: $itemName")
-                    val unhiddenFile = fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory())
-                    success = unhiddenFile != null
-                    operationMessage = if (success) {
-                        appContext.getString(R.string.file_restored_success) + " ${unhiddenFile?.name}"
-                    } else {
-                        "Failed to unhide file: $itemName"
-                    }
-                }
-                is FileManager.VaultFolder -> {
-                    itemName = item.folder.name
-                    Log.d("MainDashboardVM", "Requesting unhide for folder: $itemName")
-                    success = fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
-                    operationMessage = if (success) {
-                        appContext.getString(R.string.file_restored_success) + " Folder: $itemName" // Consider a more folder-specific string
-                    } else {
-                        "Failed to unhide folder: $itemName"
-                    }
-                }
-                else -> {
-                    Log.w("MainDashboardVM", "requestUnhideItem: Unknown item type")
-                    success = false
-                    operationMessage = "Unhide failed: Unknown item type."
-                }
-            }
-
-            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
-            if (success) {
-                navigateToPath(_currentPath.value) // Refresh content
-            }
-        }
-    }
-
-    fun requestDeleteItem(item: Any) {
-        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
-        viewModelScope.launch {
-            val fileToDelete: File? = when (item) {
-                is FileManager.VaultFile -> item.file
-                is FileManager.VaultFolder -> item.folder
-                else -> null
-            }
-
-            var operationMessage: String
-            var success = false
-
-            if (fileToDelete != null) {
-                Log.d("MainDashboardVM", "Requesting delete for: ${fileToDelete.name}")
-                success = fileManager.deleteFileFromVault(fileToDelete)
-                operationMessage = if (success) {
-                    appContext.getString(R.string.file_delete_success) + " ${fileToDelete.name}"
-                } else {
-                    "Failed to delete: ${fileToDelete.name}"
-                }
-            } else {
-                Log.w("MainDashboardVM", "requestDeleteItem: Unknown item type")
-                operationMessage = "Delete failed: Unknown item type."
-            }
-
-            _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
-            if (success) {
-                navigateToPath(_currentPath.value) // Refresh content
-            }
-        }
-    }
 
     fun requestRenameItem(item: Any, newName: String) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
@@ -528,34 +448,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
             // Always refresh, even on failure, to ensure UI consistency or clear selections.
             navigateToPath(_currentPath.value)
-        }
-    }
-
-    fun shareFile(file: FileManager.VaultFile) {
-        viewModelScope.launch {
-            try {
-                val context = getApplication<Application>().applicationContext
-                val uri = androidx.core.content.FileProvider.getUriForFile(
-                    context,
-                    "com.example.secure.provider",
-                    file.file
-                )
-                val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
-                    type = context.contentResolver.getType(uri)
-                    putExtra(android.content.Intent.EXTRA_STREAM, uri)
-                    addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-                val chooser = android.content.Intent.createChooser(intent, "Share File")
-                chooser.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(chooser)
-            } catch (e: Exception) {
-                Log.e("MainDashboardVM", "Error sharing file", e)
-                _uiState.update {
-                    it.copy(
-                        error = "Failed to share file: ${e.message}"
-                    )
-                }
-            }
         }
     }
 

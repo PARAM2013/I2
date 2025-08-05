@@ -1,7 +1,5 @@
 package com.example.secure.ui.allfiles
 
-import android.app.Application // For Preview ViewModel
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -17,19 +14,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.MoreVert // For Context Menu
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.DropdownMenu // For Context Menu
-import androidx.compose.material3.DropdownMenuItem // For Context Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,34 +34,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.foundation.Image
-import androidx.activity.compose.rememberLauncherForActivityResult // For FAB
-import androidx.activity.result.contract.ActivityResultContracts // For FAB
-import androidx.compose.material.icons.filled.Add // For FAB
-import androidx.compose.material.icons.filled.Close // For FAB
-import androidx.compose.material.icons.filled.CreateNewFolder // For FAB
-import androidx.compose.material.icons.filled.UploadFile // For FAB
-import androidx.compose.material3.FloatingActionButton // For FAB
-import androidx.compose.material3.SmallFloatingActionButton // For FAB
 import androidx.compose.runtime.mutableStateOf // For FAB state
 import androidx.compose.runtime.remember // For FAB state
 import androidx.compose.runtime.setValue // For FAB state
 import com.example.secure.R
-import com.example.secure.file.FileManager // Required for VaultStats, VaultFile, VaultFolder
 import com.example.secure.file.FileManager.VaultFile // Explicit import
 import com.example.secure.file.FileManager.VaultFolder // Explicit import
-import com.example.secure.ui.composables.CreateFolderDialog // Import the extracted dialog
 import com.example.secure.ui.composables.RenameItemDialog
-import com.example.secure.ui.allfiles.FileListItem
-import com.example.secure.ui.dashboard.MainDashboardUiState // Required for preview
 import com.example.secure.ui.dashboard.MainDashboardViewModel
-import com.example.secure.ui.theme.ISecureTheme
-import java.io.File // Still needed for File objects within VaultFile/VaultFolder
 import com.example.secure.AppGlobalState
 import androidx.compose.material.icons.filled.Lock
 import android.app.Activity
