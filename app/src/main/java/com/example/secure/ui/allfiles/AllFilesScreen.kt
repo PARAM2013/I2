@@ -303,10 +303,6 @@ fun AllFilesScreen(
                                     item = item,
                                     viewModel = viewModel,
                                     isGridView = true,
-                                    onRename = {
-                                        itemToRename = it
-                                        showRenameDialog = true
-                                    },
                                     onMediaClick = {
                                         selectedMediaIndex = mediaFiles.indexOf(it)
                                     }
@@ -326,10 +322,6 @@ fun AllFilesScreen(
                                     item = item,
                                     viewModel = viewModel,
                                     isGridView = false,
-                                    onRename = {
-                                        itemToRename = it
-                                        showRenameDialog = true
-                                    },
                                     onMediaClick = {
                                         selectedMediaIndex = mediaFiles.indexOf(it)
                                     }

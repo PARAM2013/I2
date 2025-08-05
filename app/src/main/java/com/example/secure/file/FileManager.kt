@@ -19,6 +19,10 @@ import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import com.example.secure.R
 
+import android.media.MediaMetadataRetriever
+import java.util.concurrent.TimeUnit
+
+@Suppress("DEPRECATION")
 object FileManager {
 
     const val VAULT_FOLDER_NAME = ".iSecureVault" // Hidden folder
@@ -239,7 +243,8 @@ object FileManager {
         val file: File,
         val category: FileCategory,
         val size: Long,
-        val thumbnail: Bitmap? = null // Add this line
+        val thumbnail: Bitmap? = null, // Add this line
+        val duration: String? = null
     )
 
     // Data class to hold folder details
@@ -291,6 +296,27 @@ object FileManager {
         }
     }
 
+    fun getVideoDuration(file: File): String? {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(file.absolutePath)
+            val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            val timeInMillis = time?.toLongOrNull()
+            if (timeInMillis != null) {
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(timeInMillis)
+                val seconds = TimeUnit.MILLISECONDS.toSeconds(timeInMillis) -
+                        TimeUnit.MINUTES.toSeconds(minutes)
+                String.format("%d:%02d", minutes, seconds)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("FileManager", "Failed to get duration for ${file.name}", e)
+            null
+        }
+    }
+
     fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
         val stats = VaultStats()
         val items = directory.listFiles() ?: return stats // Return empty stats if directory is not listable
@@ -305,12 +331,17 @@ object FileManager {
             } else { // It's a file
                 val category = getFileCategory(item.name)
                 val size = item.length()
-                val thumbnail = if (category == FileCategory.VIDEO) {
-                    ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
-                } else {
-                    null
+                var thumbnail: Bitmap? = null
+                var duration: String? = null
+                if (category == FileCategory.VIDEO) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        thumbnail = ThumbnailUtils.createVideoThumbnail(item, android.util.Size(256, 256), null)
+                    } else {
+                        thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                    }
+                    duration = getVideoDuration(item)
                 }
-                val vaultFile = VaultFile(item, category, size, thumbnail)
+                val vaultFile = VaultFile(item, category, size, thumbnail, duration)
 
                 stats.allFiles.add(vaultFile) // Add to list of files in current directory
                 stats.grandTotalFiles++
@@ -416,10 +447,9 @@ object FileManager {
         }
     }
 
-    fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null, deleteOriginal: Boolean = true): Pair<File, android.net.Uri>? {
+    fun importFile(sourceFileUri: android.net.Uri, context: Context, targetRelativePath: String? = null): Pair<File, android.net.Uri>? {
         val contentResolver = context.contentResolver
         var fileName: String? = null
-        var fileSize: Long = 0
 
         // Get file name and size from URI
         contentResolver.query(sourceFileUri, null, null, null, null)?.use { cursor ->
@@ -427,10 +457,6 @@ object FileManager {
                 val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
                 if (nameIndex != -1) {
                     fileName = cursor.getString(nameIndex)
-                }
-                val sizeIndex = cursor.getColumnIndex(android.provider.OpenableColumns.SIZE)
-                if (sizeIndex != -1) {
-                    fileSize = cursor.getLong(sizeIndex)
                 }
             }
         }
@@ -483,7 +509,7 @@ object FileManager {
             Log.d("FileManager", "importFile: Importing file from $sourceFileUri to ${destinationFile.absolutePath}")
 
             var tempFileToProcess: File? = null
-            var streamToDelete: InputStream? = null // Keep track of stream if temp file is used
+            var streamToDelete: InputStream?
 
             if (PinManager.isMetadataRemovalEnabled(context) && (extension.equals("jpg", true) || extension.equals("jpeg", true) || extension.equals("png", true))) {
                 Log.d("FileManager", "Metadata removal enabled for $fileName")
@@ -518,7 +544,7 @@ object FileManager {
                         exifInterface.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, null)
                         exifInterface.setAttribute(ExifInterface.TAG_IMAGE_LENGTH, null)
                         exifInterface.setAttribute(ExifInterface.TAG_IMAGE_WIDTH, null)
-                        exifInterface.setAttribute(ExifInterface.TAG_ISO_SPEED_RATINGS, null)
+                        exifInterface.setAttribute(ExifInterface.TAG_ISO_SPEED, null)
                         exifInterface.setAttribute(ExifInterface.TAG_MAKE, null)
                         exifInterface.setAttribute(ExifInterface.TAG_MODEL, null)
                         exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, null)

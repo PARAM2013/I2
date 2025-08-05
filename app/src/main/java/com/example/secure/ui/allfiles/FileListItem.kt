@@ -48,7 +48,6 @@ fun FileListItem(
     item: Any,
     viewModel: MainDashboardViewModel,
     isGridView: Boolean,
-    onRename: (Any) -> Unit,
     onMediaClick: (FileManager.VaultFile) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -217,6 +216,15 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
                         .align(Alignment.Center)
                         .size(32.dp)
                 )
+                file.duration?.let {
+                    Text(
+                        text = it,
+                        color = Color.White,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(4.dp)
+                    )
+                }
             }
         }
         else -> {

@@ -125,15 +125,19 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     .filter { it.category == FileManager.FileCategory.VIDEO }
                     .map { vaultFile ->
                         val thumbnail = try {
-                            android.media.ThumbnailUtils.createVideoThumbnail(
-                                vaultFile.file.path,
-                                android.provider.MediaStore.Video.Thumbnails.MINI_KIND
-                            )
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                android.media.ThumbnailUtils.createVideoThumbnail(vaultFile.file, android.util.Size(256, 256), null)
+                            } else {
+                                android.media.ThumbnailUtils.createVideoThumbnail(
+                                    vaultFile.file.path,
+                                    MediaStore.Video.Thumbnails.MINI_KIND
+                                )
+                            }
                         } catch (e: Exception) {
                             Log.e("MainDashboardVM", "Error creating thumbnail for ${vaultFile.file.name}", e)
                             null
                         }
-                        vaultFile.copy(thumbnail = thumbnail)
+                        vaultFile.copy(thumbnail = thumbnail, duration = fileManager.getVideoDuration(vaultFile.file))
                     }
                 _uiState.update {
                     it.copy(
@@ -319,7 +323,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             uris.forEach { uri ->
                 try {
                     Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
-                    val importResult = fileManager.importFile(uri, appContext, _currentPath.value, true)
+                    val importResult = fileManager.importFile(uri, appContext, _currentPath.value)
                     if (importResult != null) {
                         successfulImports++
                         importedUris.add(importResult.second)
@@ -410,7 +414,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun requestUnhideItem(item: Any) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
-            val success: Boolean
+            var success: Boolean
             val itemName: String
             var operationMessage: String
 
@@ -493,7 +497,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             val oldName: String = fileToRename?.name ?: "Item"
 
             var operationMessage: String
-            var success = false
 
             if (fileToRename == null) {
                 operationMessage = "Rename failed: Unknown item type."
@@ -502,12 +505,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
             } else if (newName == oldName) {
                 operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
-                success = true // Considered a "success" as no change was needed and no error occurred.
             }
             else {
                 val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
                 if (renamedFile != null) {
-                    success = true
                     operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
                 } else {
                     // FileManager.renameItemInVault logs specific errors and returns null for various reasons.
@@ -526,7 +527,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
             _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
             // Always refresh, even on failure, to ensure UI consistency or clear selections.
-            // If success, this will show the renamed item.
             navigateToPath(_currentPath.value)
         }
     }
