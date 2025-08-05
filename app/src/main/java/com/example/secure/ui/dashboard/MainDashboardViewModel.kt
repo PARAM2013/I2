@@ -198,7 +198,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     File(FileManager.getVaultDirectory(), relativePath)
                 }
                 Log.d("MainDashboardVM", "Loading contents for path: ${targetDirectory.absolutePath}")
-                val pathStats = fileManager.listFilesInVault(appContext, targetDirectory)
+                val pathStats = fileManager.listFilesInVault(targetDirectory)
 
                 val sortedFiles = when (uiState.value.sortOption) {
                     SortManager.SortOption.DATE_DESC -> pathStats.allFiles.sortedByDescending { it.file.lastModified() }

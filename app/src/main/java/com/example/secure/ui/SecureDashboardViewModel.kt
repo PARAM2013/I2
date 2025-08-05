@@ -32,7 +32,7 @@ class SecureDashboardViewModel(application: Application) : AndroidViewModel(appl
         viewModelScope.launch {
             try {
                 Log.d("SecureDashboardVM", "Loading vault data...")
-                val stats = fileManager.listFilesInVault(appContext)
+                val stats = fileManager.listFilesInVault()
                 _uiState.postValue(SecureDashboardUiState(stats = stats, isLoading = false))
                 Log.d("SecureDashboardVM", "Vault data loaded. Folders: ${stats.grandTotalFolders}, Files: ${stats.grandTotalFiles}")
             } catch (e: Exception) {
