@@ -1,146 +1,57 @@
-# 📱 Project Blueprint: iSecure
+List of video player Controllers & UI Components
+The UI can be broken down into several logical groups:
 
-**Overall Progress:** Core file management logic and dashboard integration for statistics and basic operations are implemented. Settings screen, advanced file operations (sharing, metadata), and file listing/viewing are pending.
+1. Core Playback Controls (Center Overlay)
+   These are the most prominent controls that appear in the middle of the screen when the UI is visible.
 
----
+Play/Pause Button: A large, circular button in the center. It toggles between play and pause states, with the icon changing accordingly.
 
-## 🔐 1. App Access & Security
+Action: player.play() / player.pause()
 
-* **First Launch**
+Rewind Button: Typically positioned to the left of the Play/Pause button. It seeks backward by a fixed duration (usually 10 seconds).
 
-  * User must set a 4-digit App PIN.
-  * After PIN setup, user is directed to the secure dashboard.
+Action: player.seekBack() or player.seekTo(player.getCurrentPosition() - 10000)
 
-* **Unlock Options** (Configurable in Settings):
+Forward Button: Positioned to the right of the Play/Pause button. It seeks forward by a fixed duration (usually 10 seconds).
 
-  * App PIN (mandatory)
-  * Fingerprint authentication (optional)
-  
-* **Auto Lock:**
+Action: player.seekForward() or player.seekTo(player.getCurrentPosition() + 10000)
 
-  * App locks automatically after inactivity or background (default 90 seconds).
-  * Re-opening the app triggers lock screen.
-**Status: COMPLETED (as per initial problem description)**
----
+2. Progress and Timing (Bottom Bar)
+   This horizontal bar at the bottom provides context about the video's timeline.
 
-## 💾 2. Persistent Secure Storage (Post Uninstall)
+Current Time Position: Displays the elapsed time of the video, usually in an MM:SS or HH:MM:SS format.
 
-* Files are stored in internal device storage, in a non-app-private folder.
-  * **DONE** (Vault: `.iSecureVault` in public external storage, Unhide: `Downloads/SecureUnhide/`)
-  * Methods used: `FileManager.getVaultDirectory()`, `FileManager.getUnhideDirectory()`
-* If the app is uninstalled:
-  * Files remain intact.
-    * **DONE** (by using public external storage)
-  * Upon reinstall, the app reconnects and reads old secure data.
-    * **PARTIALLY DONE** (App can read from the vault if permissions are granted. Explicit reconnection logic post-reinstall not specifically added but directory structure supports it.)
-**Status: LARGELY DONE** (Core mechanism in place)
----
+Data: player.getCurrentPosition()
 
-## 🗂️ 3. Secure Dashboard UI
+Seek Bar / Progress Bar: A visual representation of the video's progress. It's interactive, allowing the user to drag ("scrub") to a specific point in the video.
 
-User sees 4 main categories after login:
+Action: player.seekTo(newPosition)
 
-* **All Files** (e.g. 4 Folders, 225 MB)
+Total Duration: Displays the total length of the video.
 
-* **Photos** (e.g. 1 File, 2.5 MB)
+Data: player.getDuration()
 
-* **Videos** (e.g. 0 Files, 0 MB)
+Fullscreen Toggle: An icon at the far right of the bottom bar to enter or exit fullscreen mode. This often also handles locking the screen orientation.
 
-* **Documents** (e.g. 1 File, 3.1 MB)
+Action: Toggles system UI visibility and changes the activity's requested orientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE / PORTRAIT).
 
-* Floating Action Button (FAB):
-  * Create Folder
-    * **DONE** (`SecureDashboardFragment.showCreateFolderDialog()`, `FileManager.createSubFolderInVault()`)
-  * Import File
-    * **DONE** (`SecureDashboardFragment.importFileLauncher` using `ActivityResultContracts.GetContent()`, `FileManager.importFile()`)
-**Status: DONE** (UI elements connected to `FileManager` for statistics and basic import/create folder actions)
----
 
-## 📝 4. File & Folder Management
+3. More Options Menu (Three Dots): A menu on the below-right for less-frequently used settings.
 
-* Files added to iSecure are **moved** from original location.
-* Original files are deleted after import.
-  * **PARTIALLY DONE**. `FileManager.importFile()` attempts to delete original. Works for `file://` URIs. For `content://` URIs (SAF), it now attempts `DocumentsContract.deleteDocument`, but success depends on URI permissions. This is an improvement but not guaranteed for all cases.
-* File metadata (EXIF, location info) is removed if setting is enabled.
-  * **PENDING** (No logic implemented yet for metadata removal)
+Playback Speed: Allows users to select speeds like 0.5x, 1x (Normal), 1.5x, 2x.
 
-**Other Implemented File Management in `FileManager.kt`:**
-* Listing files/folders and calculating statistics: `FileManager.listFilesInVault()`, `VaultStats`, `VaultFolder`, `VaultFile`, `FileCategory`, `getFileCategory()`
-* Deleting files/folders from vault: `FileManager.deleteFileFromVault()` (UI for this is pending file listing)
+Loop Mode: An option to toggle repeating the video.
 
-**Status: PARTIALLY DONE** (Core import, creation, deletion logic in place. Metadata removal pending. Full "move" for import is best-effort.)
----
 
-## 🔄 5. File Sharing Rules
+4. Gestural Controls (The "Invisible" UI)
+   These are crucial for a modern video player experience and are a key part of the Google Files player.
 
-* **Allowed:**
+Single Tap (Anywhere on screen): Toggles the visibility of all UI controls (Top bar, bottom bar, and center buttons). The controls should automatically hide after a few seconds of inactivity.
 
-  * PDF and other document formats
+Double Tap (Left Side of Screen): Seeks backward by 10 seconds. An animation or indicator often appears briefly to confirm the action.
 
-* **Blocked:**
+Double Tap (Right Side of Screen): Seeks forward by 10 seconds.
 
-  * Photos (JPG, PNG, etc.)
-  * Videos (MP4, etc.)
+Vertical Swipe (Left Side of Screen): Controls screen brightness. Swiping up increases brightness, and swiping down decreases it.
 
-* If blocked file is selected for sharing, show message:
-
-  * “Only PDF or document sharing is allowed.”
-**Status: PENDING**
----
-
-## ⚙️ 6. Settings Screen Features
-
-* Change App PIN
-  * **PENDING**
-* Enable / Disable Fingerprint Unlock
-  * **PENDING**
-* Enable / Disable Metadata Removal (on import)
-  * **PENDING**
-**Status: PENDING**
----
-
-## 📥 7. Unhide / Restore Files
-
-* Unhidden files are moved to:
-  * `Downloads/SecureUnhide/`
-    * **DONE** (`FileManager.getUnhideDirectory()`, `FileManager.unhideFile()`)
-* Show confirmation:
-  * ✅ “File restored to Downloads/SecureUnhide/”
-    * **PENDING** (Actual confirmation UI toast/dialog after unhide operation is pending UI for triggering unhide)
-**Status: PARTIALLY DONE** (Core `unhideFile` logic implemented in `FileManager`. UI for triggering and confirmation is pending file listing.)
----
-
-## 🔒 8. Optional Features (Future Scope)
-
-* Fake PIN (decoy mode)
-  * **PENDING**
-* Intruder capture (photo on failed login)
-  * **PENDING**
-**Status: PENDING**
----
-
-## 🔢 9. System Default Viewer Integration
-
-* Users can open/view files using Android's default system viewer apps (e.g., PDF Viewer, Gallery, Video Player).
-  * **PENDING**
-* App will use `Intent.ACTION_VIEW` with appropriate MIME type and `FileProvider` URI.
-  * **PENDING**
-
-### Permissions Required:
-
-* `android.permission.READ_EXTERNAL_STORAGE`
-* `android.permission.WRITE_EXTERNAL_STORAGE` *(for SDK < 29)*
-* For Android 11+ (SDK 30+), use `MANAGE_EXTERNAL_STORAGE` only if absolutely necessary (subject to Play Store policies).
-  * **DONE** (Implemented in `FileManager.checkStoragePermissions()`, `FileManager.requestStoragePermissions()`, and `MainActivity` handles the flow for `MANAGE_EXTERNAL_STORAGE` or legacy permissions).
-**Status: PARTIALLY DONE** (Permission handling for storage is done. File viewing logic is pending.)
-
-### File Viewing Method:
-
-```kotlin
-val intent = Intent(Intent.ACTION_VIEW)
-intent.setDataAndType(fileUri, mimeType)
-intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-startActivity(Intent.createChooser(intent, "Open with"))
-```
-
-> Ensure `FileProvider` is declared in `AndroidManifest.xml` and correctly configured in `res/xml/file_paths.xml`.
+Vertical Swipe (Right Side of Screen): Controls device volume. Swiping up increases volume, and swiping down decreases it.
