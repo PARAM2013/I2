@@ -58,8 +58,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -403,15 +411,37 @@ fun AllFilesScreen(
 
 @Composable
 fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "File Info") },
+        title = { Text(text = "File Info", style = MaterialTheme.typography.titleLarge) },
         text = {
-            Column {
-                Text("Name: ${file.name}")
-                Text("Path: ${file.absolutePath}")
-                Text("Size: ${FileUtils.formatFileSize(file.length())}")
-                Text("Last Modified: ${SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date(file.lastModified()))}")
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                InfoRow(label = "Name", value = file.name)
+                InfoRow(label = "Size", value = FileUtils.formatFileSize(file.length()))
+                InfoRow(
+                    label = "Last Modified",
+                    value = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(
+                        Date(file.lastModified())
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Path", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    text = file.absolutePath,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(file.absolutePath))
+                            Toast
+                                .makeText(context, "Path copied to clipboard", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        .padding(vertical = 4.dp)
+                )
             }
         },
         confirmButton = {
@@ -420,6 +450,18 @@ fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
             }
         }
     )
+}
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.width(100.dp)
+        )
+        Text(text = value, style = MaterialTheme.typography.bodyMedium)
+    }
 }
 
 @Preview(showBackground = true)
