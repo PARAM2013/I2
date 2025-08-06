@@ -125,36 +125,22 @@ fun MediaViewerScreen(
             }
         }
 
-        // Bottom Info
+        // Top Controls
         AnimatedVisibility(
             visible = showControls,
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.TopCenter)
         ) {
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
-                        )
-                    )
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
-                    Text(
-                        "Modified: ${dateFormat.format(Date(currentFile.lastModified()))}",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        "Size: ${formatFileSize(currentFile.length())}",
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                IconButton(onClick = onClose) {
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close viewer", tint = Color.White)
                 }
             }
         }

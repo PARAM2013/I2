@@ -25,11 +25,14 @@ import androidx.compose.material.icons.filled.Close // For FAB
 import androidx.compose.material.icons.filled.CreateNewFolder // For FAB
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.UploadFile // For FAB
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -71,8 +74,13 @@ import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
+import com.example.secure.util.FileUtils
 import com.example.secure.util.SortManager.SortOption
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,6 +103,7 @@ fun AllFilesScreen(
 
     var itemToRename by remember { mutableStateOf<Any?>(null) }
     var showRenameDialog by remember { mutableStateOf(false) }
+    var showFileInfoDialog by remember { mutableStateOf<Any?>(null) }
     var isGridView by remember { mutableStateOf(true) }
     var selectedMediaIndex by remember { mutableStateOf<Int?>(null) }
     val mediaFiles = uiState.vaultStats?.allFiles?.filter { it.category == FileManager.FileCategory.PHOTO || it.category == FileManager.FileCategory.VIDEO } ?: emptyList()
@@ -161,6 +170,11 @@ fun AllFilesScreen(
                 actions = {
                     if (uiState.isSelectionModeActive) {
                         if (uiState.selectedItems.size == 1) {
+                            IconButton(onClick = {
+                                showFileInfoDialog = uiState.selectedItems.first()
+                            }) {
+                                Icon(Icons.Filled.Info, contentDescription = "Info")
+                            }
                             IconButton(onClick = {
                                 itemToRename = uiState.selectedItems.first()
                                 showRenameDialog = true
@@ -315,6 +329,20 @@ fun AllFilesScreen(
         }
     }
 
+    if (showFileInfoDialog != null) {
+        val file = when (showFileInfoDialog) {
+            is FileManager.VaultFile -> (showFileInfoDialog as FileManager.VaultFile).file
+            is FileManager.VaultFolder -> (showFileInfoDialog as FileManager.VaultFolder).folder
+            else -> null
+        }
+        if (file != null) {
+            FileInfoDialog(
+                file = file,
+                onDismiss = { showFileInfoDialog = null }
+            )
+        }
+    }
+
     if (uiState.showCreateFolderDialog) {
         CreateFolderDialog(
             onDismissRequest = { viewModel.requestCreateFolderDialog(false) },
@@ -369,6 +397,29 @@ fun AllFilesScreen(
             )
         }
     }
+}
+
+
+
+@Composable
+fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "File Info") },
+        text = {
+            Column {
+                Text("Name: ${file.name}")
+                Text("Path: ${file.absolutePath}")
+                Text("Size: ${FileUtils.formatFileSize(file.length())}")
+                Text("Last Modified: ${SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault()).format(Date(file.lastModified()))}")
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("OK")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
