@@ -80,67 +80,12 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
                     VideoPlayer(
                         file = file,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        onClose = onClose
                     )
                 }
                 else -> {
                     // Handle other file types or show a placeholder
-                }
-            }
-        }
-
-        // Top Controls
-        AnimatedVisibility(
-            visible = showControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.TopCenter)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Transparent)
-                        )
-                    )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = onClose) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close viewer", tint = Color.White)
-                    }
-                    Text(
-                        text = currentFile.name,
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    
-                }
-            }
-        }
-
-        // Top Controls
-        AnimatedVisibility(
-            visible = showControls,
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align(Alignment.TopCenter)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onClose) {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close viewer", tint = Color.White)
                 }
             }
         }

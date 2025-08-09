@@ -43,6 +43,22 @@ object PlayerManager {
         player?.setPlaybackSpeed(speed)
     }
 
+    fun toggleLoopMode() {
+        player?.repeatMode = if (player?.repeatMode == androidx.media3.common.Player.REPEAT_MODE_ONE) {
+            androidx.media3.common.Player.REPEAT_MODE_OFF
+        } else {
+            androidx.media3.common.Player.REPEAT_MODE_ONE
+        }
+    }
+
+    fun seekForward() {
+        player?.seekTo(player?.currentPosition?.plus(10000) ?: 0)
+    }
+
+    fun seekBackward() {
+        player?.seekTo(player?.currentPosition?.minus(10000) ?: 0)
+    }
+
     fun releasePlayer() {
         player?.release()
         player = null
