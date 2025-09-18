@@ -58,7 +58,10 @@ data class MainDashboardUiState(
     val showDeleteConfirmation: Boolean = false,
     val showUnhideConfirmation: Boolean = false,
     val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC,
-    val importProgress: ImportProgress = ImportProgress()
+    val importProgress: ImportProgress = ImportProgress(),
+    val showImportSuccessDialog: Boolean = false,
+    val lastImportSuccessCount: Int = 0,
+    val lastImportFailedCount: Int = 0
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -342,10 +345,16 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             ) 
         }
         Log.d("MainDashboardVM", "Import progress state updated: isImporting=true, totalFiles=${uris.size}")
+        
+        // Log current state to verify dialog should show
+        Log.d("MainDashboardVM", "Current importProgress.isImporting: ${_uiState.value.importProgress.isImporting}")
 
         importJob = viewModelScope.launch {
             var successfulImports = 0
             var failedImports = 0
+
+            // Add minimum delay to ensure dialog is visible
+            kotlinx.coroutines.delay(500) // Half second minimum display
 
             uris.forEachIndexed { index, uri ->
                 // Check if job was cancelled
@@ -380,10 +389,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     Log.d("MainDashboardVM", "Progress updated: ${index + 1}/${uris.size}, progress=${(index.toFloat() / uris.size)}")
 
                     Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
-                    
-                    // Add small delay to make progress visible (remove this in production)
-                    kotlinx.coroutines.delay(1000)
-                    
                     val importResult = fileManager.importFile(uri, appContext, _currentPath.value)
                     
                     if (importResult != null) {
@@ -406,23 +411,35 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         )
                     ) 
                 }
+
+                // Small delay to make progress visible (can be reduced in production)
+                kotlinx.coroutines.delay(200)
             }
 
-            // Final message with your requested text
-            val message = when {
-                successfulImports > 0 && failedImports == 0 -> 
-                    "Files imported successfully. Now you can delete original files if desired."
-                successfulImports > 0 && failedImports > 0 -> 
-                    "$successfulImports file(s) imported successfully, $failedImports failed. You can delete the successfully imported original files."
-                else -> "No files were imported, or all failed."
-            }
+            // Add final delay to show 100% progress briefly
+            kotlinx.coroutines.delay(500)
 
-            _uiState.update { 
-                it.copy(
-                    isLoading = false, 
-                    fileOperationResult = message,
-                    importProgress = ImportProgress() // Reset progress
-                ) 
+            // Show success dialog instead of snackbar for successful imports
+            if (successfulImports > 0) {
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        importProgress = ImportProgress(), // Reset progress
+                        showImportSuccessDialog = true,
+                        lastImportSuccessCount = successfulImports,
+                        lastImportFailedCount = failedImports,
+                        fileOperationResult = null // Clear snackbar message
+                    ) 
+                }
+            } else {
+                // Only show snackbar for complete failures
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        importProgress = ImportProgress(), // Reset progress
+                        fileOperationResult = "No files were imported, or all failed."
+                    ) 
+                }
             }
             navigateToPath(_currentPath.value) // Refresh view
         }
@@ -470,6 +487,32 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     failedImports = 0,
                     canCancel = true
                 )
+            ) 
+        }
+    }
+
+    fun dismissImportSuccessDialog() {
+        _uiState.update { 
+            it.copy(
+                showImportSuccessDialog = false,
+                lastImportSuccessCount = 0,
+                lastImportFailedCount = 0
+            ) 
+        }
+    }
+
+    fun viewImportedFiles() {
+        // Navigate to current path to show imported files
+        navigateToPath(_currentPath.value)
+    }
+
+    // Test function to show success dialog
+    fun testSuccessDialog() {
+        _uiState.update { 
+            it.copy(
+                showImportSuccessDialog = true,
+                lastImportSuccessCount = 5,
+                lastImportFailedCount = 1
             ) 
         }
     }

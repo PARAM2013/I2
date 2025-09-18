@@ -79,6 +79,7 @@ import com.example.secure.file.FileManager
 import com.example.secure.ui.composables.ConfirmActionDialog
 import com.example.secure.ui.composables.CreateFolderDialog
 import com.example.secure.ui.composables.ImportProgressDialog
+import com.example.secure.ui.composables.ImportSuccessDialog
 import com.example.secure.ui.composables.SimpleImportDialog
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.composables.RenameItemDialog
@@ -397,11 +398,21 @@ fun AllFilesScreen(
         }
     }
 
-    // Import Progress Dialog - Using Simple Version for Testing
-    SimpleImportDialog(
+    // Import Progress Dialog
+    ImportProgressDialog(
         importProgress = uiState.importProgress,
         onCancel = { viewModel.cancelImport() }
     )
+
+    // Import Success Dialog
+    if (uiState.showImportSuccessDialog) {
+        ImportSuccessDialog(
+            successCount = uiState.lastImportSuccessCount,
+            failedCount = uiState.lastImportFailedCount,
+            onDismiss = { viewModel.dismissImportSuccessDialog() },
+            onViewFiles = { viewModel.viewImportedFiles() }
+        )
+    }
 }
 
 
