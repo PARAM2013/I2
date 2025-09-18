@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import android.app.PendingIntent
+
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
@@ -43,8 +43,7 @@ data class MainDashboardUiState(
     val selectedItems: Set<Any> = emptySet(),
     val showDeleteConfirmation: Boolean = false,
     val showUnhideConfirmation: Boolean = false,
-    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC,
-    val deletionPendingIntent: PendingIntent? = null
+    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -310,7 +309,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
         viewModelScope.launch {
-            val importedUris = mutableListOf<Uri>()
             var successfulImports = 0
             var failedImports = 0
 
@@ -320,7 +318,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     val importResult = fileManager.importFile(uri, appContext, _currentPath.value)
                     if (importResult != null) {
                         successfulImports++
-                        importedUris.add(importResult.second)
                     } else {
                         failedImports++
                     }
@@ -337,40 +334,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             }
             _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
             navigateToPath(_currentPath.value) // Refresh view
-
-            if (importedUris.isNotEmpty()) {
-                requestDeletePermission(importedUris)
-            }
         }
     }
 
-    private fun requestDeletePermission(uris: List<Uri>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            viewModelScope.launch {
-                try {
-                    val pendingIntent = MediaStore.createDeleteRequest(appContext.contentResolver, uris)
-                    _uiState.update { it.copy(deletionPendingIntent = pendingIntent) }
-                } catch (e: Exception) {
-                    Log.e("MainDashboardVM", "Error creating delete request", e)
-                    _uiState.update { it.copy(error = "Could not request deletion for original files.") }
-                }
-            }
-        } else {
-            // For older Android versions, direct deletion was attempted in FileManager.
-            // If it failed, we can't do much more without complex logic.
-            // For now, we just log that we are not attempting deletion on older SDKs.
-            Log.w("MainDashboardVM", "Deletion of original files is not automatically requested on this Android version.")
-        }
-    }
 
-    fun onDeletionResult(isDeleted: Boolean) {
-        val message = if (isDeleted) {
-            "Original files deleted."
-        } else {
-            "Could not delete original files. They may need to be removed manually."
-        }
-        _uiState.update { it.copy(deletionPendingIntent = null, fileOperationResult = message) }
-    }
 
     fun createFolder(folderName: String) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null, showCreateFolderDialog = false) }

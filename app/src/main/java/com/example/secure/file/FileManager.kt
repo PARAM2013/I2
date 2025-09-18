@@ -584,8 +584,8 @@ object FileManager {
 
             Log.d("FileManager", "importFile: File copied successfully to ${destinationFile.absolutePath}")
 
-            // Optionally delete original file
-            // Deletion logic is now moved to the ViewModel to handle SAF permissions properly.
+            // Note: Original files are not deleted to avoid permission issues and provide better user experience
+            // Users can manually delete original files if desired
             return Pair(destinationFile, sourceFileUri)
         } catch (e: Exception) {
             Log.e("FileManager", "importFile: Error importing file from URI: $sourceFileUri", e)
