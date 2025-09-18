@@ -78,6 +78,9 @@ import com.example.secure.R
 import com.example.secure.file.FileManager
 import com.example.secure.ui.composables.ConfirmActionDialog
 import com.example.secure.ui.composables.CreateFolderDialog
+import com.example.secure.ui.composables.ImportProgressDialog
+import com.example.secure.ui.composables.SimpleImportDialog
+import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
@@ -393,6 +396,12 @@ fun AllFilesScreen(
             )
         }
     }
+
+    // Import Progress Dialog - Using Simple Version for Testing
+    SimpleImportDialog(
+        importProgress = uiState.importProgress,
+        onCancel = { viewModel.cancelImport() }
+    )
 }
 
 

@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 
 import androidx.lifecycle.AndroidViewModel
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.isActive
 import java.io.File
 import java.util.Locale
 
@@ -27,6 +29,18 @@ data class DashboardCategoryItem(
     var subtitle: String, // Made var to be updatable
     val iconResId: Int, // For drawable resources
     val thumbnail: android.graphics.Bitmap? = null // For video thumbnails
+)
+
+data class ImportProgress(
+    val isImporting: Boolean = false,
+    val currentFileIndex: Int = 0,
+    val totalFiles: Int = 0,
+    val currentFileName: String = "",
+    val overallProgress: Float = 0f,
+    val successfulImports: Int = 0,
+    val failedImports: Int = 0,
+    val canCancel: Boolean = true,
+    val isCancelled: Boolean = false
 )
 
 data class MainDashboardUiState(
@@ -43,7 +57,8 @@ data class MainDashboardUiState(
     val selectedItems: Set<Any> = emptySet(),
     val showDeleteConfirmation: Boolean = false,
     val showUnhideConfirmation: Boolean = false,
-    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC
+    val sortOption: SortManager.SortOption = SortManager.SortOption.DATE_DESC,
+    val importProgress: ImportProgress = ImportProgress()
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -56,6 +71,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
+    
+    private var importJob: kotlinx.coroutines.Job? = null
 
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
@@ -297,6 +314,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun importFiles(uris: List<Uri>) {
+        Log.d("MainDashboardVM", "importFiles called with ${uris.size} files")
         if (uris.isEmpty()) return
 
         if (!fileManager.checkStoragePermissions(appContext)) {
@@ -307,15 +325,67 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             return
         }
 
-        _uiState.update { it.copy(isLoading = true, fileOperationResult = null) }
-        viewModelScope.launch {
+        // Cancel any existing import job
+        importJob?.cancel()
+
+        Log.d("MainDashboardVM", "Starting import progress dialog")
+        // Initialize import progress
+        _uiState.update { 
+            it.copy(
+                isLoading = true, 
+                fileOperationResult = null,
+                importProgress = ImportProgress(
+                    isImporting = true,
+                    totalFiles = uris.size,
+                    canCancel = true
+                )
+            ) 
+        }
+        Log.d("MainDashboardVM", "Import progress state updated: isImporting=true, totalFiles=${uris.size}")
+
+        importJob = viewModelScope.launch {
             var successfulImports = 0
             var failedImports = 0
 
-            uris.forEach { uri ->
+            uris.forEachIndexed { index, uri ->
+                // Check if job was cancelled
+                if (!coroutineContext.isActive) {
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            importProgress = ImportProgress(isCancelled = true),
+                            fileOperationResult = "Import cancelled by user."
+                        ) 
+                    }
+                    return@launch
+                }
+
                 try {
+                    // Get file name for progress display
+                    val fileName = getFileNameFromUri(uri) ?: "Unknown file"
+                    
+                    // Update progress
+                    Log.d("MainDashboardVM", "Processing file ${index + 1}/${uris.size}: $fileName")
+                    _uiState.update { 
+                        it.copy(
+                            importProgress = it.importProgress.copy(
+                                currentFileIndex = index + 1,
+                                currentFileName = fileName,
+                                overallProgress = (index.toFloat() / uris.size),
+                                successfulImports = successfulImports,
+                                failedImports = failedImports
+                            )
+                        ) 
+                    }
+                    Log.d("MainDashboardVM", "Progress updated: ${index + 1}/${uris.size}, progress=${(index.toFloat() / uris.size)}")
+
                     Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
+                    
+                    // Add small delay to make progress visible (remove this in production)
+                    kotlinx.coroutines.delay(1000)
+                    
                     val importResult = fileManager.importFile(uri, appContext, _currentPath.value)
+                    
                     if (importResult != null) {
                         successfulImports++
                     } else {
@@ -325,15 +395,82 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     Log.e("MainDashboardVM", "Error importing file $uri to path: ${_currentPath.value}", e)
                     failedImports++
                 }
+
+                // Update progress after each file
+                _uiState.update { 
+                    it.copy(
+                        importProgress = it.importProgress.copy(
+                            overallProgress = ((index + 1).toFloat() / uris.size),
+                            successfulImports = successfulImports,
+                            failedImports = failedImports
+                        )
+                    ) 
+                }
             }
 
+            // Final message with your requested text
             val message = when {
-                successfulImports > 0 && failedImports == 0 -> "$successfulImports file(s) imported successfully."
-                successfulImports > 0 && failedImports > 0 -> "$successfulImports file(s) imported, $failedImports failed."
+                successfulImports > 0 && failedImports == 0 -> 
+                    "Files imported successfully. Now you can delete original files if desired."
+                successfulImports > 0 && failedImports > 0 -> 
+                    "$successfulImports file(s) imported successfully, $failedImports failed. You can delete the successfully imported original files."
                 else -> "No files were imported, or all failed."
             }
-            _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
+
+            _uiState.update { 
+                it.copy(
+                    isLoading = false, 
+                    fileOperationResult = message,
+                    importProgress = ImportProgress() // Reset progress
+                ) 
+            }
             navigateToPath(_currentPath.value) // Refresh view
+        }
+    }
+
+    private fun getFileNameFromUri(uri: Uri): String? {
+        return try {
+            appContext.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        cursor.getString(nameIndex)
+                    } else null
+                } else null
+            }
+        } catch (e: Exception) {
+            Log.e("MainDashboardVM", "Error getting file name from URI: $uri", e)
+            null
+        }
+    }
+
+    fun cancelImport() {
+        importJob?.cancel()
+        _uiState.update { 
+            it.copy(
+                isLoading = false,
+                importProgress = ImportProgress(isCancelled = true),
+                fileOperationResult = "Import cancelled by user."
+            ) 
+        }
+    }
+
+    // Test function to manually trigger import dialog
+    fun testImportDialog() {
+        Log.d("MainDashboardVM", "Test import dialog triggered")
+        _uiState.update { 
+            it.copy(
+                importProgress = ImportProgress(
+                    isImporting = true,
+                    totalFiles = 3,
+                    currentFileIndex = 1,
+                    currentFileName = "test_image.jpg",
+                    overallProgress = 0.33f,
+                    successfulImports = 0,
+                    failedImports = 0,
+                    canCancel = true
+                )
+            ) 
         }
     }
 
