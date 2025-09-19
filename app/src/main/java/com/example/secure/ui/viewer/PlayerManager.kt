@@ -11,6 +11,9 @@ object PlayerManager {
     private var player: ExoPlayer? = null
     private val _isPlaying = MutableStateFlow(false)
     val isPlaying = _isPlaying.asStateFlow()
+    
+    private var previousVolume: Float = 1f
+    private var isMuted: Boolean = false
 
     fun getPlayer(context: Context): ExoPlayer {
         if (player == null) {
@@ -43,8 +46,48 @@ object PlayerManager {
         player?.setPlaybackSpeed(speed)
     }
 
+    fun mutePlayer() {
+        player?.let { player ->
+            if (!isMuted) {
+                previousVolume = player.volume
+                player.volume = 0f
+                isMuted = true
+            }
+        }
+    }
+
+    fun unmutePlayer() {
+        player?.let { player ->
+            if (isMuted) {
+                player.volume = previousVolume
+                isMuted = false
+            }
+        }
+    }
+
+    fun toggleMute() {
+        if (isMuted) {
+            unmutePlayer()
+        } else {
+            mutePlayer()
+        }
+    }
+
+    fun isMuted(): Boolean = isMuted
+
+    fun getCurrentVolume(): Float = player?.volume ?: 1f
+
+    fun setVolume(volume: Float) {
+        player?.volume = volume.coerceIn(0f, 1f)
+        if (!isMuted) {
+            previousVolume = volume
+        }
+    }
+
     fun releasePlayer() {
         player?.release()
         player = null
+        isMuted = false
+        previousVolume = 1f
     }
 }
