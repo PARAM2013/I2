@@ -1,13 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older than API 31
-   See https://developer.android.com/about/versions/12/backup-restore
--->
+<?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <!-- Exclude all sensitive data from Android backup for security -->
+    
+    <!-- Exclude all shared preferences (contains PIN and sensitive settings) -->
+    <exclude domain="sharedpref" />
+    
+    <!-- Exclude all databases -->
+    <exclude domain="database" />
+    
+    <!-- Exclude all internal files (vault content) -->
+    <exclude domain="file" />
+    
+    <!-- Exclude all cache directories -->
+    <exclude domain="cache" />
+    
+    <!-- This configuration ensures no sensitive data is backed up -->
 </full-backup-content>
