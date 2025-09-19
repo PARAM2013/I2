@@ -101,6 +101,8 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
                     SettingItem(
                         icon = Icons.Filled.Share,
                         title = "Share App",
+                        subtitle = if (com.example.secure.util.ApkBackupUtil.hasBackupApk(context)) 
+                            "APK backup available in Downloads" else "Share current APK",
                         onClick = {
                             shareApplication(activityContext) // Using activityContext as it's readily available
                         }
@@ -126,6 +128,7 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
 fun SettingItem(
     icon: ImageVector,
     title: String,
+    subtitle: String? = null,
     onClick: () -> Unit
 ) {
     Row(
@@ -137,7 +140,17 @@ fun SettingItem(
     ) {
         Icon(imageVector = icon, contentDescription = title, modifier = Modifier.size(24.dp))
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title, style = MaterialTheme.typography.titleMedium)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            if (subtitle != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }
 
@@ -183,8 +196,10 @@ private fun shareApplication(context: Context) { // Context is already imported 
         val applicationInfo = context.applicationInfo
         val sourceApk = File(applicationInfo.sourceDir)
 
-        // Define a name for the copied APK in cache
-        val apkName = "iSecureApp.apk" // You can customize this name
+        // Define a name for the copied APK in cache with version
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        val versionName = packageInfo.versionName
+        val apkName = "iSecureVault_v${versionName}.apk" // Include version in filename
         val destApk = File(context.cacheDir, apkName)
 
         // Copy APK to cache directory

@@ -52,6 +52,11 @@ class MainActivity : TrackedActivity() {
         super.onCreate(savedInstanceState)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        
+        // Backup APK to Downloads on first launch (runs in background)
+        Thread {
+            com.example.secure.util.ApkBackupUtil.backupApkToDownloads(this)
+        }.start()
 
         setContent {
             val dashboardViewModel: MainDashboardViewModel = viewModel()
