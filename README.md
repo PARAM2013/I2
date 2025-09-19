@@ -125,6 +125,105 @@ iSecure Vault is a comprehensive Android application designed to securely store 
 - **Export Files**: Restore files to device storage
 - **Search**: Find files quickly using the search function
 
+## 🔄 Data Recovery After App Deletion
+
+### **Your Files Are SAFE!**
+
+One of the key advantages of iSecure Vault is that **your files survive app deletion**. Unlike many other vault apps that store files in app-specific directories, iSecure Vault stores your files in a persistent location that remains accessible even after the app is uninstalled.
+
+### **File Storage Location**
+```
+/storage/emulated/0/.iSecureVault/
+```
+
+### **Why Your Files Survive App Deletion**
+- ✅ **Public Storage**: Files are stored in device's public storage, not app-specific directory
+- ✅ **Persistent Location**: Survives app uninstall, reinstall, and updates
+- ✅ **Hidden Folder**: Folder starts with `.` making it hidden from galleries and file browsers by default
+- ✅ **No Encryption**: Files remain in their original format, preventing data loss from encryption failures
+- ✅ **Direct Access**: Files can be accessed with any file manager if needed
+
+### **Recovery Methods**
+
+#### **Method 1: Reinstall App (Recommended)**
+1. Reinstall iSecure Vault from the same APK
+2. Grant storage permissions when prompted
+3. Set up your PIN again
+4. **All your files will automatically appear** - no data loss!
+
+#### **Method 2: Manual Recovery (Without App)**
+1. Install any file manager app (like **Files by Google**, **ES File Explorer**)
+2. Enable **"Show hidden files"** in the file manager settings
+3. Navigate to: **Internal Storage** → **`.iSecureVault`**
+4. Your files are there in their original format!
+
+#### **Method 3: Computer Access**
+1. Connect your phone to PC via USB cable
+2. Enable **File Transfer** mode on your phone
+3. On PC, navigate to: **Phone Storage** → **`.iSecureVault`**
+4. Copy files to your computer for backup
+
+### **What You'll Find in Recovery**
+
+Your vault folder structure will look like this:
+```
+.iSecureVault/
+├── photo1.jpg          (Original format, fully accessible)
+├── video1.mp4          (Original format, plays normally)
+├── document1.pdf       (Original format, opens normally)
+├── MyCustomFolder/
+│   ├── photo2.jpg
+│   └── video2.mp4
+└── AnotherFolder/
+    └── important_doc.pdf
+```
+
+### **Data Safety Scenarios**
+
+| Scenario | File Status | Recovery Method |
+|----------|-------------|-----------------|
+| **App Deleted** | ✅ **Safe** | Reinstall app or manual recovery |
+| **App Updated** | ✅ **Safe** | Files remain accessible |
+| **Phone Restart** | ✅ **Safe** | Files remain in place |
+| **Storage Full** | ✅ **Safe** | Files preserved, free up space |
+| **Phone Factory Reset** | ❌ **Lost** | Restore from backup |
+| **Phone Damaged** | ❌ **Lost** | Restore from backup |
+
+### **Backup Recommendations**
+
+#### **Regular Backup Strategy**
+1. **Monthly Export**: Use app's export feature to copy files to Downloads
+2. **Cloud Backup**: Manually backup `.iSecureVault` folder to Google Drive/Dropbox
+3. **Computer Backup**: Connect to PC and copy folder monthly
+4. **External Storage**: Copy important files to SD card or USB drive
+
+#### **Emergency Access Plan**
+1. **Remember PIN**: Write down your PIN in a secure location
+2. **File Manager Ready**: Keep a file manager app installed
+3. **Backup Locations**: Know where your backups are stored
+4. **Recovery Steps**: Bookmark this README for recovery instructions
+
+### **Advantages Over Encrypted Vault Apps**
+
+Unlike apps that encrypt files, iSecure Vault's approach offers several benefits:
+
+- **No Encryption Corruption**: Files can't be lost due to encryption key issues
+- **Universal Compatibility**: Files open with any compatible app
+- **Fast Access**: No decryption time needed
+- **Future-Proof**: Files remain accessible even if app becomes unavailable
+- **Emergency Recovery**: Always possible to access files manually
+- **No Password Dependency**: Files aren't locked if you forget encryption password
+
+### **Security Through Privacy**
+
+iSecure Vault provides security through:
+- **Access Control**: PIN/Biometric protection for app access
+- **File Hiding**: Files hidden from normal gallery and file browser views
+- **Screen Protection**: Prevents screenshots while app is running
+- **No Cloud Exposure**: Files never leave your device
+
+This approach ensures your files are both **secure from unauthorized access** and **safe from data loss**, giving you the best of both worlds.
+
 ## 🔧 Development Information
 
 ### **Project Structure**
