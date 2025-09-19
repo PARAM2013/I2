@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Forward10
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material.icons.filled.Replay10
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
@@ -63,6 +67,8 @@ fun VideoPlayer(
 
     var showControls by remember { mutableStateOf(false) }
     var isMuted by remember { mutableStateOf(false) }
+    var isLooping by remember { mutableStateOf(false) }
+    var isFullscreen by remember { mutableStateOf(false) }
     var autoHideJob by remember { mutableStateOf<Job?>(null) }
 
     var videoPosition by remember { mutableStateOf(0L) }
@@ -93,6 +99,7 @@ fun VideoPlayer(
             videoPosition = player.currentPosition
             videoDuration = player.duration
             isMuted = PlayerManager.isMuted()
+            isLooping = PlayerManager.isLooping()
             delay(1000)
         }
     }
@@ -177,6 +184,7 @@ fun VideoPlayer(
                     modifier = Modifier.fillMaxWidth()
                 )
                 
+                // First row of controls
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -217,7 +225,16 @@ fun VideoPlayer(
                             tint = Color.White
                         )
                     }
-                    
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                // Second row of controls
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     // Mute/Unmute button
                     IconButton(onClick = { 
                         PlayerManager.toggleMute()
@@ -227,6 +244,32 @@ fun VideoPlayer(
                         Icon(
                             if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
                             if (isMuted) "Unmute" else "Mute",
+                            tint = Color.White
+                        )
+                    }
+                    
+                    // Loop toggle button
+                    IconButton(onClick = { 
+                        PlayerManager.toggleLoop()
+                        isLooping = PlayerManager.isLooping()
+                        showControls = true
+                    }) {
+                        Icon(
+                            if (isLooping) Icons.Default.RepeatOne else Icons.Default.Repeat,
+                            if (isLooping) "Disable loop" else "Enable loop",
+                            tint = if (isLooping) Color.Yellow else Color.White
+                        )
+                    }
+                    
+                    // Fullscreen toggle button
+                    IconButton(onClick = { 
+                        isFullscreen = !isFullscreen
+                        toggleFullscreen(context, isFullscreen)
+                        showControls = true
+                    }) {
+                        Icon(
+                            if (isFullscreen) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+                            if (isFullscreen) "Exit fullscreen" else "Enter fullscreen",
                             tint = Color.White
                         )
                     }

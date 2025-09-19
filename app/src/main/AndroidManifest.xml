@@ -41,7 +41,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:label="@string/app_name_post_login" />
+            android:label="@string/app_name_post_login"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
             <!-- This is the main app activity after login, not exported -->
 
         <activity

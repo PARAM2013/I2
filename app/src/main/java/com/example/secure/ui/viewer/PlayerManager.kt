@@ -2,6 +2,7 @@ package com.example.secure.ui.viewer
 
 import android.content.Context
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ object PlayerManager {
     
     private var previousVolume: Float = 1f
     private var isMuted: Boolean = false
+    private var isLooping: Boolean = false
 
     fun getPlayer(context: Context): ExoPlayer {
         if (player == null) {
@@ -80,10 +82,22 @@ object PlayerManager {
         }
     }
 
+    fun setLooping(loop: Boolean) {
+        player?.repeatMode = if (loop) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+        isLooping = loop
+    }
+
+    fun toggleLoop() {
+        setLooping(!isLooping)
+    }
+
+    fun isLooping(): Boolean = isLooping
+
     fun releasePlayer() {
         player?.release()
         player = null
         isMuted = false
         previousVolume = 1f
+        isLooping = false
     }
 }
