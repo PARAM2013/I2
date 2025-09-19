@@ -42,10 +42,6 @@ object PlayerManager {
         player?.play()
     }
 
-    fun setPlaybackSpeed(speed: Float) {
-        player?.setPlaybackSpeed(speed)
-    }
-
     fun mutePlayer() {
         player?.let { player ->
             if (!isMuted) {

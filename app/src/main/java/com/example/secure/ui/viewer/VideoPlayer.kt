@@ -17,14 +17,12 @@ import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VolumeOff
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -64,8 +62,6 @@ fun VideoPlayer(
     val coroutineScope = rememberCoroutineScope()
 
     var showControls by remember { mutableStateOf(false) }
-    var showSpeedControls by remember { mutableStateOf(false) }
-    var playbackSpeed by remember { mutableStateOf(1f) }
     var isMuted by remember { mutableStateOf(false) }
     var autoHideJob by remember { mutableStateOf<Job?>(null) }
 
@@ -125,7 +121,6 @@ fun VideoPlayer(
 
     fun toggleControlsVisibility() {
         showControls = !showControls
-        showSpeedControls = false
     }
 
     Box(
@@ -234,34 +229,6 @@ fun VideoPlayer(
                             if (isMuted) "Unmute" else "Mute",
                             tint = Color.White
                         )
-                    }
-                    
-                    // Settings button
-                    IconButton(onClick = { 
-                        showSpeedControls = !showSpeedControls
-                        showControls = true
-                    }) {
-                        Icon(Icons.Default.Settings, "Settings", tint = Color.White)
-                    }
-                }
-
-                if (showSpeedControls) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        listOf(0.5f, 1f, 1.5f, 2f).forEach { speed ->
-                            TextButton(
-                                onClick = {
-                                    playbackSpeed = speed
-                                    PlayerManager.setPlaybackSpeed(speed)
-                                    showSpeedControls = false
-                                }
-                            ) {
-                                Text("${speed}x", color = if (speed == playbackSpeed) Color.Yellow else Color.White)
-                            }
-                        }
                     }
                 }
             }
