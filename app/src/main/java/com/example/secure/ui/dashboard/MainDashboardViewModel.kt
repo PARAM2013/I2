@@ -146,54 +146,15 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    fun loadAllVideos() {
-        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
-        viewModelScope.launch {
-            try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
-                val videoFilesWithThumbnails = allFiles
-                    .filter { it.category == FileManager.FileCategory.VIDEO }
-                    .map { vaultFile ->
-                        val thumbnail = try {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                android.media.ThumbnailUtils.createVideoThumbnail(vaultFile.file, android.util.Size(256, 256), null)
-                            } else {
-                                android.media.ThumbnailUtils.createVideoThumbnail(
-                                    vaultFile.file.path,
-                                    MediaStore.Video.Thumbnails.MINI_KIND
-                                )
-                            }
-                        } catch (e: Exception) {
-                            Log.e("MainDashboardVM", "Error creating thumbnail for ${vaultFile.file.name}", e)
-                            null
-                        }
-                        vaultFile.copy(thumbnail = thumbnail, duration = fileManager.getVideoDuration(vaultFile.file))
-                    }
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        videoFiles = videoFilesWithThumbnails,
-                        error = null
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("MainDashboardVM", "Error loading all videos", e)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Failed to load videos: ${e.message}"
-                    )
-                }
-            }
-        }
-    }
+
 
     fun loadAllDocuments() {
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
-                val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
+                // Use listFilesInVault with context to generate PDF thumbnails
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val documentFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -207,6 +168,32 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         error = "Failed to load documents: ${e.message}"
+                    )
+                }
+            }
+        }
+    }
+
+    fun loadAllVideos() {
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
+        viewModelScope.launch {
+            try {
+                // Use listFilesInVault with context to generate video thumbnails
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val videoFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        videoFiles = videoFiles,
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("MainDashboardVM", "Error loading all videos", e)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load videos: ${e.message}"
                     )
                 }
             }
@@ -232,7 +219,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     File(FileManager.getVaultDirectory(), relativePath)
                 }
                 Log.d("MainDashboardVM", "Loading contents for path: ${targetDirectory.absolutePath}")
-                val pathStats = fileManager.listFilesInVault(targetDirectory)
+                val pathStats = fileManager.listFilesInVault(targetDirectory, appContext)
 
                 val sortedFiles = when (uiState.value.sortOption) {
                     SortManager.SortOption.DATE_DESC -> pathStats.allFiles.sortedByDescending { it.file.lastModified() }
@@ -282,8 +269,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
-                val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
+                // Use listFilesInVault with context for consistency
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val imageFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 _uiState.update {
                     it.copy(
                         isLoading = false,

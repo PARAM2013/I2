@@ -318,7 +318,7 @@ object FileManager {
         }
     }
 
-    fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
+    fun listFilesInVault(directory: File = getVaultDirectory(), context: Context? = null): VaultStats {
         val stats = VaultStats()
         val items = directory.listFiles() ?: return stats // Return empty stats if directory is not listable
 
@@ -334,14 +334,47 @@ object FileManager {
                 val size = item.length()
                 var thumbnail: Bitmap? = null
                 var duration: String? = null
-                if (category == FileCategory.VIDEO) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        thumbnail = ThumbnailUtils.createVideoThumbnail(item, android.util.Size(256, 256), null)
-                    } else {
-                        thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                
+                when (category) {
+                    FileCategory.PHOTO -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            try {
+                                thumbnail = ThumbnailUtils.createImageThumbnail(item, android.util.Size(256, 256), null)
+                            } catch (e: Exception) {
+                                Log.e("FileManager", "Failed to create image thumbnail for ${item.name}", e)
+                            }
+                        } else {
+                            thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Images.Thumbnails.MINI_KIND)
+                        }
                     }
-                    duration = getVideoDuration(item)
+                    FileCategory.VIDEO -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            thumbnail = ThumbnailUtils.createVideoThumbnail(item, android.util.Size(256, 256), null)
+                        } else {
+                            thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                        }
+                        duration = getVideoDuration(item)
+                    }
+                    FileCategory.DOCUMENT -> {
+                        // Generate PDF thumbnail if it's a PDF file and context is available
+                        if (item.extension.lowercase() == "pdf" && context != null) {
+                            try {
+                                thumbnail = com.example.secure.util.PdfThumbnailGenerator.generateThumbnail(
+                                    context = context,
+                                    pdfFile = item,
+                                    width = 200,
+                                    height = 300
+                                )
+                            } catch (e: Exception) {
+                                Log.w("FileManager", "Failed to generate PDF thumbnail for ${item.name}", e)
+                            }
+                        }
+                    }
+                    else -> {
+                        // No thumbnail generation for other categories
+                    }
                 }
+                
                 val vaultFile = VaultFile(item, category, size, thumbnail, duration)
 
                 stats.allFiles.add(vaultFile) // Add to list of files in current directory

@@ -33,11 +33,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.secure.file.FileManager
 import com.example.secure.ui.dashboard.MainDashboardViewModel
+import com.example.secure.util.FileOperations
 import com.example.secure.util.FileUtils
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -50,6 +54,21 @@ fun FileListItem(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val isSelected = uiState.selectedItems.contains(item)
+    val context = LocalContext.current
+
+    fun handleItemClick() {
+        when (item) {
+            is FileManager.VaultFolder -> viewModel.navigateToPath(item.folder.relativeTo(FileManager.getVaultDirectory()).path)
+            is FileManager.VaultFile -> {
+                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
+                    onMediaClick(item)
+                } else {
+                    // Handle document click - open with system app
+                    FileOperations.openFile(context, item.file)
+                }
+            }
+        }
+    }
 
     val modifier = if (isGridView) {
         Modifier
@@ -61,16 +80,7 @@ fun FileListItem(
                     if (uiState.isSelectionModeActive) {
                         viewModel.toggleSelection(item)
                     } else {
-                        when (item) {
-                            is FileManager.VaultFolder -> viewModel.navigateToPath(item.folder.relativeTo(FileManager.getVaultDirectory()).path)
-                            is FileManager.VaultFile -> {
-                                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
-                                    onMediaClick(item)
-                                } else {
-                                    // Handle document click
-                                }
-                            }
-                        }
+                        handleItemClick()
                     }
                 },
                 onLongClick = {
@@ -88,16 +98,7 @@ fun FileListItem(
                     if (uiState.isSelectionModeActive) {
                         viewModel.toggleSelection(item)
                     } else {
-                        when (item) {
-                            is FileManager.VaultFolder -> viewModel.navigateToPath(item.folder.relativeTo(FileManager.getVaultDirectory()).path)
-                            is FileManager.VaultFile -> {
-                                if (item.category == FileManager.FileCategory.PHOTO || item.category == FileManager.FileCategory.VIDEO) {
-                                    onMediaClick(item)
-                                } else {
-                                    // Handle document click
-                                }
-                            }
-                        }
+                        handleItemClick()
                     }
                 },
                 onLongClick = {
@@ -178,12 +179,21 @@ fun FileItemView(file: FileManager.VaultFile, isGridView: Boolean) {
 fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
     when (file.category) {
         FileManager.FileCategory.PHOTO -> {
-            Image(
-                painter = rememberAsyncImagePainter(model = Uri.fromFile(file.file)),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-            )
+            if (file.thumbnail != null) {
+                Image(
+                    bitmap = file.thumbnail.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
+            } else {
+                Image(
+                    painter = rememberAsyncImagePainter(model = Uri.fromFile(file.file)),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
+            }
         }
         FileManager.FileCategory.VIDEO -> {
             Box(modifier = modifier) {
@@ -223,6 +233,43 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
                             .padding(4.dp)
                     )
                 }
+            }
+        }
+        FileManager.FileCategory.DOCUMENT -> {
+            // Show PDF thumbnail if available, otherwise show document icon
+            if (file.thumbnail != null && file.file.extension.lowercase() == "pdf") {
+                Box(modifier = modifier) {
+                    Image(
+                        bitmap = file.thumbnail.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize()
+                    )
+                    // Add PDF overlay icon
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(4.dp)
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(Color.Red.copy(alpha = 0.8f))
+                    ) {
+                        Text(
+                            text = "PDF",
+                            color = Color.White,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                }
+            } else {
+                Icon(
+                    painter = painterResource(id = FileManager.getIconForFile(file.file.name)),
+                    contentDescription = null,
+                    modifier = modifier,
+                    tint = Color.Unspecified
+                )
             }
         }
         else -> {

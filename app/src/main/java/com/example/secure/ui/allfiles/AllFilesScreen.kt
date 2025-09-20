@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.SelectAll
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.UploadFile // For FAB
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.AlertDialog
@@ -84,6 +85,7 @@ import com.example.secure.ui.composables.ImportSuccessDialog
 import com.example.secure.ui.composables.SimpleImportDialog
 import com.example.secure.ui.composables.UnhideProgressDialog
 import com.example.secure.ui.composables.UnhideSuccessDialog
+import com.example.secure.util.FileOperations
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
@@ -197,6 +199,32 @@ fun AllFilesScreen(
                                 showRenameDialog = true
                             }) {
                                 Icon(Icons.Filled.ModeEdit, contentDescription = "Rename")
+                            }
+                        }
+                        val selectedFiles = uiState.selectedItems.filterIsInstance<FileManager.VaultFile>()
+                        val allDocuments = selectedFiles.isNotEmpty() && selectedFiles.all { it.category == FileManager.FileCategory.DOCUMENT }
+
+                        if (allDocuments) {
+                            IconButton(onClick = {
+                                val filesToShare = selectedFiles.map { it.file }
+                                if (filesToShare.isNotEmpty()) {
+                                    try {
+                                        if (filesToShare.size == 1) {
+                                            FileOperations.shareFile(context, filesToShare.first())
+                                        } else {
+                                            FileOperations.shareMultipleFiles(context, filesToShare)
+                                        }
+                                    } catch (e: Exception) {
+                                        android.util.Log.e("AllFilesScreen", "Error sharing files", e)
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "Error sharing files: ${e.message}",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }) {
+                                Icon(Icons.Filled.Share, contentDescription = "Share")
                             }
                         }
                         IconButton(onClick = { viewModel.requestUnhideSelectedItems() }) {

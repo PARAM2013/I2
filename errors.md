@@ -86,8 +86,5 @@
 2025-09-20 10:48:09.179 23531-23531 VRI[LauncherActivity]   com.example.secure                   D  vri.reportDrawFinished syncSeqId=0 android.view.ViewRootImpl.lambda$createSyncIfNeeded$4$android-view-ViewRootImpl:4021 android.view.ViewRootImpl$$ExternalSyntheticLambda1.run:6 android.os.Handler.handleCallback:942 android.os.Handler.dispatchMessage:99 android.os.Looper.loopOnce:211
 2025-09-20 10:48:09.180 23531-23531 HandWritingStubImpl     com.example.secure                   I  getCurrentKeyboardType: 1
 2025-09-20 10:48:09.193  3080-28978 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=799   userId=0   baseIntent=Intent { act=android.intent.action.MAIN flag=270532608 cmp=ComponentInfo{com.example.secure/com.example.secure.LauncherActivity} }
-2025-09-20 10:48:09.356 23531-23570 libc                    com.example.secure                   W  Access denied finding property "ro.vendor.display.iris_x7.support"
-
-
-
+2025-09-20 10:48:09.356 23531-23570 libc                    com.example.secure                   W  Access denied finding property "ro.vendor.display.iris_x7.suppor
 2025-09-20 10:48:10.884 23531-23531 DecorView[]             com.example.secure                   D  onWindowFocusChanged hasWindowFocus false
