@@ -29,18 +29,14 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Starting theme for LauncherActivity to avoid blank screen -->
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <!-- Set the splash screen background, animated icon, and animation duration. -->
-        <item name="windowSplashScreenBackground">@color/purple_500</item>
-        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
-             animated drawable. One of these is required. -->
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
-        <!-- Required for animated icons -->
-        <!-- <item name="windowSplashScreenAnimationDuration">200</item> -->
-        <!-- Set the theme of the Activity that directly follows your splash screen. -->
-        <!-- Required -->
-        <item name="postSplashScreenTheme">@style/Theme.Secure</item>
+    <!-- Starting theme for LauncherActivity with custom splash screen -->
+    <style name="Theme.App.Starting" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Set the splash screen background with gradient -->
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <!-- Remove status bar -->
+        <item name="android:windowFullscreen">true</item>
+        <!-- Set the theme of the Activity that directly follows your splash screen -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

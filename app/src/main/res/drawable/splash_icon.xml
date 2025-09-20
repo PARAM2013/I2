@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M100,20 A80,80 0 1,1 100,180 A80,80 0 1,1 100,20 Z"
+        android:fillAlpha="0.9" />
+    
+    <!-- Lock icon -->
+    <path
+        android:fillColor="@color/purple_700"
+        android:pathData="M100,60 C90,60 82,68 82,78 L82,88 L78,88 C76,88 74,90 74,92 L74,128 C74,130 76,132 78,132 L122,132 C124,132 126,130 126,128 L126,92 C126,90 124,88 122,88 L118,88 L118,78 C118,68 110,60 100,60 Z M100,68 C106,68 110,72 110,78 L110,88 L90,88 L90,78 C90,72 94,68 100,68 Z M100,100 C104,100 108,104 108,108 C108,112 104,116 100,116 C96,116 92,112 92,108 C92,104 96,100 100,100 Z" />
+    
+    <!-- Shine effect -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M70,40 L130,40 A10,10 0 0,1 130,60 L70,100 A10,10 0 0,1 70,40 Z"
+        android:fillAlpha="0.3" />
+</vector>

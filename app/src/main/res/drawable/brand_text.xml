@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="24dp"
+    android:viewportWidth="160"
+    android:viewportHeight="24">
+    
+    <!-- Simple brand mark - stylized letters -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M10,4 L14,4 L14,20 L10,20 Z M16,4 L20,4 L26,12 L32,4 L36,4 L36,20 L32,20 L32,12 L26,20 L20,12 L20,20 L16,20 Z" />
+    
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M42,4 L56,4 L56,8 L46,8 L46,10 L54,10 L54,14 L46,14 L46,16 L56,16 L56,20 L42,20 Z" />
+    
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M62,4 L76,4 L76,8 L66,8 L66,10 L74,10 L74,14 L66,14 L66,16 L76,16 L76,20 L62,20 Z" />
+    
+    <!-- Decorative elements as circles using path -->
+    <path
+        android:fillColor="@color/teal_200"
+        android:pathData="M80,10 A2,2 0 1,1 80,14 A2,2 0 1,1 80,10 Z" />
+    
+    <path
+        android:fillColor="@color/teal_200"
+        android:pathData="M85,10.5 A1.5,1.5 0 1,1 85,13.5 A1.5,1.5 0 1,1 85,10.5 Z" />
+    
+    <path
+        android:fillColor="@color/teal_200"
+        android:pathData="M89,11 A1,1 0 1,1 89,13 A1,1 0 1,1 89,11 Z" />
+</vector>

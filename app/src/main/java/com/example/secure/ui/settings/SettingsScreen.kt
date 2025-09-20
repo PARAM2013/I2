@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.secure.auth.PinManager
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -32,7 +34,7 @@ import java.io.IOException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
+fun SettingsScreen(activityContext: Activity) {
     val context = LocalContext.current
 
     var fingerprintEnabled by remember {
@@ -64,7 +66,7 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
                             activityContext.startActivity(intent)
                         }
                     )
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Enable Fingerprint Unlock
@@ -78,7 +80,7 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
                             PinManager.setFingerprintAuthEnabled(context, newCheckedState)
                         }
                     )
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Remove Metadata on Import
@@ -93,7 +95,7 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
                             PinManager.setMetadataRemovalEnabled(context, newCheckedState)
                         }
                     )
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                 }
 
                 // Share App
@@ -112,14 +114,40 @@ fun SettingsScreen(onNavigateUp: () -> Unit, activityContext: Activity) {
             }
 
             // Footer
-            Text(
-                text = "This app is make by KING",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp) // Padding for the footer text
-            )
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
+                Text(
+                    text = "Crafted with ❤️ by",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "KING AMRISH",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.2.sp
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Secure • Private • Trusted",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

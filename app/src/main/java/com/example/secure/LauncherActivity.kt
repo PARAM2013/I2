@@ -4,13 +4,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.fragment.app.FragmentActivity // Required for BiometricPrompt
 import com.example.secure.auth.PinManager
 import com.example.secure.ui.composables.PinScreen
+import com.example.secure.ui.splash.SplashScreen
+import com.example.secure.ui.splash.SimpleSplashScreen
 import com.example.secure.ui.theme.ISecureTheme
 
 class LauncherActivity : FragmentActivity() {
+    private var splashShown = false
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -20,11 +24,27 @@ class LauncherActivity : FragmentActivity() {
 
         setContent {
             ISecureTheme {
-                DetermineNextScreen()
+                LauncherContent()
             }
         }
     }
 
+    @Composable
+    private fun LauncherContent() {
+        var showSplash by remember { mutableStateOf(!splashShown) }
+        
+        if (showSplash) {
+            SplashScreen(
+                onSplashFinished = {
+                    showSplash = false
+                    splashShown = true
+                }
+            )
+        } else {
+            DetermineNextScreen()
+        }
+    }
+    
     @Composable
     private fun DetermineNextScreen() {
         // PinScreen will handle both setup and unlock scenarios based on PinManager.isPinSet()
@@ -68,10 +88,12 @@ class LauncherActivity : FragmentActivity() {
         if (PinManager.isPinSet(this)) {
             AppGlobalState.isLocked = true
         }
-        // Re-trigger composition.
-        setContent {
-            ISecureTheme {
-                DetermineNextScreen()
+        // Only skip splash on resume if it has already been shown
+        if (splashShown) {
+            setContent {
+                ISecureTheme {
+                    DetermineNextScreen()
+                }
             }
         }
     }
