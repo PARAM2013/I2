@@ -300,17 +300,51 @@ fun AllFilesScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     if (isFabMenuExpanded) {
-                        SmallFloatingActionButton(
-                            onClick = { filePickerLauncher.launch("*/*") },
-                            content = { Icon(Icons.Filled.UploadFile, contentDescription = "Import Files") }
-                        )
-                        SmallFloatingActionButton(
-                            onClick = {
-                                viewModel.requestCreateFolderDialog(true)
-                                isFabMenuExpanded = false
-                                      },
-                            content = { Icon(Icons.Filled.CreateNewFolder, contentDescription = "Create Folder") }
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            androidx.compose.material3.Surface(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.medium,
+                                modifier = Modifier.padding(end = 12.dp)
+                            ) {
+                                Text(
+                                    text = "Import Files",
+                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                            SmallFloatingActionButton(
+                                onClick = { filePickerLauncher.launch("*/*") },
+                                content = { Icon(Icons.Filled.UploadFile, contentDescription = "Import Files") }
+                            )
+                        }
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            androidx.compose.material3.Surface(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = MaterialTheme.shapes.medium,
+                                modifier = Modifier.padding(end = 12.dp)
+                            ) {
+                                Text(
+                                    text = "Create Folder",
+                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                            SmallFloatingActionButton(
+                                onClick = {
+                                    viewModel.requestCreateFolderDialog(true)
+                                    isFabMenuExpanded = false
+                                },
+                                content = { Icon(Icons.Filled.CreateNewFolder, contentDescription = "Create Folder") }
+                            )
+                        }
                     }
                     FloatingActionButton(
                         onClick = { isFabMenuExpanded = !isFabMenuExpanded },
