@@ -131,6 +131,35 @@ FileManager.FileCategory.DOCUMENT -> {
 }
 ```
 
+### **Issue 5: FAB Labels Not Visible** ✅
+**Problem**: The labels for the Floating Action Buttons were not visible.
+
+**Root Cause**: The labels were positioned incorrectly in the layout file.
+
+**Solution**:
+- Moved the labels to the right of the FABs in `fragment_secure_dashboard.xml`.
+- Added a start margin to the labels.
+
+**Code Changes**:
+```xml
+    <TextView
+        android:id="@+id/fab_import_file_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fab_import_file"
+        android:background="@drawable/bg_fab_label"
+        android:paddingStart="8dp" android:paddingEnd="8dp"
+        android:paddingTop="4dp" android:paddingBottom="4dp"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/fab_import_file"
+        app:layout_constraintTop_toTopOf="@id/fab_import_file"
+        app:layout_constraintStart_toEndOf="@id/fab_import_file"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+```
+
+
 ## 🔧 **Additional Improvements Made**
 
 ### **Enhanced Error Handling**
