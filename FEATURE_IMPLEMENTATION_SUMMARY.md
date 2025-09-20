@@ -56,14 +56,6 @@
 - **Added context-aware operations**
 - **Better error handling and user feedback**
 
-### 5. **Labeled Floating Action Buttons**
-- **Feature**: Added labels to the Floating Action Buttons for importing files and creating folders.
-- **Implementation**:
-  - Added `TextView`s next to the FABs in `fragment_secure_dashboard.xml`.
-  - The labels are positioned to the right of the FABs with a start margin.
-  - The visibility of the labels is handled in `SecureDashboardFragment.kt`.
-
-
 ## 🔧 **Technical Implementation Details**
 
 ### **FileOperations Class**

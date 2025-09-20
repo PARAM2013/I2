@@ -239,10 +239,10 @@
         android:paddingStart="8dp" android:paddingEnd="8dp"
         android:paddingTop="4dp" android:paddingBottom="4dp"
         android:textColor="@android:color/white"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@id/fab_import_file"
         app:layout_constraintTop_toTopOf="@id/fab_import_file"
-        app:layout_constraintStart_toEndOf="@id/fab_import_file"
+        app:layout_constraintEnd_toStartOf="@id/fab_import_file"
         android:visibility="invisible"
         tools:visibility="visible"/>
 
@@ -271,10 +271,10 @@
         android:paddingStart="8dp" android:paddingEnd="8dp"
         android:paddingTop="4dp" android:paddingBottom="4dp"
         android:textColor="@android:color/white"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@id/fab_create_folder"
         app:layout_constraintTop_toTopOf="@id/fab_create_folder"
-        app:layout_constraintStart_toEndOf="@id/fab_create_folder"
+        app:layout_constraintEnd_toStartOf="@id/fab_create_folder"
         android:visibility="invisible"
         tools:visibility="visible"/>
 
