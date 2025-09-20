@@ -43,6 +43,18 @@ data class ImportProgress(
     val isCancelled: Boolean = false
 )
 
+data class UnhideProgress(
+    val isUnhiding: Boolean = false,
+    val currentFileIndex: Int = 0,
+    val totalFiles: Int = 0,
+    val currentFileName: String = "",
+    val overallProgress: Float = 0f,
+    val successfulUnhides: Int = 0,
+    val failedUnhides: Int = 0,
+    val canCancel: Boolean = true,
+    val isCancelled: Boolean = false
+)
+
 data class MainDashboardUiState(
     val categories: List<DashboardCategoryItem> = emptyList(),
     val isLoading: Boolean = false,
@@ -61,7 +73,11 @@ data class MainDashboardUiState(
     val importProgress: ImportProgress = ImportProgress(),
     val showImportSuccessDialog: Boolean = false,
     val lastImportSuccessCount: Int = 0,
-    val lastImportFailedCount: Int = 0
+    val lastImportFailedCount: Int = 0,
+    val unhideProgress: UnhideProgress = UnhideProgress(),
+    val showUnhideSuccessDialog: Boolean = false,
+    val lastUnhideSuccessCount: Int = 0,
+    val lastUnhideFailedCount: Int = 0
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -76,6 +92,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private val appContext: Context = application.applicationContext
     
     private var importJob: kotlinx.coroutines.Job? = null
+    private var unhideJob: kotlinx.coroutines.Job? = null
 
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
@@ -517,6 +534,27 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun cancelUnhide() {
+        unhideJob?.cancel()
+        _uiState.update { 
+            it.copy(
+                isLoading = false,
+                unhideProgress = UnhideProgress(isCancelled = true),
+                fileOperationResult = "Unhide cancelled by user."
+            ) 
+        }
+    }
+
+    fun dismissUnhideSuccessDialog() {
+        _uiState.update { 
+            it.copy(
+                showUnhideSuccessDialog = false,
+                lastUnhideSuccessCount = 0,
+                lastUnhideFailedCount = 0
+            ) 
+        }
+    }
+
 
 
     fun createFolder(folderName: String) {
@@ -632,6 +670,31 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun selectAll() {
+        val allItems = mutableSetOf<Any>()
+        _uiState.value.vaultStats?.let { stats ->
+            allItems.addAll(stats.allFolders)
+            allItems.addAll(stats.allFiles)
+        }
+        
+        _uiState.update {
+            it.copy(
+                isSelectionModeActive = allItems.isNotEmpty(),
+                selectedItems = allItems
+            )
+        }
+    }
+
+    fun isAllSelected(): Boolean {
+        val currentSelection = _uiState.value.selectedItems
+        val allItems = mutableSetOf<Any>()
+        _uiState.value.vaultStats?.let { stats ->
+            allItems.addAll(stats.allFolders)
+            allItems.addAll(stats.allFiles)
+        }
+        return allItems.isNotEmpty() && currentSelection.containsAll(allItems)
+    }
+
     fun requestDeleteSelectedItems() {
         if (_uiState.value.selectedItems.isNotEmpty()) {
             _uiState.update { it.copy(showDeleteConfirmation = true) }
@@ -671,24 +734,129 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun confirmUnhideSelectedItems() {
-        val itemsToUnhide = _uiState.value.selectedItems
-        _uiState.update { it.copy(isLoading = true, showUnhideConfirmation = false) }
-        viewModelScope.launch {
+        val itemsToUnhide = _uiState.value.selectedItems.toList()
+        if (itemsToUnhide.isEmpty()) return
+
+        // Cancel any existing unhide job
+        unhideJob?.cancel()
+
+        Log.d("MainDashboardVM", "Starting unhide progress for ${itemsToUnhide.size} items")
+        
+        // Initialize unhide progress
+        _uiState.update { 
+            it.copy(
+                isLoading = true, 
+                showUnhideConfirmation = false,
+                fileOperationResult = null,
+                unhideProgress = UnhideProgress(
+                    isUnhiding = true,
+                    totalFiles = itemsToUnhide.size,
+                    canCancel = true
+                )
+            ) 
+        }
+
+        unhideJob = viewModelScope.launch {
             var successCount = 0
-            itemsToUnhide.forEach { item ->
-                val success = when (item) {
-                    is FileManager.VaultFile -> fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory()) != null
-                    is FileManager.VaultFolder -> fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
-                    else -> false
+            var failedCount = 0
+
+            // Add minimum delay to ensure dialog is visible
+            kotlinx.coroutines.delay(500)
+
+            itemsToUnhide.forEachIndexed { index, item ->
+                // Check if job was cancelled
+                if (!coroutineContext.isActive) {
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            unhideProgress = UnhideProgress(isCancelled = true),
+                            fileOperationResult = "Unhide cancelled by user."
+                        ) 
+                    }
+                    return@launch
                 }
-                if (success) {
-                    successCount++
+
+                try {
+                    // Get item name for progress display
+                    val itemName = when (item) {
+                        is FileManager.VaultFile -> item.file.name
+                        is FileManager.VaultFolder -> item.folder.name
+                        else -> "Unknown item"
+                    }
+                    
+                    // Update progress
+                    Log.d("MainDashboardVM", "Processing item ${index + 1}/${itemsToUnhide.size}: $itemName")
+                    _uiState.update { 
+                        it.copy(
+                            unhideProgress = it.unhideProgress.copy(
+                                currentFileIndex = index + 1,
+                                currentFileName = itemName,
+                                overallProgress = (index.toFloat() / itemsToUnhide.size),
+                                successfulUnhides = successCount,
+                                failedUnhides = failedCount
+                            )
+                        ) 
+                    }
+
+                    val success = when (item) {
+                        is FileManager.VaultFile -> fileManager.unhideFile(item.file, appContext, FileManager.getUnhideDirectory()) != null
+                        is FileManager.VaultFolder -> fileManager.unhideFolderRecursive(item.folder, appContext, FileManager.getUnhideDirectory())
+                        else -> false
+                    }
+                    
+                    if (success) {
+                        successCount++
+                    } else {
+                        failedCount++
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainDashboardVM", "Error unhiding item", e)
+                    failedCount++
+                }
+
+                // Update progress after each item
+                _uiState.update { 
+                    it.copy(
+                        unhideProgress = it.unhideProgress.copy(
+                            overallProgress = ((index + 1).toFloat() / itemsToUnhide.size),
+                            successfulUnhides = successCount,
+                            failedUnhides = failedCount
+                        )
+                    ) 
+                }
+
+                // Small delay to make progress visible
+                kotlinx.coroutines.delay(200)
+            }
+
+            // Add final delay to show 100% progress briefly
+            kotlinx.coroutines.delay(500)
+
+            // Show success dialog for successful unhides
+            if (successCount > 0) {
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        unhideProgress = UnhideProgress(), // Reset progress
+                        showUnhideSuccessDialog = true,
+                        lastUnhideSuccessCount = successCount,
+                        lastUnhideFailedCount = failedCount,
+                        fileOperationResult = null // Clear snackbar message
+                    ) 
+                }
+            } else {
+                // Only show snackbar for complete failures
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        unhideProgress = UnhideProgress(), // Reset progress
+                        fileOperationResult = "No items were unhidden, or all failed."
+                    ) 
                 }
             }
-            val message = "$successCount/${itemsToUnhide.size} items unhidden."
-            _uiState.update { it.copy(isLoading = false, fileOperationResult = message) }
+            
             clearSelection()
-            navigateToPath(_currentPath.value)
+            navigateToPath(_currentPath.value) // Refresh view
         }
     }
 }

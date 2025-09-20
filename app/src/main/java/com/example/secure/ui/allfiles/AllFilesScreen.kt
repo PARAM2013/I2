@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.ModeEdit
+import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.UploadFile // For FAB
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.AlertDialog
@@ -81,6 +82,8 @@ import com.example.secure.ui.composables.CreateFolderDialog
 import com.example.secure.ui.composables.ImportProgressDialog
 import com.example.secure.ui.composables.ImportSuccessDialog
 import com.example.secure.ui.composables.SimpleImportDialog
+import com.example.secure.ui.composables.UnhideProgressDialog
+import com.example.secure.ui.composables.UnhideSuccessDialog
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
@@ -169,6 +172,20 @@ fun AllFilesScreen(
                 },
                 actions = {
                     if (uiState.isSelectionModeActive) {
+                        // Select All / Deselect All button
+                        IconButton(onClick = { 
+                            if (viewModel.isAllSelected()) {
+                                viewModel.clearSelection()
+                            } else {
+                                viewModel.selectAll()
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.SelectAll, 
+                                contentDescription = if (viewModel.isAllSelected()) "Deselect All" else "Select All"
+                            )
+                        }
+                        
                         if (uiState.selectedItems.size == 1) {
                             IconButton(onClick = {
                                 showFileInfoDialog = uiState.selectedItems.first()
@@ -202,6 +219,22 @@ fun AllFilesScreen(
                             expanded = showSortMenu,
                             onDismissRequest = { showSortMenu = false }
                         ) {
+                            // Select All option
+                            val combinedList = (uiState.vaultStats?.allFolders ?: emptyList<Any>()) + (uiState.vaultStats?.allFiles ?: emptyList())
+                            if (combinedList.isNotEmpty()) {
+                                DropdownMenuItem(
+                                    text = { Text("Select All") },
+                                    onClick = { 
+                                        viewModel.selectAll()
+                                        showSortMenu = false 
+                                    },
+                                    leadingIcon = {
+                                        Icon(Icons.Filled.SelectAll, contentDescription = null)
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
+                            
                             DropdownMenuItem(
                                 text = { Text("Date: Newest to Oldest") },
                                 onClick = { viewModel.setSortOption(SortOption.DATE_DESC); showSortMenu = false }
@@ -411,6 +444,22 @@ fun AllFilesScreen(
             failedCount = uiState.lastImportFailedCount,
             onDismiss = { viewModel.dismissImportSuccessDialog() },
             onViewFiles = { viewModel.viewImportedFiles() }
+        )
+    }
+
+    // Unhide Progress Dialog
+    UnhideProgressDialog(
+        unhideProgress = uiState.unhideProgress,
+        onCancel = { viewModel.cancelUnhide() }
+    )
+
+    // Unhide Success Dialog
+    if (uiState.showUnhideSuccessDialog) {
+        UnhideSuccessDialog(
+            successCount = uiState.lastUnhideSuccessCount,
+            failedCount = uiState.lastUnhideFailedCount,
+            onDismiss = { viewModel.dismissUnhideSuccessDialog() },
+            onViewFiles = { viewModel.navigateToPath(viewModel.currentPath.value) }
         )
     }
 }
