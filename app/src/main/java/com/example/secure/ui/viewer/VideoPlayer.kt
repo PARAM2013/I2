@@ -21,8 +21,8 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
@@ -53,6 +52,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.max
 import kotlin.math.min
+
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun VideoPlayer(
@@ -159,18 +162,26 @@ fun VideoPlayer(
         )
 
         if (showControls) {
-            Column(
+            ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .background(Color.Black.copy(alpha = 0.5f))
                     .padding(16.dp)
             ) {
+                val (timeDisplay, slider, row1, row2) = createRefs()
+
                 // Time display
                 Text(
                     text = "${formatTime(videoPosition)} / ${formatTime(videoDuration)}",
                     color = Color.White,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.constrainAs(timeDisplay) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                    }.padding(bottom = 8.dp)
                 )
                 
                 Slider(
@@ -181,12 +192,22 @@ fun VideoPlayer(
                         showControls = true
                     },
                     valueRange = 0f..videoDuration.toFloat(),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.constrainAs(slider) {
+                        top.linkTo(timeDisplay.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
                 )
                 
                 // First row of controls
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.constrainAs(row1) {
+                        top.linkTo(slider.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    },
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -227,11 +248,20 @@ fun VideoPlayer(
                     }
                 }
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp).constrainAs(createRef()) {
+                    top.linkTo(row1.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                })
                 
                 // Second row of controls
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.constrainAs(row2) {
+                        top.linkTo(row1.bottom, margin = 8.dp) // Link to row1.bottom with a margin
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    },
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -242,7 +272,7 @@ fun VideoPlayer(
                         showControls = true
                     }) {
                         Icon(
-                            if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
+                            if (isMuted) Icons.AutoMirrored.Filled.VolumeOff else Icons.AutoMirrored.Filled.VolumeUp,
                             if (isMuted) "Unmute" else "Mute",
                             tint = Color.White
                         )
