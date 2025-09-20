@@ -71,123 +71,20 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Categories Grid -->
-    <GridLayout
-        android:id="@+id/grid_categories"
+    <!-- Categories Grid (now RecyclerView) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_categories"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:columnCount="2"
-        android:rowCount="2"
-        android:useDefaultMargins="true"
         app:layout_constraintTop_toBottomOf="@id/card_all_files"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
-        app:layout_constraintEnd_toEndOf="@id/guideline_end">
+        app:layout_constraintEnd_toEndOf="@id/guideline_end"
+        tools:itemCount="3"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:spanCount="2"
+        tools:listitem="@layout/item_category_card" />
 
-        <!-- Photos Category -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_image"
-                    app:tint="?attr/colorSecondary"
-                    android:contentDescription="@string/category_photos"/>
-                <TextView
-                    android:id="@+id/text_category_photos_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/category_photos"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"/>
-                <TextView
-                    android:id="@+id/text_category_photos_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="0 Files, 0 MB"
-                    android:textAppearance="?attr/textAppearanceCaption"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Videos Category -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_video"
-                    app:tint="?attr/colorSecondary"
-                    android:contentDescription="@string/category_videos"/>
-                <TextView
-                    android:id="@+id/text_category_videos_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/category_videos"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"/>
-                <TextView
-                    android:id="@+id/text_category_videos_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="0 Files, 0 MB"
-                    android:textAppearance="?attr/textAppearanceCaption"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Documents Category -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill_horizontal"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_document"
-                    app:tint="?attr/colorSecondary"
-                    android:contentDescription="@string/category_documents"/>
-                <TextView
-                    android:id="@+id/text_category_documents_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/category_documents"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"/>
-                <TextView
-                    android:id="@+id/text_category_documents_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="0 Files, 0 MB"
-                    android:textAppearance="?attr/textAppearanceCaption"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-    </GridLayout>
-
-    <!-- RecyclerView for files will go below this, or this screen is just a summary
-         and clicking a category navigates to a file list.
-         For now, this is a summary dashboard. -->
     <TextView
         android:id="@+id/text_empty_vault"
         android:layout_width="wrap_content"
@@ -196,7 +93,7 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:visibility="gone"
         tools:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/grid_categories"
+        app:layout_constraintTop_toBottomOf="@id/recycler_categories"
         app:layout_constraintBottom_toTopOf="@id/fab_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

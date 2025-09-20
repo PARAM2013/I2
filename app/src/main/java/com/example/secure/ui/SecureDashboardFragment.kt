@@ -17,12 +17,17 @@ import com.example.secure.file.FileManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Locale
 
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.secure.databinding.ItemCategoryCardBinding
+
 class SecureDashboardFragment : Fragment() {
 
     private var _binding: FragmentSecureDashboardBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SecureDashboardViewModel by viewModels()
+    private lateinit var categoryAdapter: CategoryAdapter
 
     private val importFileLauncher = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.GetMultipleContents()) { uris: List<android.net.Uri>? ->
         uris?.let {
@@ -48,8 +53,19 @@ class SecureDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFABs()
+        setupRecyclerView()
         observeViewModel()
         viewModel.loadDashboardData() // Initial data load
+    }
+
+    private fun setupRecyclerView() {
+        val spanCount = if (resources.configuration.screenWidthDp > 600) 3 else 2 // 3 columns for tablets, 2 for phones
+        binding.recyclerCategories.layoutManager = GridLayoutManager(context, spanCount)
+        categoryAdapter = CategoryAdapter(emptyList()) { category ->
+            // Handle category click (e.g., navigate to file list for that category)
+            Toast.makeText(context, "Clicked: ${category.title}", Toast.LENGTH_SHORT).show()
+        }
+        binding.recyclerCategories.adapter = categoryAdapter
     }
 
     private fun observeViewModel() {
@@ -82,24 +98,25 @@ class SecureDashboardFragment : Fragment() {
             vaultStats.grandTotalFiles,
             formatSize(vaultStats.grandTotalSize)
         )
-        binding.textCategoryPhotosTitle.text = getString(R.string.category_photos_title_dynamic, vaultStats.totalPhotoFiles)
-        binding.textCategoryPhotosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalPhotoFiles,
-            formatSize(vaultStats.totalPhotoSize)
+
+        val categories = listOf(
+            Category(
+                R.drawable.ic_image,
+                getString(R.string.category_photos_title_dynamic, vaultStats.totalPhotoFiles),
+                String.format(Locale.getDefault(), "%d Files, %s", vaultStats.totalPhotoFiles, formatSize(vaultStats.totalPhotoSize))
+            ),
+            Category(
+                R.drawable.ic_video,
+                getString(R.string.category_videos_title_dynamic, vaultStats.totalVideoFiles),
+                String.format(Locale.getDefault(), "%d Files, %s", vaultStats.totalVideoFiles, formatSize(vaultStats.totalVideoSize))
+            ),
+            Category(
+                R.drawable.ic_document,
+                getString(R.string.category_documents_title_dynamic, vaultStats.totalDocumentFiles),
+                String.format(Locale.getDefault(), "%d Files, %s", vaultStats.totalDocumentFiles, formatSize(vaultStats.totalDocumentSize))
+            )
         )
-        binding.textCategoryVideosTitle.text = getString(R.string.category_videos_title_dynamic, vaultStats.totalVideoFiles)
-        binding.textCategoryVideosDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalVideoFiles,
-            formatSize(vaultStats.totalVideoSize)
-        )
-        binding.textCategoryDocumentsTitle.text = getString(R.string.category_documents_title_dynamic, vaultStats.totalDocumentFiles)
-        binding.textCategoryDocumentsDetails.text = String.format(Locale.getDefault(),
-            "%d Files, %s",
-            vaultStats.totalDocumentFiles,
-            formatSize(vaultStats.totalDocumentSize)
-        )
+        categoryAdapter.updateCategories(categories)
 
         binding.textEmptyVault.visibility = if (vaultStats.grandTotalFiles == 0 && vaultStats.grandTotalFolders == 0) {
             View.VISIBLE
@@ -182,7 +199,7 @@ class SecureDashboardFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            // It's good practice to use resources for margins if available
+            // It\'s good practice to use resources for margins if available
             val margin = resources.getDimensionPixelSize(R.dimen.dialog_margin)
             params.leftMargin = margin
             params.rightMargin = margin
@@ -226,5 +243,44 @@ class SecureDashboardFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // Data class to represent a category item
+    data class Category(
+        val iconResId: Int,
+        val title: String,
+        val details: String
+    )
+
+    // RecyclerView Adapter
+    private inner class CategoryAdapter(
+        private var categories: List<Category>,
+        private val onCategoryClick: (Category) -> Unit
+    ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+
+        inner class CategoryViewHolder(private val binding: ItemCategoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
+            fun bind(category: Category) {
+                binding.iconCategory.setImageResource(category.iconResId)
+                binding.textCategoryTitle.text = category.title
+                binding.textCategoryDetails.text = category.details
+                binding.root.setOnClickListener { onCategoryClick(category) }
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+            val binding = ItemCategoryCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return CategoryViewHolder(binding)
+        }
+
+        override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+            holder.bind(categories[position])
+        }
+
+        override fun getItemCount(): Int = categories.size
+
+        fun updateCategories(newCategories: List<Category>) {
+            categories = newCategories
+            notifyDataSetChanged()
+        }
     }
 }
