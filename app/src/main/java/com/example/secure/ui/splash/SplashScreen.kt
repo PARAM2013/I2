@@ -2,6 +2,7 @@ package com.example.secure.ui.splash
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,6 +23,7 @@ fun SplashScreen(
     onSplashFinished: () -> Unit
 ) {
     var startAnimation by remember { mutableStateOf(false) }
+    var splashLogicFinished by remember { mutableStateOf(false) } // New state to prevent double calls
     
     // Debug: Log when splash screen is composed
     LaunchedEffect(Unit) {
@@ -61,8 +63,13 @@ fun SplashScreen(
         delay(500) // Small delay to ensure proper initialization
         startAnimation = true
         delay(3500) // Show splash for 3.5 seconds total
-        println("SplashScreen: Finishing splash")
-        onSplashFinished()
+        
+        // Only finish splash if it hasn't been finished by a touch event already
+        if (!splashLogicFinished) {
+            println("SplashScreen: Finishing splash automatically")
+            splashLogicFinished = true
+            onSplashFinished()
+        }
     }
     
     Box(
@@ -75,7 +82,15 @@ fun SplashScreen(
                     startY = 0f,
                     endY = Float.POSITIVE_INFINITY
                 )
-            ),
+            )
+            .clickable { 
+                // Only finish splash if it hasn't been finished automatically already
+                if (!splashLogicFinished) {
+                    println("SplashScreen: Finishing splash by touch")
+                    splashLogicFinished = true
+                    onSplashFinished()
+                }
+            }, // Added clickable modifier
         contentAlignment = Alignment.Center
     ) {
         Column(
