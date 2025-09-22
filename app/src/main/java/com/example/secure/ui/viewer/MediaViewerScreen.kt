@@ -65,7 +65,7 @@ fun MediaViewerScreen(
             key = { files[it].absolutePath } // Add key for state management
         ) { page ->
             val file = files[page]
-            // currentImageScale is now declared at a higher scope
+            val isCurrentPage = pagerState.currentPage == page
 
             when {
                 file.extension.lowercase() in listOf("jpg", "jpeg", "png", "gif") -> {
@@ -80,7 +80,8 @@ fun MediaViewerScreen(
                 file.extension.lowercase() in listOf("mp4", "mkv", "webm", "avi", "3gp") -> {
                     VideoPlayer(
                         file = file,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        isCurrentPage = isCurrentPage
                     )
                 }
                 else -> {

@@ -62,7 +62,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 @Composable
 fun VideoPlayer(
     file: File,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isCurrentPage: Boolean // Add this new parameter
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -99,6 +100,15 @@ fun VideoPlayer(
         player.setMediaItem(mediaItem)
         player.prepare()
         player.play()
+    }
+
+    // Pause/Play based on current page visibility
+    LaunchedEffect(isCurrentPage) {
+        if (!isCurrentPage) {
+            player.pause()
+        } else {
+            player.play()
+        }
     }
 
     // Update video position and duration
