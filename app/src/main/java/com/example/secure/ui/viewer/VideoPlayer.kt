@@ -1,7 +1,7 @@
 package com.example.secure.ui.viewer
 
+import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -63,9 +65,6 @@ fun VideoPlayer(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val player = remember { PlayerManager.getPlayer(context) }
-    val isPlaying by PlayerManager.isPlaying.collectAsState()
-    val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
     var showControls by remember { mutableStateOf(false) }
@@ -76,33 +75,39 @@ fun VideoPlayer(
 
     var videoPosition by remember { mutableStateOf(0L) }
     var videoDuration by remember { mutableStateOf(0L) }
+    var isPlaying by remember { mutableStateOf(true) } // Assume playing by default
 
+    // Initialize ExoPlayer
+    val player = remember {
+        ExoPlayer.Builder(context).build().apply {
+            addListener(object : Player.Listener {
+                override fun onIsPlayingChanged(currentIsPlaying: Boolean) {
+                    isPlaying = currentIsPlaying
+                }
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_ENDED) {
+                        // Optionally loop or pause at the end
+                    }
+                }
+            })
+        }
+    }
+
+    // Set media item and prepare player when file changes
     LaunchedEffect(file) {
-        PlayerManager.play(file)
+        val mediaItem = MediaItem.fromUri(file.absolutePath)
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.play()
     }
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_PAUSE -> PlayerManager.pausePlayer()
-                Lifecycle.Event.ON_RESUME -> PlayerManager.resumePlayer()
-                else -> {}
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-            PlayerManager.releasePlayer()
-        }
-    }
-
+    // Update video position and duration
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
             videoPosition = player.currentPosition
             videoDuration = player.duration
-            isMuted = PlayerManager.isMuted()
-            isLooping = PlayerManager.isLooping()
+            isMuted = player.volume == 0f // Update muted state from player
+            isLooping = player.repeatMode == Player.REPEAT_MODE_ONE // Update looping state from player
             delay(1000)
         }
     }
@@ -115,6 +120,13 @@ fun VideoPlayer(
                 delay(3000)
                 showControls = false
             }
+        }
+    }
+
+    // Release player when Composable is disposed
+    DisposableEffect(player) {
+        onDispose {
+            player.release()
         }
     }
 
@@ -267,8 +279,8 @@ fun VideoPlayer(
                 ) {
                     // Mute/Unmute button
                     IconButton(onClick = { 
-                        PlayerManager.toggleMute()
-                        isMuted = PlayerManager.isMuted()
+                        player.volume = if (isMuted) 1f else 0f
+                        isMuted = !isMuted
                         showControls = true
                     }) {
                         Icon(
@@ -280,8 +292,8 @@ fun VideoPlayer(
                     
                     // Loop toggle button
                     IconButton(onClick = { 
-                        PlayerManager.toggleLoop()
-                        isLooping = PlayerManager.isLooping()
+                        player.repeatMode = if (isLooping) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE
+                        isLooping = !isLooping
                         showControls = true
                     }) {
                         Icon(
