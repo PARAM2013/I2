@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -49,6 +50,9 @@ fun MediaViewerScreen(
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
     var currentImageScale by remember { mutableStateOf(1f) }
     var isMuted by remember { mutableStateOf(false) } // Shared mute state
+
+    // State to store video playback positions
+    val videoPlaybackPositions = remember { mutableStateMapOf<String, Long>() }
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -84,7 +88,11 @@ fun MediaViewerScreen(
                         modifier = Modifier.fillMaxSize(),
                         isCurrentPage = isCurrentPage,
                         isMuted = isMuted, // Pass shared mute state
-                        toggleMute = { isMuted = !isMuted } // Pass toggle function
+                        toggleMute = { isMuted = !isMuted }, // Pass toggle function
+                        playbackPosition = videoPlaybackPositions[file.absolutePath] ?: 0L,
+                        onPlaybackPositionChange = { newPosition ->
+                            videoPlaybackPositions[file.absolutePath] = newPosition
+                        }
                     )
                 }
                 else -> {

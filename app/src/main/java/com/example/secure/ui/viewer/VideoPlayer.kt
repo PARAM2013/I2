@@ -65,7 +65,9 @@ fun VideoPlayer(
     modifier: Modifier = Modifier,
     isCurrentPage: Boolean, // Add this new parameter
     isMuted: Boolean, // External mute state
-    toggleMute: () -> Unit // External toggle mute function
+    toggleMute: () -> Unit, // External toggle mute function
+    playbackPosition: Long, // Initial playback position
+    onPlaybackPositionChange: (Long) -> Unit // Callback to update playback position
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -95,11 +97,14 @@ fun VideoPlayer(
         }
     }
 
-    // Set media item and prepare player when file changes
-    LaunchedEffect(file) {
+    // Set media item, prepare player, and seek when file or playback position changes
+    LaunchedEffect(file, playbackPosition) {
         val mediaItem = MediaItem.fromUri(file.absolutePath)
         player.setMediaItem(mediaItem)
         player.prepare()
+        if (playbackPosition > 0L) {
+            player.seekTo(playbackPosition)
+        }
         player.play()
     }
 
@@ -108,9 +113,10 @@ fun VideoPlayer(
         player.volume = if (isMuted) 0f else 1f
     }
 
-    // Pause/Play based on current page visibility
+    // Pause/Play based on current page visibility and report position when paused
     LaunchedEffect(isCurrentPage) {
         if (!isCurrentPage) {
+            onPlaybackPositionChange(player.currentPosition) // Save current position
             player.pause()
         } else {
             player.play()
@@ -138,21 +144,22 @@ fun VideoPlayer(
         }
     }
 
-    // Release player when Composable is disposed
+    // Release player and report final position when Composable is disposed
     DisposableEffect(player) {
         onDispose {
+            onPlaybackPositionChange(player.currentPosition) // Save final position
             player.release()
         }
     }
 
     // Helper functions for skip operations
     fun skipBackward() {
-        val newPosition = max(0L, videoPosition - 10000)
+        val newPosition = max(0L, player.currentPosition - 10000)
         player.seekTo(newPosition)
     }
 
     fun skipForward() {
-        val newPosition = min(videoDuration, videoPosition + 10000)
+        val newPosition = min(player.duration, player.currentPosition + 10000)
         player.seekTo(newPosition)
     }
 
