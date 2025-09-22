@@ -63,13 +63,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 fun VideoPlayer(
     file: File,
     modifier: Modifier = Modifier,
-    isCurrentPage: Boolean // Add this new parameter
+    isCurrentPage: Boolean, // Add this new parameter
+    isMuted: Boolean, // External mute state
+    toggleMute: () -> Unit // External toggle mute function
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     var showControls by remember { mutableStateOf(false) }
-    var isMuted by remember { mutableStateOf(false) }
     var isLooping by remember { mutableStateOf(false) }
     var isFullscreen by remember { mutableStateOf(false) }
     var autoHideJob by remember { mutableStateOf<Job?>(null) }
@@ -102,6 +103,11 @@ fun VideoPlayer(
         player.play()
     }
 
+    // Apply mute state when it changes externally or player is initialized
+    LaunchedEffect(isMuted) {
+        player.volume = if (isMuted) 0f else 1f
+    }
+
     // Pause/Play based on current page visibility
     LaunchedEffect(isCurrentPage) {
         if (!isCurrentPage) {
@@ -116,7 +122,6 @@ fun VideoPlayer(
         while (isPlaying) {
             videoPosition = player.currentPosition
             videoDuration = player.duration
-            isMuted = player.volume == 0f // Update muted state from player
             isLooping = player.repeatMode == Player.REPEAT_MODE_ONE // Update looping state from player
             delay(1000)
         }
@@ -289,8 +294,7 @@ fun VideoPlayer(
                 ) {
                     // Mute/Unmute button
                     IconButton(onClick = { 
-                        player.volume = if (isMuted) 1f else 0f
-                        isMuted = !isMuted
+                        toggleMute()
                         showControls = true
                     }) {
                         Icon(

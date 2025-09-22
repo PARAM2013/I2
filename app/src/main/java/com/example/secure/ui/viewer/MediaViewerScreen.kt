@@ -48,6 +48,7 @@ fun MediaViewerScreen(
     var currentFile by remember { mutableStateOf(files[initialIndex]) }
     val pagerState = rememberPagerState(initialPage = initialIndex) { files.size }
     var currentImageScale by remember { mutableStateOf(1f) }
+    var isMuted by remember { mutableStateOf(false) } // Shared mute state
 
     LaunchedEffect(pagerState.currentPage) {
         currentFile = files[pagerState.currentPage]
@@ -81,7 +82,9 @@ fun MediaViewerScreen(
                     VideoPlayer(
                         file = file,
                         modifier = Modifier.fillMaxSize(),
-                        isCurrentPage = isCurrentPage
+                        isCurrentPage = isCurrentPage,
+                        isMuted = isMuted, // Pass shared mute state
+                        toggleMute = { isMuted = !isMuted } // Pass toggle function
                     )
                 }
                 else -> {
