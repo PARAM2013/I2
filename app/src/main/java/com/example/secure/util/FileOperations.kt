@@ -2,6 +2,7 @@ package com.example.secure.util
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -24,27 +25,43 @@ object FileOperations {
             )
             
             val mimeType = getMimeType(file)
-            val intent = Intent(Intent.ACTION_VIEW).apply {
+            Log.d(TAG, "Determined MIME type for ${file.name}: $mimeType")
+
+            val specificIntent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             
-            // Check if there's an app that can handle this file type
-            if (intent.resolveActivity(context.packageManager) != null) {
-                context.startActivity(intent)
-                Log.d(TAG, "Opening file: ${file.name} with mime type: $mimeType")
+            // Always create a chooser for the specific intent first.
+            // This ensures that even if resolveActivity returns null (no default app set),
+            // the system still tries to present relevant options.
+            val chooserIntent = Intent.createChooser(specificIntent, "Open ${file.name}")
+            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            // Check if there are any activities that can handle the chooser intent itself
+            val resolvedChooserActivities: List<ResolveInfo> = context.packageManager.queryIntentActivities(chooserIntent, 0)
+            
+            if (resolvedChooserActivities.isNotEmpty()) {
+                context.startActivity(chooserIntent)
+                Log.d(TAG, "Opening file: ${file.name} with specific mime type: $mimeType using chooser. Resolved activities: ${resolvedChooserActivities.size}")
             } else {
-                // Try with generic intent
+                // Fallback to generic intent if even the specific chooser yields no options
+                Log.d(TAG, "No activities resolved for specific intent chooser. Falling back to generic.")
                 val genericIntent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(uri, "*/*")
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 
-                if (genericIntent.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(genericIntent)
-                    Log.d(TAG, "Opening file with generic intent: ${file.name}")
+                val genericChooserIntent = Intent.createChooser(genericIntent, "Open ${file.name}")
+                genericChooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                val resolvedGenericChooserActivities: List<ResolveInfo> = context.packageManager.queryIntentActivities(genericChooserIntent, 0)
+
+                if (resolvedGenericChooserActivities.isNotEmpty()) {
+                    context.startActivity(genericChooserIntent)
+                    Log.d(TAG, "Opening file with generic intent: ${file.name} using chooser. Resolved activities: ${resolvedGenericChooserActivities.size}")
                 } else {
                     Toast.makeText(context, "No app found to open this file type", Toast.LENGTH_SHORT).show()
                     Log.w(TAG, "No app found to open file: ${file.name}")
@@ -201,7 +218,7 @@ object FileOperations {
                 setDataAndType(uri, mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            intent.resolveActivity(context.packageManager) != null
+            context.packageManager.queryIntentActivities(intent, 0).isNotEmpty()
         } catch (e: Exception) {
             Log.e(TAG, "Error checking if file can be opened: ${file.name}", e)
             false
