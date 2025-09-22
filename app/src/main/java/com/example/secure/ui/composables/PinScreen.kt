@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.Fingerprint
@@ -13,7 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,11 +25,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.*
 import com.example.secure.R
 import com.example.secure.ui.pin.PinViewModel
-import com.example.secure.ui.theme.ISecureTheme // Assuming your theme is ISecureTheme
+import com.example.secure.ui.theme.ISecureTheme
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,11 +39,11 @@ fun PinScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    // val lifecycleOwner = LocalLifecycleOwner.current // Not directly used here but good for awareness
+    val hapticFeedback = LocalHapticFeedback.current
 
     // Biometric Prompt
     val executor = ContextCompat.getMainExecutor(context)
-    val biometricPrompt = remember(executor, activity, viewModel) { // Add viewModel to remember key if its methods change
+    val biometricPrompt = remember(executor, activity, viewModel) {
         BiometricPrompt(activity, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
@@ -61,7 +63,7 @@ fun PinScreen(
             })
     }
 
-    val promptInfo = remember(context) { // Context can be a key if strings change with locale
+    val promptInfo = remember(context) {
         BiometricPrompt.PromptInfo.Builder()
             .setTitle(context.getString(R.string.prompt_fingerprint_title))
             .setSubtitle(context.getString(R.string.prompt_fingerprint_subtitle))
@@ -73,19 +75,24 @@ fun PinScreen(
     LaunchedEffect(uiState.navigateToMain) {
         if (uiState.navigateToMain) {
             onNavigateToMain()
-            viewModel.resetNavigation() // Reset navigation trigger
+            viewModel.resetNavigation()
         }
     }
 
     LaunchedEffect(uiState.requestBiometricPrompt) {
         if (uiState.requestBiometricPrompt) {
             biometricPrompt.authenticate(promptInfo)
-            viewModel.biometricPromptShown() // Signal that prompt has been shown
+            viewModel.biometricPromptShown()
         }
     }
 
+    LaunchedEffect(uiState.errorText) {
+        if (uiState.errorText != null) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
+    }
 
-    ISecureTheme { // Apply the theme
+    ISecureTheme {
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier
@@ -107,7 +114,7 @@ fun PinScreen(
                     ) {
                         Text(
                             text = uiState.promptText.ifEmpty {
-                                stringResource(id = R.string.prompt_enter_pin) // Fallback
+                                stringResource(id = R.string.prompt_enter_pin)
                             },
                             style = MaterialTheme.typography.headlineSmall,
                             textAlign = TextAlign.Center,
@@ -222,9 +229,11 @@ fun NumericKeypad(onDigitClick: (String) -> Unit) {
     val numbers = (1..9).map { it.toString() }
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier.width(240.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier
+            .widthIn(max = 300.dp)
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(numbers) { number ->
             KeypadButton(text = number, onClick = { onDigitClick(number) })
@@ -241,25 +250,25 @@ fun FingerprintAndBackspaceRow(
 ) {
     Row(
         modifier = Modifier
-            .width(240.dp)
-            .padding(vertical = 8.dp),
+            .widthIn(max = 300.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Distributes space
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Conditionally render Fingerprint icon or a Spacer to maintain layout consistency
-        if (isFingerprintVisible) {
-            IconButton(onClick = onFingerprintClick, modifier = Modifier.size(48.dp)) { // Standard IconButton size
-                Icon(Icons.Default.Fingerprint, contentDescription = stringResource(R.string.prompt_fingerprint_title), modifier = Modifier.size(36.dp))
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            if (isFingerprintVisible) {
+                IconButton(onClick = onFingerprintClick, modifier = Modifier.size(48.dp)) {
+                    Icon(Icons.Default.Fingerprint, contentDescription = stringResource(R.string.prompt_fingerprint_title), modifier = Modifier.size(36.dp))
+                }
             }
-        } else {
-            // Spacer to take up the place of the fingerprint icon
-            Spacer(Modifier.size(48.dp))
         }
 
-        KeypadButton(text = "0", onClick = onZeroClick, modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) // Give some padding
+        KeypadButton(text = "0", onClick = onZeroClick, modifier = Modifier.weight(1f))
 
-        IconButton(onClick = onBackspaceClick, modifier = Modifier.size(48.dp)) { // Standard IconButton size
-            Icon(Icons.Default.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            IconButton(onClick = onBackspaceClick, modifier = Modifier.size(48.dp)) {
+                Icon(Icons.Default.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
+            }
         }
     }
 }
@@ -270,15 +279,17 @@ fun KeypadButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    TextButton(
+    Button(
         onClick = onClick,
         modifier = modifier
-            .aspectRatio(1.5f)
+            .aspectRatio(1f)
             .fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        colors = ButtonDefaults.textButtonColors(
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        elevation = ButtonDefaults.buttonElevation(0.dp)
     ) {
         Text(text, style = MaterialTheme.typography.headlineMedium)
     }
@@ -321,7 +332,6 @@ fun PinScreenPreview_Basic() {
         }
     }
 }
-
 
 @Preview(showBackground = true, name = "Pin Indicator Preview (2/4)")
 @Composable
