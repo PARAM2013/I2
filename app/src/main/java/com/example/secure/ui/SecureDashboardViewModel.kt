@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
+import com.example.secure.file.FileManager.VaultFile
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -78,6 +79,31 @@ class SecureDashboardViewModel(application: Application) : AndroidViewModel(appl
             } catch (e: Exception) {
                 Log.e("SecureDashboardVM", "Error creating folder", e)
                 _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "Error creating folder: ${e.message}"))
+            }
+        }
+    }
+
+    /**
+     * Moves a file from its current location to a new destination directory within the vault.
+     *
+     * @param sourceVaultFile The VaultFile object representing the file to be moved.
+     * @param destinationDirectory The File object representing the target directory within the vault.
+     */
+    fun moveFile(sourceVaultFile: VaultFile, destinationDirectory: File) {
+        _uiState.value = _uiState.value?.copy(isLoading = true, fileOperationResult = null)
+        viewModelScope.launch {
+            try {
+                Log.d("SecureDashboardVM", "Moving file ${sourceVaultFile.file.name} to ${destinationDirectory.absolutePath}")
+                val movedFile = fileManager.moveFileInVault(sourceVaultFile.file, destinationDirectory)
+                if (movedFile != null) {
+                    _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "File moved: ${movedFile.name}"))
+                    loadDashboardData() // Refresh data
+                } else {
+                    _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "Failed to move file. Check logs."))
+                }
+            } catch (e: Exception) {
+                Log.e("SecureDashboardVM", "Error moving file", e)
+                _uiState.postValue(_uiState.value?.copy(isLoading = false, fileOperationResult = "Error moving file: ${e.message}"))
             }
         }
     }

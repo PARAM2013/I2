@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secure.file.FileManager
+import com.example.secure.file.FileManager.VaultFile // Import VaultFile
 import com.example.secure.util.AppPreferences
 import com.example.secure.util.SortManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.Job // Import Job
+import kotlinx.coroutines.delay // Import delay
 import java.io.File
 import java.util.Locale
 
@@ -55,6 +58,18 @@ data class UnhideProgress(
     val isCancelled: Boolean = false
 )
 
+data class MoveProgress(
+    val isMoving: Boolean = false,
+    val currentFileIndex: Int = 0,
+    val totalFiles: Int = 0,
+    val currentFileName: String = "",
+    val overallProgress: Float = 0f,
+    val successfulMoves: Int = 0,
+    val failedMoves: Int = 0,
+    val canCancel: Boolean = true,
+    val isCancelled: Boolean = false
+)
+
 data class MainDashboardUiState(
     val categories: List<DashboardCategoryItem> = emptyList(),
     val isLoading: Boolean = false,
@@ -77,7 +92,11 @@ data class MainDashboardUiState(
     val unhideProgress: UnhideProgress = UnhideProgress(),
     val showUnhideSuccessDialog: Boolean = false,
     val lastUnhideSuccessCount: Int = 0,
-    val lastUnhideFailedCount: Int = 0
+    val lastUnhideFailedCount: Int = 0,
+    val moveProgress: MoveProgress = MoveProgress(), // New: Move Progress
+    val showMoveSuccessDialog: Boolean = false, // New: Move Success Dialog
+    val lastMoveSuccessCount: Int = 0, // New: Move Success Count
+    val lastMoveFailedCount: Int = 0 // New: Move Failed Count
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -91,8 +110,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
     
-    private var importJob: kotlinx.coroutines.Job? = null
-    private var unhideJob: kotlinx.coroutines.Job? = null
+    private var importJob: Job? = null
+    private var unhideJob: Job? = null
+    private var moveJob: Job? = null // New: Job for move operation
 
     // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
@@ -228,7 +248,6 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     SortManager.SortOption.SIZE_ASC -> pathStats.allFiles.sortedBy { it.size }
                 }.toMutableList()
 
-                Log.d("MainDashboardVM", "Path data loaded. Folders: ${pathStats.allFolders.size}, Files: ${sortedFiles.size} for $relativePath")
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -359,7 +378,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var failedImports = 0
 
             // Add minimum delay to ensure dialog is visible
-            kotlinx.coroutines.delay(500) // Half second minimum display
+            delay(500) // Half second minimum display
 
             uris.forEachIndexed { index, uri ->
                 // Check if job was cancelled
@@ -418,11 +437,11 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
 
                 // Small delay to make progress visible (can be reduced in production)
-                kotlinx.coroutines.delay(200)
+                delay(200)
             }
 
             // Add final delay to show 100% progress briefly
-            kotlinx.coroutines.delay(500)
+            delay(500)
 
             // Show success dialog instead of snackbar for successful imports
             if (successfulImports > 0) {
@@ -454,7 +473,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         return try {
             appContext.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 if (cursor.moveToFirst()) {
-                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                     if (nameIndex != -1) {
                         cursor.getString(nameIndex)
                     } else null
@@ -543,7 +562,134 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    /**
+     * Moves multiple files from their current location to a new destination directory within the vault.
+     *
+     * @param sourceVaultFiles The list of VaultFile objects representing the files to be moved.
+     * @param destinationDirectory The File object representing the target directory within the vault.
+     */
+    fun moveFiles(sourceVaultFiles: List<VaultFile>, destinationDirectory: File) {
+        Log.d("MainDashboardVM", "moveFiles called with ${sourceVaultFiles.size} files to ${destinationDirectory.name}")
+        if (sourceVaultFiles.isEmpty()) return
 
+        // Cancel any existing move job
+        moveJob?.cancel()
+
+        _uiState.update { 
+            it.copy(
+                isLoading = true, 
+                fileOperationResult = null,
+                moveProgress = MoveProgress(
+                    isMoving = true,
+                    totalFiles = sourceVaultFiles.size,
+                    canCancel = true
+                )
+            ) 
+        }
+
+        moveJob = viewModelScope.launch {
+            var successfulMoves = 0
+            var failedMoves = 0
+
+            delay(500) // Minimum display delay
+
+            sourceVaultFiles.forEachIndexed { index, vaultFile ->
+                if (!coroutineContext.isActive) {
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            moveProgress = MoveProgress(isCancelled = true),
+                            fileOperationResult = "Move operation cancelled by user."
+                        ) 
+                    }
+                    return@launch
+                }
+
+                try {
+                    val fileName = vaultFile.file.name
+                    Log.d("MainDashboardVM", "Moving file ${index + 1}/${sourceVaultFiles.size}: $fileName")
+                    _uiState.update { 
+                        it.copy(
+                            moveProgress = it.moveProgress.copy(
+                                currentFileIndex = index + 1,
+                                currentFileName = fileName,
+                                overallProgress = (index.toFloat() / sourceVaultFiles.size),
+                                successfulMoves = successfulMoves,
+                                failedMoves = failedMoves
+                            )
+                        ) 
+                    }
+
+                    val movedFile = fileManager.moveFileInVault(vaultFile.file, destinationDirectory)
+                    if (movedFile != null) {
+                        successfulMoves++
+                    } else {
+                        failedMoves++
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainDashboardVM", "Error moving file ${vaultFile.file.name}", e)
+                    failedMoves++
+                }
+
+                _uiState.update { 
+                    it.copy(
+                        moveProgress = it.moveProgress.copy(
+                            overallProgress = ((index + 1).toFloat() / sourceVaultFiles.size),
+                            successfulMoves = successfulMoves,
+                            failedMoves = failedMoves
+                        )
+                    ) 
+                }
+                delay(200)
+            }
+
+            delay(500)
+
+            if (successfulMoves > 0) {
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        moveProgress = MoveProgress(),
+                        showMoveSuccessDialog = true,
+                        lastMoveSuccessCount = successfulMoves,
+                        lastMoveFailedCount = failedMoves,
+                        fileOperationResult = null
+                    ) 
+                }
+            } else {
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        moveProgress = MoveProgress(),
+                        fileOperationResult = "No files were moved, or all failed."
+                    ) 
+                }
+            }
+            clearSelection()
+            navigateToPath(_currentPath.value) // Refresh view
+        }
+    }
+
+    fun cancelMove() {
+        moveJob?.cancel()
+        _uiState.update { 
+            it.copy(
+                isLoading = false,
+                moveProgress = MoveProgress(isCancelled = true),
+                fileOperationResult = "Move operation cancelled by user."
+            ) 
+        }
+    }
+
+    fun dismissMoveSuccessDialog() {
+        _uiState.update { 
+            it.copy(
+                showMoveSuccessDialog = false,
+                lastMoveSuccessCount = 0,
+                lastMoveFailedCount = 0
+            ) 
+        }
+    }
 
     fun createFolder(folderName: String) {
         _uiState.update { it.copy(isLoading = true, fileOperationResult = null, showCreateFolderDialog = false) }
@@ -749,7 +895,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var failedCount = 0
 
             // Add minimum delay to ensure dialog is visible
-            kotlinx.coroutines.delay(500)
+            delay(500)
 
             itemsToUnhide.forEachIndexed { index, item ->
                 // Check if job was cancelled
@@ -814,11 +960,11 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
 
                 // Small delay to make progress visible
-                kotlinx.coroutines.delay(200)
+                delay(200)
             }
 
             // Add final delay to show 100% progress briefly
-            kotlinx.coroutines.delay(500)
+            delay(500)
 
             // Show success dialog for successful unhides
             if (successCount > 0) {

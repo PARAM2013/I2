@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.DriveFileMove // Corrected import for move icon
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.Add // For FAB
@@ -60,7 +61,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import android.widget.Toast
@@ -68,7 +68,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -82,21 +81,26 @@ import com.example.secure.ui.composables.ConfirmActionDialog
 import com.example.secure.ui.composables.CreateFolderDialog
 import com.example.secure.ui.composables.ImportProgressDialog
 import com.example.secure.ui.composables.ImportSuccessDialog
-import com.example.secure.ui.composables.SimpleImportDialog
+import com.example.secure.ui.composables.MoveFileDialog
+import com.example.secure.ui.composables.MoveProgressDialog
+import com.example.secure.ui.composables.MoveSuccessDialog
+import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.composables.UnhideProgressDialog
 import com.example.secure.ui.composables.UnhideSuccessDialog
-import com.example.secure.util.FileOperations
-import com.example.secure.ui.composables.RenameItemDialog
-import com.example.secure.ui.composables.RenameItemDialog
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.ui.theme.ISecureTheme
 import com.example.secure.ui.viewer.MediaViewerScreen
+import com.example.secure.util.FileOperations
 import com.example.secure.util.FileUtils
 import com.example.secure.util.SortManager.SortOption
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+import android.content.ClipData
+import android.content.ClipboardManager // Correct import for platform ClipboardManager
+import android.content.Context
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,6 +131,9 @@ fun AllFilesScreen(
 
     var isFabMenuExpanded by remember { mutableStateOf(false) }
     var showSortMenu by remember { mutableStateOf(false) }
+
+    var showMoveDialog by remember { mutableStateOf(false) }
+    var filesToMove by remember { mutableStateOf<List<FileManager.VaultFile>>(emptyList()) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -159,7 +166,8 @@ fun AllFilesScreen(
                         IconButton(onClick = { viewModel.clearSelection() }) {
                             Icon(Icons.Filled.Close, contentDescription = "Clear Selection")
                         }
-                    } else {
+                    }
+                     else {
                         IconButton(onClick = {
                             if (currentPath != null) {
                                 val parentPath = File(currentPath!!).parent
@@ -187,22 +195,35 @@ fun AllFilesScreen(
                                 contentDescription = if (viewModel.isAllSelected()) "Deselect All" else "Select All"
                             )
                         }
-                        
+
+                        val selectedFiles = uiState.selectedItems.filterIsInstance<FileManager.VaultFile>()
+                        val allDocuments = selectedFiles.isNotEmpty() && selectedFiles.all { it.category == FileManager.FileCategory.DOCUMENT }
+                        val canMoveFiles = selectedFiles.isNotEmpty()
+
                         if (uiState.selectedItems.size == 1) {
+                            val selectedItem = uiState.selectedItems.first()
                             IconButton(onClick = {
-                                showFileInfoDialog = uiState.selectedItems.first()
+                                showFileInfoDialog = selectedItem
                             }) {
                                 Icon(Icons.Filled.Info, contentDescription = "Info")
                             }
                             IconButton(onClick = {
-                                itemToRename = uiState.selectedItems.first()
+                                itemToRename = selectedItem
                                 showRenameDialog = true
                             }) {
                                 Icon(Icons.Filled.ModeEdit, contentDescription = "Rename")
                             }
                         }
-                        val selectedFiles = uiState.selectedItems.filterIsInstance<FileManager.VaultFile>()
-                        val allDocuments = selectedFiles.isNotEmpty() && selectedFiles.all { it.category == FileManager.FileCategory.DOCUMENT }
+
+                        // Move icon - visible if any files are selected
+                        if (canMoveFiles) {
+                            IconButton(onClick = {
+                                filesToMove = selectedFiles // Pass all selected files
+                                showMoveDialog = true
+                            }) {
+                                Icon(Icons.AutoMirrored.Filled.DriveFileMove, contentDescription = "Move File(s)")
+                            }
+                        }
 
                         if (allDocuments) {
                             IconButton(onClick = {
@@ -248,7 +269,7 @@ fun AllFilesScreen(
                             onDismissRequest = { showSortMenu = false }
                         ) {
                             // Select All option
-                            val combinedList = (uiState.vaultStats?.allFolders ?: emptyList<Any>()) + (uiState.vaultStats?.allFiles ?: emptyList())
+                            val combinedList = (uiState.vaultStats?.allFolders?.sortedBy { it.folder.name.lowercase() } ?: emptyList<Any>()) + (uiState.vaultStats?.allFiles ?: emptyList())
                             if (combinedList.isNotEmpty()) {
                                 DropdownMenuItem(
                                     text = { Text("Select All") },
@@ -480,6 +501,21 @@ fun AllFilesScreen(
         )
     }
 
+    if (showMoveDialog && filesToMove.isNotEmpty()) {
+        val allFolders = FileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+        MoveFileDialog(
+            filesToMove = filesToMove,
+            currentPath = currentPath,
+            allVaultFolders = allFolders,
+            onDismiss = { showMoveDialog = false; filesToMove = emptyList() },
+            onConfirmMove = { destinationFolder ->
+                viewModel.moveFiles(filesToMove, destinationFolder)
+                showMoveDialog = false
+                filesToMove = emptyList()
+            }
+        )
+    }
+
     if (selectedMediaIndex != null) {
         Dialog(
             onDismissRequest = { selectedMediaIndex = null },
@@ -524,6 +560,22 @@ fun AllFilesScreen(
             onViewFiles = { viewModel.navigateToPath(viewModel.currentPath.value) }
         )
     }
+
+    // Move Progress Dialog
+    MoveProgressDialog(
+        moveProgress = uiState.moveProgress,
+        onCancel = { viewModel.cancelMove() }
+    )
+
+    // Move Success Dialog
+    if (uiState.showMoveSuccessDialog) {
+        MoveSuccessDialog(
+            successCount = uiState.lastMoveSuccessCount,
+            failedCount = uiState.lastMoveFailedCount,
+            onDismiss = { viewModel.dismissMoveSuccessDialog() },
+            onViewFiles = { viewModel.navigateToPath(viewModel.currentPath.value) }
+        )
+    }
 }
 
 
@@ -531,7 +583,7 @@ fun AllFilesScreen(
 @Composable
 fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
     val context = LocalContext.current
-    val clipboardManager: ClipboardManager = LocalClipboardManager.current
+    val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -554,7 +606,7 @@ fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            clipboardManager.setText(AnnotatedString(file.absolutePath))
+                            clipboardManager.setPrimaryClip(ClipData.newPlainText("File Path", file.absolutePath))
                             Toast
                                 .makeText(context, "Path copied to clipboard", Toast.LENGTH_SHORT)
                                 .show()
@@ -602,7 +654,7 @@ fun EmptyContent() {
             imageVector = Icons.Default.Inbox,
             contentDescription = "Empty",
             modifier = Modifier.size(128.dp),
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) 
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(

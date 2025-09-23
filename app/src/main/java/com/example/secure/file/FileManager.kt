@@ -145,13 +145,6 @@ object FileManager {
         }
     }
 
-    // TODO: Add methods for file operations like:
-    // fun importFile(sourceFile: File, context: Context): File? (moves file to vault)
-    // fun unhideFile(vaultFile: File, context: Context): File? (moves file from vault to unhide dir)
-    // fun deleteFileFromVault(fileInVault: File): Boolean
-    // fun listFilesInVault(subDirectory: String? = null): List<File> -> Implemented with VaultStats
-    // fun createSubFolderInVault(folderName: String): File? -> Implemented
-
     fun deleteFileFromVault(item: File): Boolean {
         if (!item.path.startsWith(getVaultDirectory().path)) {
             Log.w("FileManager", "Attempt to delete item outside vault: ${item.path}")
@@ -629,6 +622,70 @@ object FileManager {
                 destinationFile.delete()
             }
             return null
+        }
+    }
+
+    /**
+     * Moves a file from one location to another within the vault.
+     * Handles renaming and ensures the destination directory exists.
+     *
+     * @param sourceFile The file to be moved. Must exist and be within the vault.
+     * @param destinationDirectory The directory where the file should be moved to. Must exist and be within the vault.
+     * @return The new File object if successful, null otherwise.
+     */
+    fun moveFileInVault(sourceFile: File, destinationDirectory: File): File? {
+        if (!sourceFile.exists() || !sourceFile.isFile) {
+            Log.w("FileManager", "moveFileInVault: Source file does not exist or is not a file: ${sourceFile.absolutePath}")
+            return null
+        }
+        if (!sourceFile.path.startsWith(getVaultDirectory().path)) {
+            Log.w("FileManager", "moveFileInVault: Source file is not within the vault: ${sourceFile.absolutePath}")
+            return null
+        }
+        if (!destinationDirectory.exists() || !destinationDirectory.isDirectory) {
+            Log.w("FileManager", "moveFileInVault: Destination directory does not exist or is not a directory: ${destinationDirectory.absolutePath}")
+            return null
+        }
+        if (!destinationDirectory.path.startsWith(getVaultDirectory().path)) {
+            Log.w("FileManager", "moveFileInVault: Destination directory is not within the vault: ${destinationDirectory.absolutePath}")
+            return null
+        }
+
+        // Check if source and destination are the same
+        if (sourceFile.parentFile?.absolutePath == destinationDirectory.absolutePath) {
+            Log.i("FileManager", "moveFileInVault: Source and destination directories are the same. No move needed for ${sourceFile.name}.")
+            return sourceFile
+        }
+
+        var newFile = File(destinationDirectory, sourceFile.name)
+        var counter = 1
+        val nameWithoutExt = sourceFile.nameWithoutExtension
+        val extension = sourceFile.extension
+
+        // Handle file name conflicts at the destination
+        while (newFile.exists()) {
+            val uniqueName = if (extension.isEmpty()) {
+                "${nameWithoutExt} (${counter++})"
+            } else {
+                "${nameWithoutExt} (${counter++}).$extension"
+            }
+            newFile = File(destinationDirectory, uniqueName)
+        }
+
+        return try {
+            if (sourceFile.renameTo(newFile)) {
+                Log.d("FileManager", "moveFileInVault: Successfully moved '${sourceFile.name}' to '${newFile.absolutePath}'")
+                newFile
+            } else {
+                Log.e("FileManager", "moveFileInVault: Failed to move '${sourceFile.name}' to '${newFile.absolutePath}' using renameTo().")
+                null
+            }
+        } catch (e: SecurityException) {
+            Log.e("FileManager", "moveFileInVault: SecurityException while moving '${sourceFile.name}' to '${newFile.absolutePath}': ${e.message}")
+            null
+        } catch (e: Exception) {
+            Log.e("FileManager", "moveFileInVault: Unexpected error while moving '${sourceFile.name}' to '${newFile.absolutePath}': ${e.message}")
+            null
         }
     }
 
