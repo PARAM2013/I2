@@ -5,9 +5,12 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.* // Import all layout components
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -20,10 +23,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color // Import Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight // Import FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -114,7 +119,8 @@ fun PinScreen(
     }
 
     ISecureTheme {
-        Scaffold { paddingValues ->
+        Scaffold {
+                paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -184,22 +190,38 @@ fun LockoutView(remainingSeconds: Int) {
     )
 
     Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh) // Using a more prominent background
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        verticalArrangement = Arrangement.Center
     ) {
         LottieAnimation(
             composition = composition,
             progress = { progress },
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier.size(300.dp) // Slightly larger Lottie animation
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         Text(
-            text = "Try again in $remainingSeconds seconds",
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.headlineSmall,
+            text = "Too many wrong attempts!",
+            color = MaterialTheme.colorScheme.error, // Keep error color
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold), // Make it bold
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        AnimatedVisibility(
+            visible = remainingSeconds > 0,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Text(
+                text = "Try again in $remainingSeconds seconds",
+                color = MaterialTheme.colorScheme.onSurfaceVariant, // Use a contrasting color for countdown
+                style = MaterialTheme.typography.titleLarge, // Larger and more prominent countdown
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
