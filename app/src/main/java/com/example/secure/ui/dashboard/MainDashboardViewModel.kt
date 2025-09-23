@@ -1,22 +1,18 @@
 package com.example.secure.ui.dashboard
 
 import android.app.Application
-import android.content.BroadcastReceiver
+import com.example.secure.R // Added missing import for R class
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import com.example.secure.R
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
+
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.secure.FileImportService
 import com.example.secure.file.FileManager
-import com.example.secure.file.FileManager.VaultFile
+import com.example.secure.file.FileManager.VaultFile // Import VaultFile
 import com.example.secure.util.AppPreferences
 import com.example.secure.util.SortManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,19 +20,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.Job // Import Job
+import kotlinx.coroutines.delay // Import delay
 import java.io.File
 import java.util.Locale
-import java.util.ArrayList
-import kotlinx.coroutines.isActive
 
 data class DashboardCategoryItem(
     val id: String,
     val title: String,
-    var subtitle: String,
-    val iconResId: Int,
-    val thumbnail: android.graphics.Bitmap? = null
+    var subtitle: String, // Made var to be updatable
+    val iconResId: Int, // For drawable resources
+    val thumbnail: android.graphics.Bitmap? = null // For video thumbnails
 )
 
 data class ImportProgress(
@@ -79,9 +74,9 @@ data class MainDashboardUiState(
     val categories: List<DashboardCategoryItem> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val fileOperationResult: String? = null,
+    val fileOperationResult: String? = null, // For toasts/messages
     val showCreateFolderDialog: Boolean = false,
-    val vaultStats: FileManager.VaultStats? = null,
+    val vaultStats: FileManager.VaultStats? = null, // To hold all stats
     val imageFiles: List<FileManager.VaultFile> = emptyList(),
     val videoFiles: List<FileManager.VaultFile> = emptyList(),
     val documentFiles: List<FileManager.VaultFile> = emptyList(),
@@ -98,11 +93,11 @@ data class MainDashboardUiState(
     val showUnhideSuccessDialog: Boolean = false,
     val lastUnhideSuccessCount: Int = 0,
     val lastUnhideFailedCount: Int = 0,
-    val moveProgress: MoveProgress = MoveProgress(),
-    val showMoveSuccessDialog: Boolean = false,
-    val lastMoveSuccessCount: Int = 0,
+    val moveProgress: MoveProgress = MoveProgress(), // New: Move Progress
+    val showMoveSuccessDialog: Boolean = false, // New: Move Success Dialog
+    val lastMoveSuccessCount: Int = 0, // New: Move Success Count
     val lastMoveFailedCount: Int = 0,
-    val allVaultFolders: List<File> = emptyList()
+    val allVaultFolders: List<File> = emptyList() // New: All vault folders
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -110,15 +105,17 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private val _uiState = MutableStateFlow(MainDashboardUiState())
     val uiState: StateFlow<MainDashboardUiState> = _uiState.asStateFlow()
 
-    private val _currentPath = MutableStateFlow<String?>(null)
+    private val _currentPath = MutableStateFlow<String?>(null) // null represents vault root
     val currentPath: StateFlow<String?> = _currentPath.asStateFlow()
 
     private val fileManager = FileManager
     private val appContext: Context = application.applicationContext
     
+    private var importJob: Job? = null
     private var unhideJob: Job? = null
-    private var moveJob: Job? = null
+    private var moveJob: Job? = null // New: Job for move operation
 
+    // Predefined category structure - these will reflect GLOBAL stats
     private val globalCategoriesTemplate = listOf(
         DashboardCategoryItem("all_files", "All Files", "", R.drawable.ic_folder),
         DashboardCategoryItem("images", "Images", "", R.drawable.ic_image),
@@ -126,63 +123,18 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         DashboardCategoryItem("documents", "Documents", "", R.drawable.ic_document)
     )
 
-    private val importProgressReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == FileImportService.BROADCAST_ACTION_PROGRESS) {
-                val progress = intent.getIntExtra(FileImportService.EXTRA_PROGRESS, 0)
-                val total = intent.getIntExtra(FileImportService.EXTRA_TOTAL, 0)
-                val fileName = intent.getStringExtra(FileImportService.EXTRA_FILE_NAME) ?: ""
-                val finished = intent.getBooleanExtra(FileImportService.EXTRA_FINISHED, false)
-                val successCount = intent.getIntExtra(FileImportService.EXTRA_SUCCESS_COUNT, 0)
-                val failedCount = intent.getIntExtra(FileImportService.EXTRA_FAILED_COUNT, 0)
-
-                if (finished) {
-                    _uiState.update {
-                        it.copy(
-                            importProgress = ImportProgress(),
-                            showImportSuccessDialog = true,
-                            lastImportSuccessCount = successCount,
-                            lastImportFailedCount = failedCount
-                        )
-                    }
-                    navigateToPath(_currentPath.value)
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            importProgress = it.importProgress.copy(
-                                isImporting = true,
-                                currentFileIndex = progress + 1,
-                                totalFiles = total,
-                                currentFileName = fileName,
-                                overallProgress = (progress.toFloat() / total)
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     init {
         _uiState.update { it.copy(sortOption = SortManager.getSortOption(appContext)) }
-        loadGlobalDashboardCategories()
+        loadGlobalDashboardCategories() // For the main dashboard screen
         val lastPath = AppPreferences.getLastPath(application)
-        navigateToPath(lastPath)
-        LocalBroadcastManager.getInstance(appContext).registerReceiver(
-            importProgressReceiver,
-            IntentFilter(FileImportService.BROADCAST_ACTION_PROGRESS)
-        )
+        navigateToPath(lastPath)      // For AllFilesScreen content (restore last path)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        LocalBroadcastManager.getInstance(appContext).unregisterReceiver(importProgressReceiver)
-    }
-
+    // Loads global stats for the main dashboard categories
     private fun loadGlobalDashboardCategories() {
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
                 val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
@@ -199,13 +151,13 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
                         "videos" -> category.copy(
                             subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
-                            thumbnail = videoFiles.firstOrNull()?.thumbnail
+                            thumbnail = videoFiles.firstOrNull()?.thumbnail // Get thumbnail from first video
                         )
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
                         else -> category
                     }
                 }
-                _uiState.update { it.copy(categories = updatedGlobalCategories, allVaultFolders = allFolders) }
+                _uiState.update { it.copy(categories = updatedGlobalCategories, allVaultFolders = allFolders) } // Update allVaultFolders
             } catch (e: Exception) {
                 Log.e("MainDashboardVM", "Error loading global category stats", e)
                 _uiState.update { oldState ->
@@ -215,18 +167,21 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+
+
     fun loadAllDocuments() {
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
-                val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
+                // Use listFilesInVault with context to generate PDF thumbnails
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val documentFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         documentFiles = documentFiles,
                         error = null,
-                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -242,17 +197,18 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun loadAllVideos() {
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
-                val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                // Use listFilesInVault with context to generate video thumbnails
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val videoFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         videoFiles = videoFiles,
                         error = null,
-                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -267,6 +223,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    // Loads contents for a specific path (for AllFilesScreen)
     private fun loadPathContents(relativePath: String?) {
         if (!fileManager.checkStoragePermissions(appContext)) {
             _uiState.update { it.copy(
@@ -276,7 +233,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             return
         }
 
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
                 val targetDirectory = if (relativePath.isNullOrBlank()) {
@@ -300,7 +257,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         vaultStats = pathStats.copy(allFiles = sortedFiles),
                         imageFiles = sortedFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO },
                         error = null,
-                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -309,8 +266,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         error = "Failed to load contents for '$relativePath': ${e.message}",
-                        vaultStats = FileManager.VaultStats(),
-                        allVaultFolders = emptyList()
+                        vaultStats = FileManager.VaultStats(), // Clear stats on error
+                        allVaultFolders = emptyList() // Clear folders on error
                     )
                 }
             }
@@ -320,29 +277,31 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     fun setSortOption(sortOption: SortManager.SortOption) {
         SortManager.saveSortOption(appContext, sortOption)
         _uiState.update { it.copy(sortOption = sortOption) }
-        navigateToPath(currentPath.value)
+        navigateToPath(currentPath.value) // Reload with new sort order
     }
 
     fun navigateToPath(relativePath: String?) {
         val newPath = if (relativePath.isNullOrBlank() || relativePath == File.separator) null else relativePath
         _currentPath.value = newPath
-        AppPreferences.setLastPath(getApplication(), newPath)
+        AppPreferences.setLastPath(getApplication(), newPath) // Save the path
         loadPathContents(newPath)
+        // Refresh global categories as operations like delete/import in subfolders affect global counts
         loadGlobalDashboardCategories()
     }
 
     fun loadAllImages() {
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
-                val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
+                // Use listFilesInVault with context for consistency
+                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
+                val imageFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         imageFiles = imageFiles,
                         error = null,
-                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -388,6 +347,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun importFiles(uris: List<Uri>) {
+        Log.d("MainDashboardVM", "importFiles called with ${uris.size} files")
         if (uris.isEmpty()) return
 
         if (!fileManager.checkStoragePermissions(appContext)) {
@@ -398,23 +358,121 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             return
         }
 
+        // Cancel any existing import job
+        importJob?.cancel()
+
+        Log.d("MainDashboardVM", "Starting import progress dialog")
+        // Initialize import progress
         _uiState.update { 
             it.copy(
-                importProgress = it.importProgress.copy(
+                isLoading = true, 
+                fileOperationResult = null,
+                importProgress = ImportProgress(
                     isImporting = true,
                     totalFiles = uris.size,
-                    currentFileIndex = 0,
-                    currentFileName = "Starting import..."
+                    canCancel = true
                 )
             ) 
         }
+        Log.d("MainDashboardVM", "Import progress state updated: isImporting=true, totalFiles=${uris.size}")
+        
+        // Log current state to verify dialog should show
+        Log.d("MainDashboardVM", "Current importProgress.isImporting: ${_uiState.value.importProgress.isImporting}")
 
-        val serviceIntent = Intent(appContext, FileImportService::class.java).apply {
-            action = FileImportService.ACTION_START_IMPORT
-            putParcelableArrayListExtra(FileImportService.EXTRA_FILE_URIS, ArrayList(uris))
-            putExtra(FileImportService.EXTRA_SHOW_NOTIFICATION, false) // Don't show notification for in-app import
+        importJob = viewModelScope.launch {
+            var successfulImports = 0
+            var failedImports = 0
+
+            // Add minimum delay to ensure dialog is visible
+            delay(500) // Half second minimum display
+
+            uris.forEachIndexed { index, uri ->
+                // Check if job was cancelled
+                if (!coroutineContext.isActive) {
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            importProgress = ImportProgress(isCancelled = true),
+                            fileOperationResult = "Import cancelled by user."
+                        ) 
+                    }
+                    return@launch
+                }
+
+                try {
+                    // Get file name for progress display
+                    val fileName = getFileNameFromUri(uri) ?: "Unknown file"
+                    
+                    // Update progress
+                    Log.d("MainDashboardVM", "Processing file ${index + 1}/${uris.size}: $fileName")
+                    _uiState.update { 
+                        it.copy(
+                            importProgress = it.importProgress.copy(
+                                currentFileIndex = index + 1,
+                                currentFileName = fileName,
+                                overallProgress = (index.toFloat() / uris.size),
+                                successfulImports = successfulImports,
+                                failedImports = failedImports
+                            )
+                        ) 
+                    }
+                    Log.d("MainDashboardVM", "Progress updated: ${index + 1}/${uris.size}, progress=${(index.toFloat() / uris.size)}")
+
+                    Log.d("MainDashboardVM", "Importing file: $uri to path: ${_currentPath.value}")
+                    val importResult = fileManager.importFile(uri, appContext, _currentPath.value)
+                    
+                    if (importResult != null) {
+                        successfulImports++
+                    } else {
+                        failedImports++
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainDashboardVM", "Error importing file $uri to path: ${_currentPath.value}", e)
+                    failedImports++
+                }
+
+                // Update progress after each file
+                _uiState.update { 
+                    it.copy(
+                        importProgress = it.importProgress.copy(
+                            overallProgress = ((index + 1).toFloat() / uris.size),
+                            successfulImports = successfulImports,
+                            failedImports = failedImports
+                        )
+                    ) 
+                }
+
+                // Small delay to make progress visible (can be reduced in production)
+                delay(200)
+            }
+
+            // Add final delay to show 100% progress briefly
+            delay(500)
+
+            // Show success dialog instead of snackbar for successful imports
+            if (successfulImports > 0) {
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        importProgress = ImportProgress(), // Reset progress
+                        showImportSuccessDialog = true,
+                        lastImportSuccessCount = successfulImports,
+                        lastImportFailedCount = failedImports,
+                        fileOperationResult = null // Clear snackbar message
+                    ) 
+                }
+            } else {
+                // Only show snackbar for complete failures
+                _uiState.update { 
+                    it.copy(
+                        isLoading = false, 
+                        importProgress = ImportProgress(), // Reset progress
+                        fileOperationResult = "No files were imported, or all failed."
+                    ) 
+                }
+            }
+            navigateToPath(_currentPath.value) // Refresh view
         }
-        appContext.startService(serviceIntent)
     }
 
     private fun getFileNameFromUri(uri: Uri): String? {
@@ -434,8 +492,33 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun cancelImport() {
-        // This is now handled by the service, but we can send a broadcast to cancel if needed.
-        // For now, we'll leave it as is, as cancellation was not a primary requirement for the service.
+        importJob?.cancel()
+        _uiState.update { 
+            it.copy(
+                isLoading = false,
+                importProgress = ImportProgress(isCancelled = true),
+                fileOperationResult = "Import cancelled by user."
+            ) 
+        }
+    }
+
+    // Test function to manually trigger import dialog
+    fun testImportDialog() {
+        Log.d("MainDashboardVM", "Test import dialog triggered")
+        _uiState.update { 
+            it.copy(
+                importProgress = ImportProgress(
+                    isImporting = true,
+                    totalFiles = 3,
+                    currentFileIndex = 1,
+                    currentFileName = "test_image.jpg",
+                    overallProgress = 0.33f,
+                    successfulImports = 0,
+                    failedImports = 0,
+                    canCancel = true
+                )
+            ) 
+        }
     }
 
     fun dismissImportSuccessDialog() {
@@ -449,7 +532,19 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     }
 
     fun viewImportedFiles() {
+        // Navigate to current path to show imported files
         navigateToPath(_currentPath.value)
+    }
+
+    // Test function to show success dialog
+    fun testSuccessDialog() {
+        _uiState.update { 
+            it.copy(
+                showImportSuccessDialog = true,
+                lastImportSuccessCount = 5,
+                lastImportFailedCount = 1
+            ) 
+        }
     }
 
     fun cancelUnhide() {
@@ -473,9 +568,17 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    /**
+     * Moves multiple files from their current location to a new destination directory within the vault.
+     *
+     * @param sourceVaultFiles The list of VaultFile objects representing the files to be moved.
+     * @param destinationDirectory The File object representing the target directory within the vault.
+     */
     fun moveFiles(sourceVaultFiles: List<VaultFile>, destinationDirectory: File) {
+        Log.d("MainDashboardVM", "moveFiles called with ${sourceVaultFiles.size} files to ${destinationDirectory.name}")
         if (sourceVaultFiles.isEmpty()) return
 
+        // Cancel any existing move job
         moveJob?.cancel()
 
         _uiState.update { 
@@ -494,10 +597,10 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var successfulMoves = 0
             var failedMoves = 0
 
-            delay(500)
+            delay(500) // Minimum display delay
 
             sourceVaultFiles.forEachIndexed { index, vaultFile ->
-                if (!isActive) {
+                if (!coroutineContext.isActive) {
                     _uiState.update { 
                         it.copy(
                             isLoading = false,
@@ -510,6 +613,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
                 try {
                     val fileName = vaultFile.file.name
+                    Log.d("MainDashboardVM", "Processing file ${index + 1}/${sourceVaultFiles.size}: $fileName")
                     _uiState.update { 
                         it.copy(
                             moveProgress = it.moveProgress.copy(
@@ -568,7 +672,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
             }
             clearSelection()
-            navigateToPath(_currentPath.value)
+            navigateToPath(_currentPath.value) // Refresh view
         }
     }
 
@@ -601,7 +705,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 val createdFolder = fileManager.createSubFolderInVault(folderName, _currentPath.value)
                 if (createdFolder != null && createdFolder.exists()) {
                     _uiState.update { it.copy(isLoading = false, fileOperationResult = "Folder created: $folderName") }
-                    navigateToPath(_currentPath.value)
+                    navigateToPath(_currentPath.value) // Refresh current path and global categories, also allVaultFolders
                 } else {
                     val reason = if (createdFolder == null) "API returned null" else "Folder does not exist post-creation or name invalid"
                     Log.e("MainDashboardVM", "Failed to create folder '$folderName'. Reason: $reason.")
@@ -643,19 +747,21 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 operationMessage = "Rename failed: Unknown item type."
                 Log.w("MainDashboardVM", "requestRenameItem: Unknown item type")
             } else if (newName.isBlank()) {
-                operationMessage = appContext.getString(R.string.folder_name_empty_error)
+                operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
             } else if (newName == oldName) {
-                operationMessage = "New name is the same as the old name."
+                operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
             }
             else {
                 val renamedFile = fileManager.renameItemInVault(fileToRename, newName, appContext)
                 if (renamedFile != null) {
                     operationMessage = appContext.getString(R.string.rename_success, oldName, newName)
                 } else {
+                    // FileManager.renameItemInVault logs specific errors and returns null for various reasons.
+                    // We check some common reasons here for more specific feedback.
                     val newFileCheck = File(fileToRename.parentFile, newName)
                     if (newFileCheck.exists()){
                         operationMessage = appContext.getString(R.string.rename_failed_exists, newName)
-                    } else if (newName.contains(File.separatorChar) || newName == "." || newName == ".." || newName.any { it in "\\:*?\"<>|" }) {
+                    } else if (newName.contains(File.separatorChar) || newName == "." || newName == ".." || newName.any { it in "\\:*?\"<>|" }) { // Added more invalid chars check
                         operationMessage = appContext.getString(R.string.error_invalid_name, newName)
                     }
                     else {
@@ -665,10 +771,12 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             }
 
             _uiState.update { it.copy(isLoading = false, fileOperationResult = operationMessage) }
+            // Always refresh, even on failure, to ensure UI consistency or clear selections.
             navigateToPath(_currentPath.value)
         }
     }
 
+    // Selection Mode and Multi-Action Functions
     fun toggleSelection(item: Any) {
         val currentSelection = _uiState.value.selectedItems.toMutableSet()
         if (currentSelection.contains(item)) {
@@ -769,8 +877,12 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         val itemsToUnhide = _uiState.value.selectedItems.toList()
         if (itemsToUnhide.isEmpty()) return
 
+        // Cancel any existing unhide job
         unhideJob?.cancel()
 
+        Log.d("MainDashboardVM", "Starting unhide progress for ${itemsToUnhide.size} items")
+        
+        // Initialize unhide progress
         _uiState.update { 
             it.copy(
                 isLoading = true, 
@@ -788,10 +900,12 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
             var successCount = 0
             var failedCount = 0
 
+            // Add minimum delay to ensure dialog is visible
             delay(500)
 
             itemsToUnhide.forEachIndexed { index, item ->
-                if (!isActive) {
+                // Check if job was cancelled
+                if (!coroutineContext.isActive) {
                     _uiState.update { 
                         it.copy(
                             isLoading = false,
@@ -803,12 +917,15 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 }
 
                 try {
+                    // Get item name for progress display
                     val itemName = when (item) {
                         is FileManager.VaultFile -> item.file.name
                         is FileManager.VaultFolder -> item.folder.name
                         else -> "Unknown item"
                     }
                     
+                    // Update progress
+                    Log.d("MainDashboardVM", "Processing item ${index + 1}/${itemsToUnhide.size}: $itemName")
                     _uiState.update { 
                         it.copy(
                             unhideProgress = it.unhideProgress.copy(
@@ -837,6 +954,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     failedCount++
                 }
 
+                // Update progress after each item
                 _uiState.update { 
                     it.copy(
                         unhideProgress = it.unhideProgress.copy(
@@ -846,34 +964,39 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         )
                     ) 
                 }
+
+                // Small delay to make progress visible
                 delay(200)
             }
 
+            // Add final delay to show 100% progress briefly
             delay(500)
 
+            // Show success dialog for successful unhides
             if (successCount > 0) {
                 _uiState.update { 
                     it.copy(
                         isLoading = false, 
-                        unhideProgress = UnhideProgress(),
+                        unhideProgress = UnhideProgress(), // Reset progress
                         showUnhideSuccessDialog = true,
                         lastUnhideSuccessCount = successCount,
                         lastUnhideFailedCount = failedCount,
-                        fileOperationResult = null
+                        fileOperationResult = null // Clear snackbar message
                     ) 
                 }
             } else {
+                // Only show snackbar for complete failures
                 _uiState.update { 
                     it.copy(
                         isLoading = false, 
-                        unhideProgress = UnhideProgress(),
+                        unhideProgress = UnhideProgress(), // Reset progress
                         fileOperationResult = "No items were unhidden, or all failed."
                     ) 
                 }
             }
             
             clearSelection()
-            navigateToPath(_currentPath.value)
+            navigateToPath(_currentPath.value) // Refresh view
         }
     }
 }

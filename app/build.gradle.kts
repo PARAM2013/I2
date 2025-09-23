@@ -117,7 +117,4 @@ dependencies {
 
     // Foundation for Pager and gestures
     implementation(libs.androidx.foundation)
-
-    // Local Broadcast Manager
-    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
 }
