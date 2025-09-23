@@ -1,5 +1,10 @@
 package com.example.secure.ui.composables
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.Backspace // Import AutoMirrored version
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -40,6 +46,14 @@ fun PinScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val hapticFeedback = LocalHapticFeedback.current
+
+    val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+        vibratorManager.defaultVibrator
+    } else {
+        @Suppress("DEPRECATION")
+        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    }
 
     // Biometric Prompt
     val executor = ContextCompat.getMainExecutor(context)
@@ -89,6 +103,13 @@ fun PinScreen(
     LaunchedEffect(uiState.errorText) {
         if (uiState.errorText != null) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            // Vibrate the device on PIN error
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(200)
+            }
         }
     }
 
@@ -267,7 +288,7 @@ fun FingerprintAndBackspaceRow(
 
         Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
             IconButton(onClick = onBackspaceClick, modifier = Modifier.size(48.dp)) {
-                Icon(Icons.Default.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
+                Icon(Icons.AutoMirrored.Filled.Backspace, contentDescription = "Backspace", modifier = Modifier.size(36.dp))
             }
         }
     }
