@@ -39,4 +39,14 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <!-- Theme for the FileReceiverActivity to make it appear as a dialog -->
+    <style name="Theme.Secure.Transparent" parent="Theme.Secure.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item> <!-- Set to false to allow full screen width for dialogs -->
+        <item name="android:backgroundDimEnabled">true</item> <!-- Dim the background -->
+    </style>
+
 </resources>
