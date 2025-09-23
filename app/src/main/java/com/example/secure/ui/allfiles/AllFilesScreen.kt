@@ -397,7 +397,9 @@ fun AllFilesScreen(
                     if (isGridView) {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(3),
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -502,7 +504,7 @@ fun AllFilesScreen(
     }
 
     if (showMoveDialog && filesToMove.isNotEmpty()) {
-        val allFolders = FileManager.listAllFoldersRecursively(FileManager.getVaultDirectory())
+        val allFolders = uiState.allVaultFolders // Use the folders from UI state
         MoveFileDialog(
             filesToMove = filesToMove,
             currentPath = currentPath,
@@ -512,6 +514,16 @@ fun AllFilesScreen(
                 viewModel.moveFiles(filesToMove, destinationFolder)
                 showMoveDialog = false
                 filesToMove = emptyList()
+            },
+            onCreateFolder = { folderName, parentPath, onFolderCreated ->
+                // Delegate folder creation to ViewModel
+                viewModel.createFolder(folderName)
+                // The ViewModel will update allVaultFolders flow, which will re-trigger MoveFileDialog
+                // For now, we'll assume success and call onFolderCreated with a dummy file if needed
+                // A more robust solution might involve waiting for ViewModel's state update
+                // For simplicity here, we rely on the ViewModel's update to refresh the dialog.
+                // We can potentially pass the actual created folder back from ViewModel if its signature changes.
+                onFolderCreated(null) // Pass null for now, as ViewModel's state update will refresh UI
             }
         )
     }
@@ -606,7 +618,12 @@ fun FileInfoDialog(file: File, onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            clipboardManager.setPrimaryClip(ClipData.newPlainText("File Path", file.absolutePath))
+                            clipboardManager.setPrimaryClip(
+                                ClipData.newPlainText(
+                                    "File Path",
+                                    file.absolutePath
+                                )
+                            )
                             Toast
                                 .makeText(context, "Path copied to clipboard", Toast.LENGTH_SHORT)
                                 .show()

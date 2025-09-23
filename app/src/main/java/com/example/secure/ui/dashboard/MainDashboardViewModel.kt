@@ -96,7 +96,8 @@ data class MainDashboardUiState(
     val moveProgress: MoveProgress = MoveProgress(), // New: Move Progress
     val showMoveSuccessDialog: Boolean = false, // New: Move Success Dialog
     val lastMoveSuccessCount: Int = 0, // New: Move Success Count
-    val lastMoveFailedCount: Int = 0 // New: Move Failed Count
+    val lastMoveFailedCount: Int = 0,
+    val allVaultFolders: List<File> = emptyList() // New: All vault folders
 )
 
 class MainDashboardViewModel(application: Application) : AndroidViewModel(application) {
@@ -156,7 +157,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         else -> category
                     }
                 }
-                _uiState.update { it.copy(categories = updatedGlobalCategories) }
+                _uiState.update { it.copy(categories = updatedGlobalCategories, allVaultFolders = allFolders) } // Update allVaultFolders
             } catch (e: Exception) {
                 Log.e("MainDashboardVM", "Error loading global category stats", e)
                 _uiState.update { oldState ->
@@ -179,7 +180,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         documentFiles = documentFiles,
-                        error = null
+                        error = null,
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -205,7 +207,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         videoFiles = videoFiles,
-                        error = null
+                        error = null,
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -253,7 +256,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         isLoading = false,
                         vaultStats = pathStats.copy(allFiles = sortedFiles),
                         imageFiles = sortedFiles.filter { file -> file.category == FileManager.FileCategory.PHOTO },
-                        error = null
+                        error = null,
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -262,7 +266,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         error = "Failed to load contents for '$relativePath': ${e.message}",
-                        vaultStats = FileManager.VaultStats() // Clear stats on error
+                        vaultStats = FileManager.VaultStats(), // Clear stats on error
+                        allVaultFolders = emptyList() // Clear folders on error
                     )
                 }
             }
@@ -295,7 +300,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     it.copy(
                         isLoading = false,
                         imageFiles = imageFiles,
-                        error = null
+                        error = null,
+                        allVaultFolders = fileManager.listAllFoldersRecursively(FileManager.getVaultDirectory()) // Refresh allVaultFolders
                     )
                 }
             } catch (e: Exception) {
@@ -607,7 +613,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
 
                 try {
                     val fileName = vaultFile.file.name
-                    Log.d("MainDashboardVM", "Moving file ${index + 1}/${sourceVaultFiles.size}: $fileName")
+                    Log.d("MainDashboardVM", "Processing file ${index + 1}/${sourceVaultFiles.size}: $fileName")
                     _uiState.update { 
                         it.copy(
                             moveProgress = it.moveProgress.copy(
@@ -699,7 +705,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 val createdFolder = fileManager.createSubFolderInVault(folderName, _currentPath.value)
                 if (createdFolder != null && createdFolder.exists()) {
                     _uiState.update { it.copy(isLoading = false, fileOperationResult = "Folder created: $folderName") }
-                    navigateToPath(_currentPath.value) // Refresh current path and global categories
+                    navigateToPath(_currentPath.value) // Refresh current path and global categories, also allVaultFolders
                 } else {
                     val reason = if (createdFolder == null) "API returned null" else "Folder does not exist post-creation or name invalid"
                     Log.e("MainDashboardVM", "Failed to create folder '$folderName'. Reason: $reason.")

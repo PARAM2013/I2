@@ -5,11 +5,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun MoveSuccessDialog(
@@ -18,6 +20,11 @@ fun MoveSuccessDialog(
     onDismiss: () -> Unit,
     onViewFiles: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        delay(1500L) // 1.5 seconds
+        onDismiss()
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
