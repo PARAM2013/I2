@@ -311,7 +311,7 @@ object FileManager {
         }
     }
 
-    fun listFilesInVault(directory: File = getVaultDirectory(), context: Context? = null): VaultStats {
+    fun listFilesInVault(directory: File = getVaultDirectory()): VaultStats {
         val stats = VaultStats()
         val items = directory.listFiles() ?: return stats // Return empty stats if directory is not listable
 
@@ -319,56 +319,11 @@ object FileManager {
             if (item.isDirectory) {
                 stats.grandTotalFolders++ // Counts as one folder in the current listing
                 val folderStat = VaultFolder(folder = item, totalFiles = 0, totalSize = 0) // Initialize with 0, not recursive content
-                // We list immediate children, so subFolders and files within this VaultFolder are not populated here.
-                // The UI will navigate into it and call listFilesInVault again for that sub-folder.
                 stats.allFolders.add(folderStat)
             } else { // It's a file
                 val category = getFileCategory(item.name)
                 val size = item.length()
-                var thumbnail: Bitmap? = null
-                var duration: String? = null
-                
-                when (category) {
-                    FileCategory.PHOTO -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            try {
-                                thumbnail = ThumbnailUtils.createImageThumbnail(item, android.util.Size(256, 256), null)
-                            } catch (e: Exception) {
-                                Log.e("FileManager", "Failed to create image thumbnail for ${item.name}", e)
-                            }
-                        } else {
-                            thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Images.Thumbnails.MINI_KIND)
-                        }
-                    }
-                    FileCategory.VIDEO -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            thumbnail = ThumbnailUtils.createVideoThumbnail(item, android.util.Size(256, 256), null)
-                        } else {
-                            thumbnail = ThumbnailUtils.createVideoThumbnail(item.path, MediaStore.Video.Thumbnails.MINI_KIND)
-                        }
-                        duration = getVideoDuration(item)
-                    }
-                    FileCategory.DOCUMENT -> {
-                        // Generate PDF thumbnail if it's a PDF file and context is available
-                        if (item.extension.lowercase() == "pdf" && context != null) {
-                            try {
-                                thumbnail = com.example.secure.util.PdfThumbnailGenerator.generateThumbnail(
-                                    context = context,
-                                    pdfFile = item,
-                                    width = 200,
-                                    height = 300
-                                )
-                            } catch (e: Exception) {
-                                Log.w("FileManager", "Failed to generate PDF thumbnail for ${item.name}", e)
-                            }
-                        }
-                    }
-                    else -> {
-                        // No thumbnail generation for other categories
-                    }
-                }
-                
-                val vaultFile = VaultFile(item, category, size, thumbnail, duration)
+                val vaultFile = VaultFile(item, category, size, null, null) // Thumbnail and duration are loaded on demand
 
                 stats.allFiles.add(vaultFile) // Add to list of files in current directory
                 stats.grandTotalFiles++
@@ -402,62 +357,65 @@ object FileManager {
         return stats
     }
 
-    fun listAllFilesRecursively(directory: File, context: Context? = null): List<VaultFile> {
+    fun listAllFilesRecursively(directory: File): List<VaultFile> {
         val allFiles = mutableListOf<VaultFile>()
         val filesAndFolders = directory.listFiles() ?: return allFiles
         for (file in filesAndFolders) {
             if (file.isDirectory) {
-                allFiles.addAll(listAllFilesRecursively(file, context))
+                allFiles.addAll(listAllFilesRecursively(file))
             } else {
                 val category = getFileCategory(file.name)
                 val size = file.length()
-                var thumbnail: Bitmap? = null
-                var duration: String? = null
-
-                if (context != null) {
-                    when (category) {
-                        FileCategory.PHOTO -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                try {
-                                    thumbnail = ThumbnailUtils.createImageThumbnail(file, android.util.Size(256, 256), null)
-                                } catch (e: Exception) {
-                                    Log.e("FileManager", "Failed to create image thumbnail for ${file.name}", e)
-                                }
-                            } else {
-                                thumbnail = ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Images.Thumbnails.MINI_KIND)
-                            }
-                        }
-                        FileCategory.VIDEO -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                thumbnail = ThumbnailUtils.createVideoThumbnail(file, android.util.Size(256, 256), null)
-                            } else {
-                                thumbnail = ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Video.Thumbnails.MINI_KIND)
-                            }
-                            duration = getVideoDuration(file)
-                        }
-                        FileCategory.DOCUMENT -> {
-                            if (file.extension.lowercase() == "pdf") {
-                                try {
-                                    thumbnail = com.example.secure.util.PdfThumbnailGenerator.generateThumbnail(
-                                        context = context,
-                                        pdfFile = file,
-                                        width = 200,
-                                        height = 300
-                                    )
-                                } catch (e: Exception) {
-                                    Log.w("FileManager", "Failed to generate PDF thumbnail for ${file.name}", e)
-                                }
-                            }
-                        }
-                        else -> {
-                            // No thumbnail generation for other categories
-                        }
-                    }
-                }
-                allFiles.add(VaultFile(file, category, size, thumbnail, duration))
+                allFiles.add(VaultFile(file, category, size)) // Thumbnail and duration are loaded on demand
             }
         }
         return allFiles
+    }
+
+    fun generateThumbnailAndDuration(file: File, context: Context): Pair<Bitmap?, String?> {
+        val category = getFileCategory(file.name)
+        var thumbnail: Bitmap? = null
+        var duration: String? = null
+
+        when (category) {
+            FileCategory.PHOTO -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        thumbnail = ThumbnailUtils.createImageThumbnail(file, android.util.Size(256, 256), null)
+                    } catch (e: Exception) {
+                        Log.e("FileManager", "Failed to create image thumbnail for ${file.name}", e)
+                    }
+                } else {
+                    thumbnail = ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Images.Thumbnails.MINI_KIND)
+                }
+            }
+            FileCategory.VIDEO -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    thumbnail = ThumbnailUtils.createVideoThumbnail(file, android.util.Size(256, 256), null)
+                } else {
+                    thumbnail = ThumbnailUtils.createVideoThumbnail(file.path, MediaStore.Video.Thumbnails.MINI_KIND)
+                }
+                duration = getVideoDuration(file)
+            }
+            FileCategory.DOCUMENT -> {
+                if (file.extension.lowercase() == "pdf") {
+                    try {
+                        thumbnail = com.example.secure.util.PdfThumbnailGenerator.generateThumbnail(
+                            context = context,
+                            pdfFile = file,
+                            width = 200,
+                            height = 300
+                        )
+                    } catch (e: Exception) {
+                        Log.w("FileManager", "Failed to generate PDF thumbnail for ${file.name}", e)
+                    }
+                }
+            }
+            else -> {
+                // No thumbnail generation for other categories
+            }
+        }
+        return Pair(thumbnail, duration)
     }
 
     fun listAllFoldersRecursively(directory: File): List<File> {

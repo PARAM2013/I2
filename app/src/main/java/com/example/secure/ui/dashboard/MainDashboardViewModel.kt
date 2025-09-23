@@ -182,7 +182,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private fun loadGlobalDashboardCategories() {
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
                 val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
@@ -198,8 +198,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
                         "videos" -> category.copy(
-                            subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
-                            thumbnail = videoFiles.firstOrNull()?.thumbnail
+                            subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize)
                         )
                         "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
                         else -> category
@@ -215,11 +214,33 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun loadThumbnailForItem(item: VaultFile) {
+        viewModelScope.launch {
+            val (thumbnail, duration) = FileManager.generateThumbnailAndDuration(item.file, appContext)
+            val updatedItem = item.copy(thumbnail = thumbnail, duration = duration)
+
+            val updateList = { list: List<VaultFile> ->
+                list.map { if (it.file.absolutePath == updatedItem.file.absolutePath) updatedItem else it }
+            }
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    imageFiles = updateList(currentState.imageFiles),
+                    videoFiles = updateList(currentState.videoFiles),
+                    documentFiles = updateList(currentState.documentFiles),
+                    vaultStats = currentState.vaultStats?.let { stats ->
+                        stats.copy(allFiles = updateList(stats.allFiles).toMutableList())
+                    }
+                )
+            }
+        }
+    }
+
     fun loadAllDocuments() {
         _uiState.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
                 val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
                 _uiState.update {
                     it.copy(
@@ -245,7 +266,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
                 val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 _uiState.update {
                     it.copy(
@@ -285,7 +306,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     File(FileManager.getVaultDirectory(), relativePath)
                 }
                 Log.d("MainDashboardVM", "Loading contents for path: ${targetDirectory.absolutePath}")
-                val pathStats = fileManager.listFilesInVault(targetDirectory, appContext)
+                val pathStats = fileManager.listFilesInVault(targetDirectory)
 
                 val sortedFiles = when (uiState.value.sortOption) {
                     SortManager.SortOption.DATE_DESC -> pathStats.allFiles.sortedByDescending { it.file.lastModified() }
@@ -335,7 +356,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
                 val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 _uiState.update {
                     it.copy(

@@ -25,6 +25,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.secure.R
 import com.example.secure.file.FileManager
 import com.example.secure.ui.dashboard.MainDashboardViewModel
 import com.example.secure.util.FileOperations
@@ -112,7 +114,7 @@ fun FileListItem(
     Box(modifier = modifier) {
         when (item) {
             is FileManager.VaultFolder -> FolderItemView(item, isGridView)
-            is FileManager.VaultFile -> FileItemView(item, isGridView)
+            is FileManager.VaultFile -> FileItemView(item, isGridView, viewModel)
         }
         if (isSelected) {
             Box(
@@ -159,24 +161,31 @@ fun FolderItemView(folder: FileManager.VaultFolder, isGridView: Boolean) {
 }
 
 @Composable
-fun FileItemView(file: FileManager.VaultFile, isGridView: Boolean) {
+fun FileItemView(file: FileManager.VaultFile, isGridView: Boolean, viewModel: MainDashboardViewModel) {
     if (isGridView) {
         Card(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-            FileThumbnail(file, Modifier.fillMaxWidth().aspectRatio(1f))
+            FileThumbnail(file, Modifier.fillMaxWidth().aspectRatio(1f), viewModel)
         }
     } else {
         ListItem(
             headlineContent = { Text(file.file.name) },
             supportingContent = { Text(text = FileUtils.formatFileSize(file.size)) },
             leadingContent = {
-                FileThumbnail(file, Modifier.size(40.dp))
+                FileThumbnail(file, Modifier.size(40.dp), viewModel)
             }
         )
     }
 }
 
 @Composable
-fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
+fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier, viewModel: MainDashboardViewModel) {
+
+    LaunchedEffect(file.file.absolutePath) {
+        if (file.thumbnail == null) {
+            viewModel.loadThumbnailForItem(file)
+        }
+    }
+
     when (file.category) {
         FileManager.FileCategory.PHOTO -> {
             if (file.thumbnail != null) {
@@ -187,10 +196,9 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
                     modifier = modifier
                 )
             } else {
-                Image(
-                    painter = rememberAsyncImagePainter(model = Uri.fromFile(file.file)),
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_image),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
                     modifier = modifier
                 )
             }
@@ -236,7 +244,6 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
             }
         }
         FileManager.FileCategory.DOCUMENT -> {
-            // Show PDF thumbnail if available, otherwise show document icon
             if (file.thumbnail != null && file.file.extension.lowercase() == "pdf") {
                 Box(modifier = modifier) {
                     Image(
@@ -245,7 +252,6 @@ fun FileThumbnail(file: FileManager.VaultFile, modifier: Modifier) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.matchParentSize()
                     )
-                    // Add PDF overlay icon
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
