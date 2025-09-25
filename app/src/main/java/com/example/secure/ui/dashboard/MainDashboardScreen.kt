@@ -119,21 +119,18 @@ fun MainDashboardScreen(
                                 subtitle = category.subtitle,
                                 iconResId = category.iconResId,
                                 onClick = { onCategoryClick(category.id) },
-                                thumbnail = {
-                                    if (category.thumbnail != null) {
+                                thumbnail = if (category.id == "videos" || category.id == "documents") {
+                                    null // Always ensure null for these specific categories to force icon display
+                                } else if (category.thumbnail != null) {
+                                    { // Composable lambda for categories that *do* have thumbnails (e.g., images)
                                         Image(
                                             bitmap = category.thumbnail.asImageBitmap(),
                                             contentDescription = category.title,
                                             modifier = Modifier.size(40.dp)
                                         )
-                                    } else {
-                                        Icon(
-                                            painter = painterResource(id = category.iconResId),
-                                            contentDescription = category.title,
-                                            modifier = Modifier.size(40.dp),
-                                            tint = MaterialTheme.colorScheme.primary
-                                        )
                                     }
+                                } else {
+                                    null // For other categories without thumbnails, also pass null
                                 }
                             )
                         }

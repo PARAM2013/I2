@@ -134,7 +134,7 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
     private fun loadGlobalDashboardCategories() {
         viewModelScope.launch {
             try {
-                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory())
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
                 val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
@@ -149,11 +149,20 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                     when (category.id) {
                         "all_files" -> category.copy(subtitle = formatAllFilesSubtitle(allFolders.size, allFiles.size, grandTotalSize))
                         "images" -> category.copy(subtitle = formatCategorySubtitle(imageFiles.size, totalImageSize))
-                        "videos" -> category.copy(
-                            subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
-                            thumbnail = videoFiles.firstOrNull()?.thumbnail // Get thumbnail from first video
-                        )
-                        "documents" -> category.copy(subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize))
+                        "videos" -> {
+                            // Always keep thumbnail null for the dashboard category for videos
+                            category.copy(
+                                subtitle = formatCategorySubtitle(videoFiles.size, totalVideoSize),
+                                thumbnail = null
+                            )
+                        }
+                        "documents" -> {
+                            // Always keep thumbnail null for the dashboard category for documents
+                            category.copy(
+                                subtitle = formatCategorySubtitle(documentFiles.size, totalDocumentSize),
+                                thumbnail = null
+                            )
+                        }
                         else -> category
                     }
                 }
@@ -173,9 +182,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                // Use listFilesInVault with context to generate PDF thumbnails
-                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
-                val documentFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
+                // Use listAllFilesRecursively for consistency and to include subfolders
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val documentFiles = allFiles.filter { it.category == FileManager.FileCategory.DOCUMENT }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -200,9 +209,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                // Use listFilesInVault with context to generate video thumbnails
-                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
-                val videoFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
+                // Use listAllFilesRecursively for consistency and to include subfolders
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val videoFiles = allFiles.filter { it.category == FileManager.FileCategory.VIDEO }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -293,9 +302,9 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
         _uiState.update { it.copy(isLoading = true, error = null) } // Clear previous error
         viewModelScope.launch {
             try {
-                // Use listFilesInVault with context for consistency
-                val vaultStats = fileManager.listFilesInVault(FileManager.getVaultDirectory(), appContext)
-                val imageFiles = vaultStats.allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
+                // Use listAllFilesRecursively for consistency and to include subfolders
+                val allFiles = fileManager.listAllFilesRecursively(FileManager.getVaultDirectory(), appContext)
+                val imageFiles = allFiles.filter { it.category == FileManager.FileCategory.PHOTO }
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -748,7 +757,8 @@ class MainDashboardViewModel(application: Application) : AndroidViewModel(applic
                 Log.w("MainDashboardVM", "requestRenameItem: Unknown item type")
             } else if (newName.isBlank()) {
                 operationMessage = appContext.getString(R.string.folder_name_empty_error) // Reusing existing string
-            } else if (newName == oldName) {
+            }
+            else if (newName == oldName) {
                 operationMessage = "New name is the same as the old name." // Or no message if it's a silent no-op
             }
             else {
